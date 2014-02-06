@@ -41,23 +41,18 @@ public class FormActivity extends Activity implements OnClickListener{
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
 	public void onClick(View arg0) {
-		switch(arg0.getId()){
-		
-		case R.id.formCancelButton:
+		if(arg0.getId() == R.id.formCancelButton){
 			if(counter == 2 || emptyForms())
-				break;//exits and finishes the activity
+				finish();//exits and finishes the activity
 			
 			if(counter == 1 || emptyForms()){
 				makeToast(warning);
 				return;
 			}
-				
-		
-			
-		case R.id.formSaveButton:
+		}
+		else if(arg0.getId() == R.id.formSaveButton){
 			if(emptyForms()){
 				makeToast("Please put something in the title or description!");
-				break;
 			}
 			PlaceIt p = new PlaceIt(location);
 			p.setTitle(titleET);
@@ -69,8 +64,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			
 			return;
 		}
-		finish();
-		
+	
 	}
 	private boolean emptyForms(){
 		if(isEmpty(titleET) && isEmpty(descriptionET))

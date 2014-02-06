@@ -2,7 +2,15 @@
 <resources>
 
     <string name="app_name">PlaceIt</string>
+    
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    
+    <!-- Form Strings -->
+    <string name="form_show_map">Show Map</string>
+    <string name="form_title">Title</string>
+    <string name="form_description">Description</string>
+    <string name="form_title_editText">My Title</string>
+    <string name="form_save_button">Save</string>
+    <string name="form_cancel_button">Cancel</string>
+    
 </resources>
