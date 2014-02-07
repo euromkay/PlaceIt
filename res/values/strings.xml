@@ -5,6 +5,13 @@
     
     <string name="action_settings">Settings</string>
     
+    
+    <!-- Map Strings -->
+    <string name="map_home_button">Center</string>
+    <string name="map_list_button">List</string>
+    
+    
+    
     <!-- Form Strings -->
     <string name="form_show_map">Show Map</string>
     <string name="form_title">Title</string>

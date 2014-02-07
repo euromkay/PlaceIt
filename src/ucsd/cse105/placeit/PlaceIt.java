@@ -1,13 +1,18 @@
 package ucsd.cse105.placeit;
 
+
+import com.google.android.gms.maps.model.LatLng;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.EditText;
 
-public class PlaceIt {
+public class PlaceIt implements Parcelable {
 
-	private int location;
+	private LatLng location;
 	private String title, description;
 	
-	public PlaceIt(int location){
+	public PlaceIt(LatLng location){
 		this.location = location;
 	}
 	
@@ -28,7 +33,37 @@ public class PlaceIt {
 	public String getDescription(){
 		return description;
 	}
-	public int getLocation(){
+	public LatLng getLocation(){
 		return location;
 	}
+
+
+	public int describeContents() {
+
+		return 0;
+	}
+
+
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(description);
+		dest.writeString(title);
+		dest.writeDouble(location.latitude);
+		dest.writeDouble(location.longitude);
+	}
+	
+	public PlaceIt(Parcel in){
+		description = in.readString();
+		title = in.readString();
+		location = new LatLng(in.readDouble(), in.readDouble());
+	}
+	
+	public static final Parcelable.Creator<PlaceIt> CREATOR = new Parcelable.Creator<PlaceIt>() {
+		  public PlaceIt createFromParcel(Parcel in) {
+			  return new PlaceIt(in); 
+		  }
+		   
+		  public PlaceIt[] newArray(int size) {
+		     return new PlaceIt[size];
+		  	}
+		  };
 }

@@ -221,7 +221,7 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f02001c;
     }
     public static final class id {
-        public static final int action_settings=0x7f05000b;
+        public static final int action_settings=0x7f05000d;
         public static final int button1=0x7f050005;
         public static final int formCancelButton=0x7f050008;
         public static final int formSaveButton=0x7f050009;
@@ -229,6 +229,8 @@ containing a value of this type.
         public static final int form_title=0x7f050006;
         public static final int hybrid=0x7f050004;
         public static final int map=0x7f05000a;
+        public static final int mapHomeButton=0x7f05000b;
+        public static final int mapListButton=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
@@ -243,6 +245,7 @@ containing a value of this type.
     }
     public static final class menu {
         public static final int map=0x7f0a0000;
+        public static final int menu_map=0x7f0a0001;
     }
     public static final class string {
         public static final int action_settings=0x7f06001b;
@@ -341,14 +344,18 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060013;
-        public static final int form_cancel_button=0x7f060021;
-        public static final int form_description=0x7f06001e;
-        public static final int form_save_button=0x7f060020;
+        public static final int form_cancel_button=0x7f060023;
+        public static final int form_description=0x7f060020;
+        public static final int form_save_button=0x7f060022;
         /**  Form Strings 
          */
-        public static final int form_show_map=0x7f06001c;
-        public static final int form_title=0x7f06001d;
-        public static final int form_title_editText=0x7f06001f;
+        public static final int form_show_map=0x7f06001e;
+        public static final int form_title=0x7f06001f;
+        public static final int form_title_editText=0x7f060021;
+        /**  Map Strings 
+         */
+        public static final int map_home_button=0x7f06001c;
+        public static final int map_list_button=0x7f06001d;
     }
     public static final class style {
         /** 

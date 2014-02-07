@@ -1,5 +1,7 @@
 package ucsd.cse105.placeit;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,21 +16,16 @@ public class FormActivity extends Activity implements OnClickListener{
 	private EditText titleET, descriptionET;
 	private int counter;
 	
-	private int location;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_form);
-		
 		setupViews();
-		location = extractLocation(getIntent());
-	}
-	private int extractLocation(Intent i){
-		return 0;
 	}
 	
 	protected void onResume(){
+		super.onResume();
 		counter = 1;
 	}
 	
@@ -40,12 +37,17 @@ public class FormActivity extends Activity implements OnClickListener{
 	}
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
+	public static final String COMPLETED_PLACEIT = "completedPlaceit";
 	public void onClick(View arg0) {
 		if(arg0.getId() == R.id.formCancelButton){
-			if(counter == 2 || emptyForms())
+			boolean emptyForms = emptyForms();
+			if(counter == 2 || emptyForms){
+				setResult(RESULT_CANCELED, new Intent());
 				finish();//exits and finishes the activity
-			
-			if(counter == 1 || emptyForms()){
+			}
+				
+			else if(counter == 1 || emptyForms){
+				counter++;
 				makeToast(warning);
 				return;
 			}
@@ -54,12 +56,15 @@ public class FormActivity extends Activity implements OnClickListener{
 			if(emptyForms()){
 				makeToast("Please put something in the title or description!");
 			}
-			PlaceIt p = new PlaceIt(location);
-			p.setTitle(titleET);
-			p.setDescription(descriptionET);
+			PlaceIt placeIt = new PlaceIt(retrieveLocation());
+			placeIt.setTitle(titleET);
+			placeIt.setDescription(descriptionET);
 			
-			Database.save(p);
+			Intent i = new Intent();
+			i.putExtra(COMPLETED_PLACEIT, placeIt);
+			setResult(RESULT_OK, i);
 			
+			Database.save(placeIt);
 			finish();
 			
 			return;
@@ -73,6 +78,11 @@ public class FormActivity extends Activity implements OnClickListener{
 	}
 	private boolean isEmpty(EditText et){
 		return et.getText().toString().length() == 0;
+	}
+	private LatLng retrieveLocation(){
+		Intent i = getIntent();
+		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
+		return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE), b.getDouble(MapActivity.PLACEIT_LONGITUDE));
 	}
 
 	private void makeToast(String s){
