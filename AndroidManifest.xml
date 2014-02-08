@@ -46,7 +46,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ucsd.cse105.placeit.MapActivity" />
-            
+        </activity>
+        <activity
+            android:name="ucsd.cse105.placeit.ListActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="ucsd.cse105.placeit.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ucsd.cse105.placeit.MapActivity" />
         </activity>
 
         <meta-data

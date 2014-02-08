@@ -20,4 +20,6 @@
     <string name="form_save_button">Save</string>
     <string name="form_cancel_button">Cancel</string>
     
+    <string name="list_title">List of PlaceIts</string>
+    
 </resources>

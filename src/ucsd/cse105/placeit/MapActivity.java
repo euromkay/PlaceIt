@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnClickListener, OnMarkerClickListener, ConnectionCallbacks, OnConnectionFailedListener, OnCameraChangeListener{
+public class MapActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnClickListener, OnMarkerClickListener, ConnectionCallbacks, OnConnectionFailedListener{
 
 	private GoogleMap mMap;
 	private LocationClient locationManager;
@@ -54,8 +54,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			}
 			if(resultCode == RESULT_CANCELED){
 				
-			}
-				
+			}	
 		}
 	}
 	private PlaceIt getPlaceIt(Intent data){
@@ -109,10 +108,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 				
 				mMap.setOnMapClickListener(this);
 				mMap.setOnMarkerClickListener(this);
-				mMap.setOnCameraChangeListener(this);
+				mMap.setMyLocationEnabled(true);
 				
-				findViewById(R.id.mapHomeButton).setOnClickListener(this);
 				findViewById(R.id.mapListButton).setOnClickListener(this);
+				populatePlaceIts();
 			}
 		}
 	}
@@ -130,7 +129,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
-	
+	private void populatePlaceIts(){
+		for(PlaceIt p: Database.getAllPlaceIts())
+			addPlaceItToMap(p);
+	}
 
 	
 	public void onMapClick(LatLng pos) {
@@ -154,21 +156,20 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	public void onClick(View arg0) {
 		int viewID = arg0.getId();
-			Toast.makeText(this, "BUTTON", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "BUTTON", Toast.LENGTH_LONG).show();
 			
-		if(viewID == R.id.mapHomeButton)
-			centerMapOnUser();
-		else if(viewID == R.id.mapListButton)
+		
+		if(viewID == R.id.mapListButton)
 			startListActivity();
 	}
-	private void centerMapOnUser(){
-		setCurrentLocation();
-	}
-
 	private void startListActivity(){
+		Intent i = new Intent(this, ListActivity.class);
+		removeAllPlaceIts();
+		startActivity(i);
+	}
+	private void removeAllPlaceIts(){
 		
 	}
-
 	
 	
 	
@@ -229,15 +230,4 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 	}
 
-	private boolean internetAvailable() {
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-	}
-
-	@Override
-	public void onCameraChange(CameraPosition arg0) {
-		makeToast("CAMERA MOVED");
-		
-	}
 }

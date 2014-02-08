@@ -17,16 +17,22 @@ public class FormActivity extends Activity implements OnClickListener{
 	private int counter;
 	
 	
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void onCreate(Bundle b) {
+		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_form);
 		setupViews();
+		
+		if(b != null)
+			loadPlaceIt(b);
 	}
 	
 	protected void onResume(){
 		super.onResume();
 		counter = 1;
+	}
+	private void loadPlaceIt(Bundle b){
+		
 	}
 	
 	private void setupViews(){

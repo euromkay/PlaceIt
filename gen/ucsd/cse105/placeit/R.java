@@ -221,15 +221,16 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f02001c;
     }
     public static final class id {
-        public static final int action_settings=0x7f05000d;
+        public static final int action_settings=0x7f05000e;
         public static final int button1=0x7f050005;
         public static final int formCancelButton=0x7f050008;
         public static final int formSaveButton=0x7f050009;
         public static final int form_description=0x7f050007;
         public static final int form_title=0x7f050006;
         public static final int hybrid=0x7f050004;
-        public static final int map=0x7f05000a;
-        public static final int mapHomeButton=0x7f05000b;
+        public static final int listLayout=0x7f05000a;
+        public static final int map=0x7f05000b;
+        public static final int mapHomeButton=0x7f05000d;
         public static final int mapListButton=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
@@ -241,7 +242,8 @@ containing a value of this type.
     }
     public static final class layout {
         public static final int activity_form=0x7f030000;
-        public static final int activity_map=0x7f030001;
+        public static final int activity_list=0x7f030001;
+        public static final int activity_map=0x7f030002;
     }
     public static final class menu {
         public static final int map=0x7f0a0000;
@@ -352,6 +354,7 @@ containing a value of this type.
         public static final int form_show_map=0x7f06001e;
         public static final int form_title=0x7f06001f;
         public static final int form_title_editText=0x7f060021;
+        public static final int list_title=0x7f060024;
         /**  Map Strings 
          */
         public static final int map_home_button=0x7f06001c;

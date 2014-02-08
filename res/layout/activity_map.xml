@@ -17,20 +17,21 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/mapHomeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:layout_weight="1"
-            android:text="@string/map_home_button" />
-
-        <Button
             android:id="@+id/mapListButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
             android:text="@string/map_list_button" />
+
+        <Button
+            android:id="@+id/mapHomeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/map_home_button" />
     </LinearLayout>
 
 </FrameLayout>

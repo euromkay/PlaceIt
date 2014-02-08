@@ -1,19 +1,25 @@
 package ucsd.cse105.placeit;
 
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.Time;
 import android.widget.EditText;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class PlaceIt implements Parcelable {
 
 	private LatLng location;
-	private String title, description;
+	private String title = "";
+	private String description = "";
+	private Long id;
 	
 	public PlaceIt(LatLng location){
 		this.location = location;
+		Time now = new Time();
+		now.setToNow();
+		id = now.toMillis(true);
 	}
 	
 	public void setTitle(EditText text){
@@ -28,6 +34,8 @@ public class PlaceIt implements Parcelable {
 	
 	
 	public String getTitle(){
+		if(title.length() == 0)
+			return description.substring(0, 20);
 		return title;
 	}
 	public String getDescription(){
@@ -49,12 +57,18 @@ public class PlaceIt implements Parcelable {
 		dest.writeString(title);
 		dest.writeDouble(location.latitude);
 		dest.writeDouble(location.longitude);
+		dest.writeLong(id);
 	}
 	
 	public PlaceIt(Parcel in){
 		description = in.readString();
 		title = in.readString();
 		location = new LatLng(in.readDouble(), in.readDouble());
+		id = in.readLong();
+	}
+	
+	public long getID(){
+		return id;
 	}
 	
 	public static final Parcelable.Creator<PlaceIt> CREATOR = new Parcelable.Creator<PlaceIt>() {
