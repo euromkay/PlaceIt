@@ -36,7 +36,11 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 	}
 	private void setUpList(){
 		list = new ArrayList<Integer>();
+<<<<<<< HEAD
 		ArrayList<PlaceIt> list = Database.getAllPlaceIts(this);
+=======
+		ArrayList<PlaceIt> list = Database.getAllPlaceIts();
+>>>>>>> 6ae3470971b5119c1f009090a5b077692306aa94
 		for(int i = 0; i < list.size(); i++)
 			addPlaceItToList(list.get(i), i);
 	}
@@ -99,8 +103,14 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		//gets the id from the checkbox
 		CheckBox cb = (CheckBox) findViewById((3 * id) + 1);
 		long placeItID = Long.parseLong(cb.getText().toString());
+<<<<<<< HEAD
 		
 		Database.removePlaceIt(placeItID, this);
+=======
+		
+		Database.removePlaceIt(placeItID);
+		
+>>>>>>> 6ae3470971b5119c1f009090a5b077692306aa94
 		removeLayoutFromScreen(id);
 	}
 	private void removeLayoutFromScreen(int id){
