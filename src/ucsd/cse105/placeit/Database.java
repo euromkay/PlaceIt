@@ -76,15 +76,20 @@ public class Database {
 			String[] content = reader(fis);
 			
 			int position = 0; //what part of the content you're in
-			int count = Integer.parseInt(content[position]);
+			int count = Integer.parseInt(content[position++]);
 
 			ArrayList<PlaceIt> list = new ArrayList<PlaceIt>(count);
 			for(int i = 0; i < count; i++){
 				String title = content[position++];
+				Log.d("Database.getAllPlaceIts", "title of placeit being created: " + title);
 				String description = content[position++];
+				Log.d("Database.getAllPlaceIts", "description of placeit being created: " + description);
 				String id_long = content[position++];
+				Log.d("Database.getAllPlaceIts", "id of placeit being created: " + id_long);
 				String lat_double = content[position++];
+				Log.d("Database.getAllPlaceIts", "latitude of placeit being created: " + lat_double);
 				String long_double = content[position++];
+				Log.d("Database.getAllPlaceIts", "longitude of placeit being created: " + long_double);
 				
 				
 				
@@ -162,7 +167,7 @@ public class Database {
 			BufferedWriter writer = new BufferedWriter(out);
 			
 			for(String s: data)
-				writer.write(s);
+				writer.write(s+"\n");
 			writer.close();
 			out.flush();
 			out.close();
