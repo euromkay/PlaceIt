@@ -26,9 +26,12 @@ public class Database {
 			String[] content = reader(fis);
 			Log.d("Database.getLastZoom", "returning for zoom level " + content[0]);
 			return Float.parseFloat(content[0]);
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e ) {
 			Log.d("Database.getLastZoom", "File not found");
 			e.printStackTrace();
+		} catch (ArrayIndexOutOfBoundsException f){
+			Log.d("Database.getLastZoom", "No file found");
+			
 		}
 		//default return value if file isn't found
 		return 20;

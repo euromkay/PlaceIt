@@ -101,7 +101,6 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		long placeItID = Long.parseLong(cb.getText().toString());
 		
 		Database.removePlaceIt(placeItID, this);
-		
 		removeLayoutFromScreen(id);
 	}
 	private void removeLayoutFromScreen(int id){
