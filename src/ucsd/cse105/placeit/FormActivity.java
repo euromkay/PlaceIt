@@ -32,7 +32,9 @@ public class FormActivity extends Activity implements OnClickListener{
 		counter = 1;
 	}
 	private void loadPlaceIt(Bundle b){
-		
+		PlaceIt p = b.getParcelable(ListActivity.ID_BUNDLE_KEY);
+		titleET.setText(p.getTitle());
+		descriptionET.setText(p.getDescription());
 	}
 	
 	private void setupViews(){
@@ -70,7 +72,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			i.putExtra(COMPLETED_PLACEIT, placeIt);
 			setResult(RESULT_OK, i);
 			
-			Database.save(placeIt);
+			Database.save(placeIt, this);
 			finish();
 			
 			return;

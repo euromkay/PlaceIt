@@ -25,8 +25,14 @@ public class PlaceIt implements Parcelable {
 	public void setTitle(EditText text){
 		title = getText(text);
 	}
+	public void setTitle(String title){
+		this.title = title;
+	}
 	public void setDescription(EditText text){
 		description = getText(text);
+	}
+	public void setDescription(String description){
+		this.description = description;
 	}
 	private String getText(EditText text){
 		return text.getText().toString();
@@ -45,6 +51,9 @@ public class PlaceIt implements Parcelable {
 		return location;
 	}
 
+	public void setID(Long id){
+		this.id = id;
+	}
 
 	public int describeContents() {
 

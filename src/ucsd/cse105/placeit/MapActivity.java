@@ -1,13 +1,11 @@
 package ucsd.cse105.placeit;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -21,12 +19,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -82,7 +78,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		}
 		
 		float level = mMap.getCameraPosition().zoom;
-		Database.saveZoomLevel(level);
+		Database.saveZoomLevel(level, this);
 		
 		LatLng lat = mMap.getCameraPosition().target;
 		Database.savePosition(lat);
@@ -99,6 +95,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			
 			// Check if we were successful in obtaining the map.
 			if (mMap != null) {
+
 			    locationManager = new LocationClient(this,this,this);
 			    if(locationManager == null)
 			    	makeToast("SOMETHINGS WRONG");
@@ -116,7 +113,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		}
 	}
 	private void setPreviousZoom(){
-		float level = Database.getLastZoom();
+		float level = Database.getLastZoom(this);
 		CameraUpdate zoom = CameraUpdateFactory.zoomTo(level);
 		mMap.moveCamera(zoom);
 	}
@@ -130,7 +127,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
 	private void populatePlaceIts(){
-		for(PlaceIt p: Database.getAllPlaceIts())
+		for(PlaceIt p: Database.getAllPlaceIts(this))
 			addPlaceItToMap(p);
 	}
 
@@ -155,11 +152,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 	
 	public void onClick(View arg0) {
-		int viewID = arg0.getId();
-		Toast.makeText(this, "BUTTON", Toast.LENGTH_LONG).show();
-			
-		
-		if(viewID == R.id.mapListButton)
+		if(arg0.getId() == R.id.mapListButton)
 			startListActivity();
 	}
 	private void startListActivity(){
@@ -178,7 +171,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
 	}
 
-	public boolean onMarkerClick(Marker arg0) {
+	public boolean onMarkerClick(Marker marker) {
 		
 		return false;
 	}
