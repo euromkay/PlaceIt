@@ -55,12 +55,37 @@ public class Database {
 	
 	
 	
-	
-	public static void savePosition(LatLng lat) {
+	private static final String FILE_POSITION = "last_known_location file";
+	public static void savePosition(LatLng pos, Activity a) {
+		double lat = pos.latitude;
+		double lng = pos.longitude;
+		String[] data = new String[]{Double.toString(pos.latitude), Double.toString(pos.longitude)};
+		
+		try {
+			FileOutputStream fos = a.openFileOutput(FILE_POSITION, Context.MODE_PRIVATE);
+			writer(fos, data);
+		} catch (FileNotFoundException e) {
+			Log.d("Database", "something went wrong?");
+			e.printStackTrace();
+		}
+	}
+	public static LatLng getLastPosition(Activity a){
+		Log.d("Database.getLastZoom", "entering getLastZoom");
+		try {
+			FileInputStream fis = a.openFileInput(FILE_ZOOM);
+			String[] content = reader(fis);
+			double lat = Double.parseDouble(content[0]);
+			double lng = Double.parseDouble(content[1]);
+			return new LatLng(lat, lng);
+		} catch (FileNotFoundException e ) {
+			Log.d("Database.getLastZoom", "File not found");
+			e.printStackTrace();
+		} catch (ArrayIndexOutOfBoundsException f){
+			Log.d("Database.getLastZoom", "No file found");
 		
 	}
-	public static LatLng getLastPosition(){
-		return new LatLng(40.76793169992044,-73.98180484771729);
+	//default return value if file isn't found
+		return new LatLng(0,0);
 	}
 
 	

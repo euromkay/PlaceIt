@@ -29,7 +29,6 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		
 		setContentView(R.layout.activity_list);
 
 		setUpList();
@@ -66,6 +65,8 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		tv.setTextSize(23);
 		tv.setId(4 * id);
 		tv.setOnClickListener(this);
+		
+		
 		
 		LayoutParams param = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
 		tv.setLayoutParams(param);

@@ -93,7 +93,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		Database.saveZoomLevel(level, this);
 		
 		LatLng lat = mMap.getCameraPosition().target;
-		Database.savePosition(lat);
+		Database.savePosition(lat, this);
 		
 		super.onPause();
 	}
@@ -130,7 +130,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.moveCamera(zoom);
 	}
 	private void setPreviousLocation(){
-		CameraUpdate center = CameraUpdateFactory.newLatLng(Database.getLastPosition());
+		CameraUpdate center = CameraUpdateFactory.newLatLng(Database.getLastPosition(this));
 		
 		mMap.moveCamera(center);
 	}
