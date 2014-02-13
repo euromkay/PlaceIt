@@ -111,6 +111,7 @@ public class Database {
 	}
 
 	public static PlaceIt getPlaceIt(long id, Activity a){
+		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Long.toString(id));
 		for(PlaceIt p: getAllPlaceIts(a))
 			if(p.getID() == id)
 				return p;
@@ -118,6 +119,7 @@ public class Database {
 		return null;
 	}
 	public static void removePlaceIt(long placeItID, Activity a) {
+		Log.d("Database.removePlaceIt", "called here");
 		ArrayList<PlaceIt> list = getAllPlaceIts(a);
 		for(PlaceIt p: list)
 			if(p.getID() == (placeItID)){
@@ -137,9 +139,10 @@ public class Database {
 		return null;
 	}
 	public static void save(PlaceIt p, Activity a) {
-		if(getPlaceIt(p.getID(), a) != null)
+		if(getPlaceIt(p.getID(), a) != null){
+			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);
-		
+		}
 		ArrayList<PlaceIt> list = getAllPlaceIts(a);
 		
 		list.add(p);

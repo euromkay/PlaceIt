@@ -5,6 +5,7 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -56,6 +57,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 				redoMarkers();
 			}
 			if(resultCode == RESULT_CANCELED){
+				
 			}
 		}
 	}
@@ -143,6 +145,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
 	
 	public void onMapClick(LatLng pos) {
+		Log.d("MapActivity.onMapClick", "Map clicked to make a new place-it");
 		makeNewPlaceIt(pos);
 	}
 	public static final String PLACEIT_LATITUDE = "latitude";
@@ -153,11 +156,12 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		double longitude = pos.longitude;
 		
 		Intent i = new Intent(this, FormActivity.class);
+		
 		Bundle b = new Bundle();
 		b.putDouble(PLACEIT_LATITUDE, lat);
 		b.putDouble(PLACEIT_LONGITUDE, longitude);
-		
 		i.putExtra(PLACEIT_KEY, b);
+		
 		startActivityForResult(i, 1);
 	}
 	
@@ -167,11 +171,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 	private void startListActivity(){
 		Intent i = new Intent(this, ListActivity.class);
-		removeAllPlaceIts();
+		mMap.clear();//removes placeits from the map
 		startActivityForResult(i, 3);
-	}
-	private void removeAllPlaceIts(){
-		
 	}
 	
 	

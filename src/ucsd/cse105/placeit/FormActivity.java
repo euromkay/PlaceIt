@@ -26,13 +26,12 @@ public class FormActivity extends Activity implements OnClickListener{
 		setupViews();
 		
 		Long id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getLong(ListActivity.ID_BUNDLE_KEY);;
-		if(id != null){
+		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Long.toString(id));
+		if(id != 0){
 			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
 			PlaceIt p = Database.getPlaceIt(id, this);
-			if(p != null)
-				loadPlaceIt(p);
-			else
-				clearForms();
+			loadPlaceIt(p);
+		
 		}else
 			Log.d("FormActivity.onCreate", "No id found");
 		
@@ -84,6 +83,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			setResult(RESULT_OK, i);
 			
 			Database.save(placeIt, this);
+			
 			clearForms();
 			finish();
 			return;
@@ -105,8 +105,8 @@ public class FormActivity extends Activity implements OnClickListener{
 	}
 	private long retrieveID(){
 		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
-		Long id = b.getLong(ListActivity.ID_BUNDLE_KEY);
-		if(id == null){
+		long id = b.getLong(ListActivity.ID_BUNDLE_KEY);
+		if(id == 0){
 			Time now = new Time();
 			now.setToNow();
 			return now.toMillis(true);
