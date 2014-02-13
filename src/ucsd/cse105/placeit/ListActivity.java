@@ -1,10 +1,12 @@
 package ucsd.cse105.placeit;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +18,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class ListActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
@@ -32,28 +36,35 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 	}
 	protected void onResume(){
 		super.onResume();
-		setUpList();
+		if(list == null)
+			setUpList();
 	}
 	private void setUpList(){
 		list = new ArrayList<Integer>();
 		ArrayList<PlaceIt> list = Database.getAllPlaceIts(this);
+		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for(int i = 0; i < list.size(); i++)
 			addPlaceItToList(list.get(i), i);
 	}
 	protected void onPause(){
 		for(int i: list)
 			removeLayoutFromScreen(i);
+		list = null;
 		super.onPause();
+	}
+	public void onBackPressed(){
+		Intent returnIntent = new Intent();
+		setResult(RESULT_OK, returnIntent);     
+		finish();
 	}
 	
 	private void addPlaceItToList(PlaceIt p, int id){
-		list.add(3*id);
 		
 		TextView tv = new TextView(this);
 		tv.setText(p.getTitle());
 		tv.setTextColor(Color.WHITE);
 		tv.setTextSize(23);
-		tv.setId(3 * id);
+		tv.setId(4 * id);
 		tv.setOnClickListener(this);
 		
 		LayoutParams param = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
@@ -68,21 +79,27 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		cb.setBackgroundColor(Color.RED);
 		cb.setScaleX(0.75f);//hopefully makes the checkbox smaller
 		cb.setScaleY(0.75f);
-		cb.setId((3 * id) + 1);
-		cb.setText(Long.toString(p.getID()));
+		cb.setId((4 * id) + 1);
 		cb.setOnCheckedChangeListener(this);
+		
+		list.add((4 * id) + 1);
 		
 		
 		FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT);
 		cb.setLayoutParams(param2);
 		
+		TextView longTV = new TextView(this);
+		longTV.setVisibility(View.GONE);
+		longTV.setId((4 * id) + 3);
+		longTV.setText(Long.toString(p.getID()));
 		
 		
 		LinearLayout layout = new LinearLayout(this);
 		param = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 0);
 		layout.setLayoutParams(param);
-		layout.setId((3 * id) + 2);
+		layout.setId((4 * id) + 2);
 		layout.addView(tv);
+		layout.addView(longTV);
 		layout.addView(cb);
 		
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
@@ -90,33 +107,51 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 		int id = arg0.getId();
-		id -= 1;
-		id /= 3;
 		
 		//removes it so theres not a double remove later on when the list is cleared.
-		list.remove(3*id);
 		
 		//gets the id from the checkbox
-		CheckBox cb = (CheckBox) findViewById((3 * id) + 1);
-		long placeItID = Long.parseLong(cb.getText().toString());
+		TextView cb = (TextView) findViewById(id + 2);
 		
+		if(cb == null)
+			Log.d("ListActivity.onCheckedChange", "couldn't find the textview!");
+		
+		long placeItID = Long.parseLong(cb.getText().toString());
+
+		list.remove((Object) (id));
 		Database.removePlaceIt(placeItID, this);
 		
 		removeLayoutFromScreen(id);
 	}
 	private void removeLayoutFromScreen(int id){
-		View tv = findViewById(3 * id);
-		View cb = findViewById((3 * id) + 1);
-		LinearLayout layout = (LinearLayout) findViewById((3 * id) + 2);
+		//id is the id of the checkbox
+		View tv = findViewById(id - 1);
+		View cb = findViewById(id);
+		View longTV = findViewById(id + 2);
+		LinearLayout layout = (LinearLayout) findViewById(id + 1);
 		layout.removeView(cb);
+		layout.removeView(longTV);
 		layout.removeView(tv);
 	}
+	
 	public void onClick(View v) {
 		Intent i = new Intent(this, FormActivity.class);
 		
-		CheckBox cb = (CheckBox) findViewById(v.getId() + 1);
+		TextView cb = (TextView) findViewById(v.getId() + 3);
 		long id = Long.parseLong(cb.getText().toString());
-		i.putExtra(ID_BUNDLE_KEY, id);
+		
+		LatLng loc = Database.getPlaceIt(id, this).getLocation();
+		
+		Bundle b = new Bundle();
+		b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
+		b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
+		b.putLong(ID_BUNDLE_KEY, id);
+		
+		i.putExtra(MapActivity.PLACEIT_KEY, b);
+		
+		
+		for(int j: list)
+			removeLayoutFromScreen(j);
 		
 		startActivityForResult(i, 1);
 	}

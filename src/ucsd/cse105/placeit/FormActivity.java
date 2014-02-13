@@ -1,15 +1,17 @@
 package ucsd.cse105.placeit;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class FormActivity extends Activity implements OnClickListener{
 
@@ -23,20 +25,27 @@ public class FormActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_form);
 		setupViews();
 		
-		if(b != null)
-			loadPlaceIt(b);
+		Long id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getLong(ListActivity.ID_BUNDLE_KEY);;
+		if(id != null){
+			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
+			PlaceIt p = Database.getPlaceIt(id, this);
+			if(p != null)
+				loadPlaceIt(p);
+			else
+				clearForms();
+		}else
+			Log.d("FormActivity.onCreate", "No id found");
+		
 	}
 	
+	private void loadPlaceIt(PlaceIt p){
+		titleET.setText(p.getTitle());
+		descriptionET.setText(p.getDescription());
+	}
 	protected void onResume(){
 		super.onResume();
 		counter = 1;
 	}
-	private void loadPlaceIt(Bundle b){
-		PlaceIt p = b.getParcelable(ListActivity.ID_BUNDLE_KEY);
-		titleET.setText(p.getTitle());
-		descriptionET.setText(p.getDescription());
-	}
-	
 	private void setupViews(){
 		titleET = (EditText) findViewById(R.id.form_title);
 		descriptionET = (EditText) findViewById(R.id.form_description);
@@ -51,6 +60,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			boolean emptyForms = emptyForms();
 			if(counter == 2 || emptyForms){
 				setResult(RESULT_CANCELED, new Intent());
+				clearForms();
 				finish();//exits and finishes the activity
 			}
 				
@@ -64,7 +74,8 @@ public class FormActivity extends Activity implements OnClickListener{
 			if(emptyForms()){
 				makeToast("Please put something in the title or description!");
 			}
-			PlaceIt placeIt = new PlaceIt(retrieveLocation());
+			long id = retrieveID();
+			PlaceIt placeIt = new PlaceIt(retrieveLocation(), id);
 			placeIt.setTitle(titleET);
 			placeIt.setDescription(descriptionET);
 			
@@ -73,8 +84,8 @@ public class FormActivity extends Activity implements OnClickListener{
 			setResult(RESULT_OK, i);
 			
 			Database.save(placeIt, this);
+			clearForms();
 			finish();
-			
 			return;
 		}
 	
@@ -92,7 +103,22 @@ public class FormActivity extends Activity implements OnClickListener{
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
 		return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE), b.getDouble(MapActivity.PLACEIT_LONGITUDE));
 	}
-
+	private long retrieveID(){
+		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
+		Long id = b.getLong(ListActivity.ID_BUNDLE_KEY);
+		if(id == null){
+			Time now = new Time();
+			now.setToNow();
+			return now.toMillis(true);
+		}
+		else
+			return id;
+	}
+	private void clearForms(){
+		titleET.setText("");
+		descriptionET.setText("");
+	}
+	
 	private void makeToast(String s){
 		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 	}

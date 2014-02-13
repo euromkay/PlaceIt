@@ -80,6 +80,7 @@ public class Database {
 
 			ArrayList<PlaceIt> list = new ArrayList<PlaceIt>(count);
 			for(int i = 0; i < count; i++){
+				Log.d("Database.getAllPlaceIts", "# " + Integer.toString(i) + " placeit being loaded");
 				String title = content[position++];
 				Log.d("Database.getAllPlaceIts", "title of placeit being created: " + title);
 				String description = content[position++];
@@ -95,10 +96,9 @@ public class Database {
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
 				
-				PlaceIt p = new PlaceIt(location);
+				PlaceIt p = new PlaceIt(location, Long.parseLong(id_long));
 				p.setTitle(title);
 				p.setDescription(description);
-				p.setID(Long.parseLong(id_long));
 				
 				list.add(p);
 			}
@@ -110,24 +110,40 @@ public class Database {
 		return new ArrayList<PlaceIt>();
 	}
 
+	public static PlaceIt getPlaceIt(long id, Activity a){
+		for(PlaceIt p: getAllPlaceIts(a))
+			if(p.getID() == id)
+				return p;
 
+		return null;
+	}
 	public static void removePlaceIt(long placeItID, Activity a) {
 		ArrayList<PlaceIt> list = getAllPlaceIts(a);
-		for(PlaceIt p: getAllPlaceIts(a))
-			if(p.getID() == (placeItID))
+		for(PlaceIt p: list)
+			if(p.getID() == (placeItID)){
+				Log.d("Database.remove", "found the placeit to remove");
+				//Log.d("Database.remvoe", "size of the list before remove is: " + list.size();)
 				list.remove(p);
-		writePlaceIts(list, a);
+				writePlaceIts(list, a);
+				return;
+			}
+		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
-	public static PlaceIt getPlaceItByPos(LatLng pos, Activity a){
+	public static PlaceIt getPlaceIt(LatLng pos, Activity a){
 		for(PlaceIt p: getAllPlaceIts(a))
 			if(p.getLocation().equals(pos))
 				return p;
 
-		throw new NullPointerException();
+		return null;
 	}
 	public static void save(PlaceIt p, Activity a) {
+		if(getPlaceIt(p.getID(), a) != null)
+			removePlaceIt(p.getID(), a);
+		
 		ArrayList<PlaceIt> list = getAllPlaceIts(a);
+		
 		list.add(p);
+		
 		writePlaceIts(list, a);
 	}
 	private static void writePlaceIts(ArrayList<PlaceIt> list, Activity a){
@@ -144,6 +160,10 @@ public class Database {
 		}
 		
 		String[] array = toStringArray(stringList.toArray());
+		
+		Log.d("Database.writing", "This is the contents of the write");
+		for(String s: array)
+			Log.d("Database.writing", s);
 		
 		try {
 			writer(a.openFileOutput(FILE_PLACEITS, Context.MODE_PRIVATE), array);

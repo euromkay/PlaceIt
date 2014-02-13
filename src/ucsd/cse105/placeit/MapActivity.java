@@ -51,6 +51,17 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 				
 			}	
 		}
+		if(requestCode == 3){
+			if(resultCode == RESULT_OK){
+				redoMarkers();
+			}
+			if(resultCode == RESULT_CANCELED){
+			}
+		}
+	}
+	private void redoMarkers(){
+		mMap.clear();
+		populatePlaceIts();
 	}
 	private PlaceIt getPlaceIt(Intent data){
 		return data.getParcelableExtra(FormActivity.COMPLETED_PLACEIT);
@@ -157,7 +168,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private void startListActivity(){
 		Intent i = new Intent(this, ListActivity.class);
 		removeAllPlaceIts();
-		startActivity(i);
+		startActivityForResult(i, 3);
 	}
 	private void removeAllPlaceIts(){
 		
