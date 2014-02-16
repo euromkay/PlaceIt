@@ -1,6 +1,8 @@
 package ucsd.cse105.placeit;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,9 +15,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class PlaceItService extends Service {
 	private int delay = 15000;
+	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
 	TimerTask task = new TimerTask() {
 		@Override
@@ -89,7 +93,17 @@ public class PlaceItService extends Service {
 		ArrayList<PlaceIt> placeIts = Database.getAllPlaceIts(this);
 		
 		for(PlaceIt item : placeIts){
-			setNotification((int)item.getID(), item.getTitle(), item.getDescription());
+			Date dueDate = item.getDueDate();
+			Date now = new Date();
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+			String s_dueDate = df.format(dueDate);
+			String s_now = df.format(now);
+			Log.d("PlaceItService - item.dueDate", s_dueDate);
+			Log.d("PlaceItService - now", s_now);
+			if(now.after(dueDate))
+			{
+				setNotification((int)item.getID(), item.getTitle(), item.getDescription());
+			}
 		}
 	}
 

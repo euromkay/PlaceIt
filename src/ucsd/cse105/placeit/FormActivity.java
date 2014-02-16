@@ -1,5 +1,8 @@
 package ucsd.cse105.placeit;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -77,6 +80,12 @@ public class FormActivity extends Activity implements OnClickListener{
 			PlaceIt placeIt = new PlaceIt(retrieveLocation(), id);
 			placeIt.setTitle(titleET);
 			placeIt.setDescription(descriptionET);
+			
+			Date dueDate = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dueDate);
+			cal.add(Calendar.MINUTE, 1);
+			placeIt.setDueDate(cal.getTime());
 			
 			Intent i = new Intent();
 			i.putExtra(COMPLETED_PLACEIT, placeIt);

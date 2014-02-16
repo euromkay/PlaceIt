@@ -1,6 +1,8 @@
 package ucsd.cse105.placeit;
 
 
+import java.util.Date;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.EditText;
@@ -13,10 +15,15 @@ public class PlaceIt implements Parcelable {
 	private String title = "";
 	private String description = "";
 	private long id;
+	private Date dueDate;
 	
 	public PlaceIt(LatLng location, long id){
 		this.location = location;
 		this.id = id;
+	}
+	
+	public void setDueDate(Date dueDate){
+		this.dueDate = dueDate;
 	}
 	
 	public void setTitle(EditText text){
@@ -35,6 +42,9 @@ public class PlaceIt implements Parcelable {
 		return text.getText().toString();
 	}
 	
+	public Date getDueDate(){
+		return dueDate;
+	}
 	
 	public String getTitle(){
 		if(title.length() == 0){

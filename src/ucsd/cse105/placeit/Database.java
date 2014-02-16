@@ -8,15 +8,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
 public class Database {
+	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
 	private static final String FILE_ZOOM = "zoom_file";
 	public static float getLastZoom(Activity a){
@@ -97,7 +102,6 @@ public class Database {
 	private static final String FILE_PLACEITS = "place_it_file";
 	public static ArrayList<PlaceIt> getAllPlaceIts(Context a) {
 		try {
-			//FileInputStream fis = new FileInputStream(FILE_PLACEITS);
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
 			
@@ -117,7 +121,8 @@ public class Database {
 				Log.d("Database.getAllPlaceIts", "latitude of placeit being created: " + lat_double);
 				String long_double = content[position++];
 				Log.d("Database.getAllPlaceIts", "longitude of placeit being created: " + long_double);
-				
+				String dueDate_Date = content[position++];
+				Log.d("Database.getAllPlaceIts", "dueDate of placeit being created: " + dueDate_Date);
 				
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
@@ -125,7 +130,13 @@ public class Database {
 				PlaceIt p = new PlaceIt(location, Long.parseLong(id_long));
 				p.setTitle(title);
 				p.setDescription(description);
-				
+				try {
+					SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+					p.setDueDate(df.parse(dueDate_Date));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				list.add(p);
 			}
 			
@@ -179,6 +190,7 @@ public class Database {
 		ArrayList<String> stringList = new ArrayList<String>();
 		stringList.add(Integer.toString(list.size()));
 		
+		SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 		
 		for(PlaceIt p: list){
 			stringList.add(p.getTitle());
@@ -186,6 +198,7 @@ public class Database {
 			stringList.add(Long.toString(p.getID()));
 			stringList.add(Double.toString(p.getLocation().latitude));
 			stringList.add(Double.toString(p.getLocation().longitude));
+			stringList.add(df.format(p.getDueDate()));
 		}
 		
 		String[] array = toStringArray(stringList.toArray());
