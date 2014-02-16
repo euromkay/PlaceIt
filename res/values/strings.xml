@@ -2,16 +2,12 @@
 <resources>
 
     <string name="app_name">PlaceIt</string>
-    
     <string name="action_settings">Settings</string>
-    
-    
+
     <!-- Map Strings -->
     <string name="map_home_button">Center</string>
     <string name="map_list_button">List</string>
-    
-    
-    
+
     <!-- Form Strings -->
     <string name="form_show_map">Show Map</string>
     <string name="form_title">Title</string>
@@ -19,7 +15,10 @@
     <string name="form_title_editText">My Title</string>
     <string name="form_save_button">Save</string>
     <string name="form_cancel_button">Cancel</string>
-    
     <string name="list_title">List of PlaceIts</string>
-    
+    <string name="title_activity_notification_main">NotificationMainActivity</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="btBasicNotification">Discard</string>
+	<string name="tvHandleNotification">BITCH!</string>
+	<string name="title_handle_activity">NotificationMainActivity</string>
 </resources>

@@ -59,8 +59,26 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        
-        <service android:enabled="true" android:name=".PlaceItService" />
+
+        <service
+            android:name="ucsd.cse105.placeit.PlaceItService"
+            android:enabled="true" />
+
+        <activity
+            android:name="ucsd.cse105.placeit.NotificationMainActivity"
+            android:label="@string/title_activity_notification_main" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="ucsd.cse105.placeit.HandleNotificationActivity"
+            android:label="@string/title_handle_activity" >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

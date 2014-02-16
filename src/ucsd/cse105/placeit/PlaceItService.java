@@ -7,6 +7,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -18,7 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class PlaceItService extends Service {
-	private int delay = 15000;
+	private int delay = 5000;
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
 	TimerTask task = new TimerTask() {
@@ -28,7 +30,35 @@ public class PlaceItService extends Service {
 		}
 	};
 	
-	private void setNotification(int id, String title, String description){
+	public NotificationManager getNotificationManager() {
+		  return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		 }
+
+	 public PendingIntent getPendingIntent() {
+		  return PendingIntent.getActivity(this, 0, new Intent(this,
+		    HandleNotificationActivity.class), 0);
+		 }
+	
+	private void setNotification(int id, String title, String description)
+	{
+		PendingIntent pi = getPendingIntent();
+		  Builder builder = new Notification.Builder(this)
+		    .setContentTitle(title)
+		    .setContentText(description)
+		    .setSmallIcon(R.drawable.ic_launcher)
+		    .addAction(R.drawable.ic_menu_close_clear_cancel, "Discard", pi)
+		    .addAction(R.drawable.ic_audio_alarm, "Repost", pi);
+
+		  Notification notification = new Notification.InboxStyle(builder)
+		    .addLine(description).build();
+		  // Put the auto cancel notification flag
+		  notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		  NotificationManager notificationManager = getNotificationManager();
+		  notificationManager.notify(id, notification);
+		
+	}
+	
+/*	private void setNotification(int id, String title, String description){
 		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
@@ -57,7 +87,7 @@ public class PlaceItService extends Service {
 		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
 		mNotificationManager.notify(id, mBuilder.build());
-	}
+	}*/
 
 
 	@Override
