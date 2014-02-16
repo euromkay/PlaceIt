@@ -14,10 +14,10 @@ public class PlaceIt implements Parcelable {
 	private LatLng location;
 	private String title = "";
 	private String description = "";
-	private long id;
+	private int id;
 	private Date dueDate;
 	
-	public PlaceIt(LatLng location, long id){
+	public PlaceIt(LatLng location, int id){
 		this.location = location;
 		this.id = id;
 	}
@@ -60,9 +60,9 @@ public class PlaceIt implements Parcelable {
 		return location;
 	}
 
-	public void setID(Long id){
-		this.id = id;
-	}
+//	public void setID(Long id){
+//		this.id = id;
+//	}
 
 	public int describeContents() {
 
@@ -82,10 +82,10 @@ public class PlaceIt implements Parcelable {
 		description = in.readString();
 		title = in.readString();
 		location = new LatLng(in.readDouble(), in.readDouble());
-		id = in.readLong();
+		id = in.readInt();
 	}
 	
-	public long getID(){
+	public int getID(){
 		return id;
 	}
 	

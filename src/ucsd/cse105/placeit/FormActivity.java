@@ -2,6 +2,7 @@ package ucsd.cse105.placeit;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,8 +29,8 @@ public class FormActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_form);
 		setupViews();
 		
-		Long id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getLong(ListActivity.ID_BUNDLE_KEY);;
-		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Long.toString(id));
+		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
+		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Integer.toString(id));
 		if(id != 0){
 			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
 			PlaceIt p = Database.getPlaceIt(id, this);
@@ -57,6 +58,7 @@ public class FormActivity extends Activity implements OnClickListener{
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
 	public static final String COMPLETED_PLACEIT = "completedPlaceit";
+	
 	public void onClick(View arg0) {
 		if(arg0.getId() == R.id.formCancelButton){
 			boolean emptyForms = emptyForms();
@@ -76,7 +78,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			if(emptyForms()){
 				makeToast("Please put something in the title or description!");
 			}
-			long id = retrieveID();
+			int id = nextID();
 			PlaceIt placeIt = new PlaceIt(retrieveLocation(), id);
 			placeIt.setTitle(titleET);
 			placeIt.setDescription(descriptionET);
@@ -112,17 +114,24 @@ public class FormActivity extends Activity implements OnClickListener{
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
 		return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE), b.getDouble(MapActivity.PLACEIT_LONGITUDE));
 	}
-	private long retrieveID(){
-		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
-		long id = b.getLong(ListActivity.ID_BUNDLE_KEY);
-		if(id == 0){
-			Time now = new Time();
-			now.setToNow();
-			return now.toMillis(true);
-		}
-		else
-			return id;
+	
+//	private int retrieveID(){
+//		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
+//		int id = b.getInt(ListActivity.ID_BUNDLE_KEY);
+//		if(id == 0){
+//			Time now = new Time();
+//			now.setToNow();
+//			return (int) now.toMillis(true);
+//		}
+//		else
+//			return id;
+//	}
+	
+	private Random generator = new Random(System.currentTimeMillis());
+	int nextID() {
+	        return generator.nextInt(Integer.MAX_VALUE);
 	}
+	
 	private void clearForms(){
 		titleET.setText("");
 		descriptionET.setText("");

@@ -117,7 +117,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		if(cb == null)
 			Log.d("ListActivity.onCheckedChange", "couldn't find the textview!");
 		
-		long placeItID = Long.parseLong(cb.getText().toString());
+		int placeItID = Integer.parseInt(cb.getText().toString());
 
 		list.remove((Object) (id));
 		Database.removePlaceIt(placeItID, this);
@@ -139,7 +139,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		Intent i = new Intent(this, FormActivity.class);
 		
 		TextView cb = (TextView) findViewById(v.getId() + 3);
-		long id = Long.parseLong(cb.getText().toString());
+		int id = Integer.parseInt(cb.getText().toString());
 		
 		LatLng loc = Database.getPlaceIt(id, this).getLocation();
 		

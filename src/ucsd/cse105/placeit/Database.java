@@ -115,8 +115,8 @@ public class Database {
 				Log.d("Database.getAllPlaceIts", "title of placeit being created: " + title);
 				String description = content[position++];
 				Log.d("Database.getAllPlaceIts", "description of placeit being created: " + description);
-				String id_long = content[position++];
-				Log.d("Database.getAllPlaceIts", "id of placeit being created: " + id_long);
+				String id_int = content[position++];
+				Log.d("Database.getAllPlaceIts", "id of placeit being created: " + id_int);
 				String lat_double = content[position++];
 				Log.d("Database.getAllPlaceIts", "latitude of placeit being created: " + lat_double);
 				String long_double = content[position++];
@@ -127,7 +127,7 @@ public class Database {
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
 				
-				PlaceIt p = new PlaceIt(location, Long.parseLong(id_long));
+				PlaceIt p = new PlaceIt(location, Integer.parseInt(id_int));
 				p.setTitle(title);
 				p.setDescription(description);
 				try {
@@ -147,7 +147,7 @@ public class Database {
 		return new ArrayList<PlaceIt>();
 	}
 
-	public static PlaceIt getPlaceIt(long id, Activity a){
+	public static PlaceIt getPlaceIt(int id, Context a){
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Long.toString(id));
 		for(PlaceIt p: getAllPlaceIts(a))
 			if(p.getID() == id)
@@ -155,7 +155,7 @@ public class Database {
 
 		return null;
 	}
-	public static void removePlaceIt(long placeItID, Activity a) {
+	public static void removePlaceIt(int placeItID, Context a) {
 		Log.d("Database.removePlaceIt", "called here");
 		ArrayList<PlaceIt> list = getAllPlaceIts(a);
 		for(PlaceIt p: list)
@@ -168,14 +168,14 @@ public class Database {
 			}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
-	public static PlaceIt getPlaceIt(LatLng pos, Activity a){
+	public static PlaceIt getPlaceIt(LatLng pos, Context a){
 		for(PlaceIt p: getAllPlaceIts(a))
 			if(p.getLocation().equals(pos))
 				return p;
 
 		return null;
 	}
-	public static void save(PlaceIt p, Activity a) {
+	public static void save(PlaceIt p, Context a) {
 		if(getPlaceIt(p.getID(), a) != null){
 			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);
@@ -186,7 +186,7 @@ public class Database {
 		
 		writePlaceIts(list, a);
 	}
-	private static void writePlaceIts(ArrayList<PlaceIt> list, Activity a){
+	private static void writePlaceIts(ArrayList<PlaceIt> list, Context a){
 		ArrayList<String> stringList = new ArrayList<String>();
 		stringList.add(Integer.toString(list.size()));
 		

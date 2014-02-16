@@ -20,7 +20,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class PlaceItService extends Service {
-	private int delay = 5000;
+	private int delay = 10000;
+	private int initDelay = 5000;
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
 	TimerTask task = new TimerTask() {
@@ -37,25 +38,64 @@ public class PlaceItService extends Service {
 	 public PendingIntent getPendingIntent() {
 		  return PendingIntent.getActivity(this, 0, new Intent(this,
 		    HandleNotificationActivity.class), 0);
-		 }
+	 }
+	 
+	 public PendingIntent getDiscardPendingIntent() {
+		  return PendingIntent.getActivity(this, 0, new Intent(this,
+		    DiscardReceiver.class), 0);
+	 }
 	
+	 private boolean isNotificationVisible(int id) {
+		    Intent notificationIntent = new Intent(this, HandleNotificationActivity.class);
+		    PendingIntent test = PendingIntent.getActivity(this, id, notificationIntent, PendingIntent.FLAG_NO_CREATE);
+		    		//.getActivity(getBaseContext(), id, notificationIntent, PendingIntent.FLAG_NO_CREATE);
+		    return test == null;
+		}
+	 
+	 private PendingIntent getMapActivityIntent(){
+		 return PendingIntent.getActivity(this, 0, new Intent(this,
+				   MapActivity.class), 0);
+	 }
+	 
 	private void setNotification(int id, String title, String description)
 	{
+//		if (isNotificationVisible(id)){
+//			return;
+//		}
+		
 		PendingIntent pi = getPendingIntent();
-		  Builder builder = new Notification.Builder(this)
+		
+//		if (pi == null)
+//		{
+//			return;
+//		}
+		
+		//Create an Intent for the BroadcastReceiver
+		Intent buttonIntent = new Intent(this, DiscardReceiver.class);
+		buttonIntent.putExtra("notificationId", id);
+
+		//Create the PendingIntent
+		PendingIntent btPendingIntent = PendingIntent.getBroadcast(
+				this, 0, buttonIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+		
+		//Builder builder = new Notification.Builder(this)
+		NotificationCompat.Builder mb = new NotificationCompat.Builder(getBaseContext())
+			.setContentIntent(getMapActivityIntent())
 		    .setContentTitle(title)
 		    .setContentText(description)
 		    .setSmallIcon(R.drawable.ic_launcher)
-		    .addAction(R.drawable.ic_menu_close_clear_cancel, "Discard", pi)
+		    .addAction(R.drawable.ic_menu_close_clear_cancel, "Discard", btPendingIntent)
 		    .addAction(R.drawable.ic_audio_alarm, "Repost", pi);
-
-		  Notification notification = new Notification.InboxStyle(builder)
-		    .addLine(description).build();
-		  // Put the auto cancel notification flag
-		  notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		  NotificationManager notificationManager = getNotificationManager();
-		  notificationManager.notify(id, notification);
 		
+		
+//		  Notification notification = new Notification.InboxStyle(mb)
+//		    .addLine(description).build();
+//		  // Put the auto cancel notification flag
+//		  notification.flags |= Notification.DEFAULT_ALL;
+		  //notification.flags |= Notification.FLAG_NO_CLEAR;
+		  NotificationManager notificationManager = getNotificationManager();  
+		  //notificationManager.notify(id, notification);
+		  notificationManager.notify(id, mb.build());
 	}
 	
 /*	private void setNotification(int id, String title, String description){
@@ -109,7 +149,7 @@ public class PlaceItService extends Service {
 	final Timer timer = new Timer();
 
 	private void setTimer(){
-		timer.scheduleAtFixedRate(task, delay, delay);
+		timer.scheduleAtFixedRate(task, initDelay, delay);
 	}
 	
 	@Override
@@ -132,7 +172,7 @@ public class PlaceItService extends Service {
 			Log.d("PlaceItService - now", s_now);
 			if(now.after(dueDate))
 			{
-				setNotification((int)item.getID(), item.getTitle(), item.getDescription());
+				setNotification(item.getID(), item.getTitle(), item.getDescription());
 			}
 		}
 	}
