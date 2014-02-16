@@ -1,8 +1,10 @@
 package ucsd.cse105.placeit;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -83,7 +85,12 @@ public class PlaceItService extends Service {
 	
 	private void checkNotify(){
 		//TODO: DB checking
+		//ArrayList<PlaceIt> placeIts = Database.getAllPlaceIts(activityContext);
+		ArrayList<PlaceIt> placeIts = Database.getAllPlaceIts(this);
 		
+		for(PlaceIt item : placeIts){
+			setNotification((int)item.getID(), item.getTitle(), item.getDescription());
+		}
 	}
 
 }

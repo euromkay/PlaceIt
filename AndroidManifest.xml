@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16"
+        android:minSdkVersion="19"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDE5PzvRwZ0XCJ--9lkv9dd8dBWagVJJaM" />
+            android:value="AIzaSyDJlP0OT4vbBS-KR4a1tuOa9ml-cr0uhWY" />
 
         <activity
             android:name="ucsd.cse105.placeit.MapActivity"

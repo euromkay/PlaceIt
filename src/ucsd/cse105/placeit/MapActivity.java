@@ -40,6 +40,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		setContentView(R.layout.activity_map);
 
 		setUpMapIfNeeded();
+		startService(new Intent(this, PlaceItService.class));
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){

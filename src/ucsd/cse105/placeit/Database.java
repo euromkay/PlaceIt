@@ -95,8 +95,9 @@ public class Database {
 	
 	
 	private static final String FILE_PLACEITS = "place_it_file";
-	public static ArrayList<PlaceIt> getAllPlaceIts(Activity a) {
+	public static ArrayList<PlaceIt> getAllPlaceIts(Context a) {
 		try {
+			//FileInputStream fis = new FileInputStream(FILE_PLACEITS);
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
 			
