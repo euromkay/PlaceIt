@@ -368,6 +368,7 @@ containing a value of this type.
         /**  Form Strings 
          */
         public static final int form_show_map=0x7f06001e;
+        public static final int form_spinner_title=0x7f06002a;
         public static final int form_title=0x7f06001f;
         public static final int form_title_editText=0x7f060021;
         public static final int hello_world=0x7f060026;

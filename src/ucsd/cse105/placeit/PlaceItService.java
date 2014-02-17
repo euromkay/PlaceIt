@@ -6,21 +6,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
-import com.google.android.gms.maps.model.LatLng;
 
-import android.app.Activity;
-=======
->>>>>>> 6eeecbbdd2214a8088d49b36b187114ff7c484b6
 import android.app.Notification;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -30,7 +22,7 @@ public class PlaceItService extends Service {
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	public static final float MILES_RANGE = 0.5f;
 
-	private final Timer timer = new Timer();
+	private Timer timer = new Timer();
 
 	private void setTimer() {
 		timer.scheduleAtFixedRate(task, initDelay, delay);
@@ -90,7 +82,7 @@ public class PlaceItService extends Service {
 
 		// This will be used by MapActivity to auto load FormActivity
 		intent.putExtra(NOTIFICATION_MAP_FORM, id);
-		return PendingIntent.getActivity(this, mapRequestCode++, intent, 0);
+		return PendingIntent.getActivity(this, mapRequestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
 	private void setNotification(int id, String title, String description) {
@@ -130,13 +122,11 @@ public class PlaceItService extends Service {
 
 	@Override
 	public void onDestroy() {
+		timer.cancel();
 		timer.purge();
 	}
 
 	private void checkNotify() {
-		// TODO: DB checking
-		// ArrayList<PlaceIt> placeIts =
-		// Database.getAllPlaceIts(activityContext);
 		ArrayList<PlaceIt> placeIts = Database.getAllPlaceIts(this);
 
 		for (PlaceIt item : placeIts) {

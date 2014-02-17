@@ -1,5 +1,8 @@
 package ucsd.cse105.placeit;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
@@ -9,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,17 +39,33 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 		
 		setContentView(R.layout.activity_map);
+		
+		managePlaceItService();
 
 		setUpMapIfNeeded();
 		int launchPlaceItId = getIntent().getIntExtra(PlaceItService.NOTIFICATION_MAP_FORM, 0);
-		if(launchPlaceItId != 0)
+		
+		if(launchPlaceItId != 0){
+			Log.d("MapActivity.onCreate", "Calling startPlaceIt()");
 			startPlaceIt(launchPlaceItId);
+		}
 			
-		//startService(new Intent(this, PlaceItService.class));
+		
+		
 	}
+	
+	private void managePlaceItService() {
+	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (PlaceItService.class.getName().equals(service.service.getClassName())) {
+	            return;
+	        }
+	    }
+	    startService(new Intent(this, PlaceItService.class));
+	}
+	
 	private void startPlaceIt(int id){
 		Intent i = new Intent(this, FormActivity.class);
 		i.putExtra(PlaceItService.NOTIFICATION_MAP_FORM, id);
