@@ -74,16 +74,22 @@ public class PlaceItService extends Service {
 
 		return pendingIntent;
 	}
+	
+	private int mapRequestCode = 0;
+	public static final String NOTIFICATION_MAP_FORM = "NOTIFICATION_MAP_FORM";
 
-	// Main MapActivity
-	private PendingIntent getMapActivityIntent() {
-		return PendingIntent.getActivity(this, 0, new Intent(this,
-				MapActivity.class), 0);
+	// MapActivity
+	private PendingIntent getMapActivityIntent(int id) {
+		Intent intent = new Intent(this, MapActivity.class);
+		
+		//This will be used by MapActivity to auto load FormActivity
+		intent.putExtra(NOTIFICATION_MAP_FORM, id);
+		return PendingIntent.getActivity(this, mapRequestCode++, intent, 0);
 	}
 
 	private void setNotification(int id, String title, String description) {
 		Builder builder = new Notification.Builder(this)
-				.setContentIntent(getMapActivityIntent())
+				.setContentIntent(getMapActivityIntent(id))
 				.setContentTitle(title)
 				.setContentText(description)
 				.setSmallIcon(R.drawable.ic_launcher)
