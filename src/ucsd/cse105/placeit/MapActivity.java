@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,7 +42,29 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		setContentView(R.layout.activity_map);
 
 		setUpMapIfNeeded();
-		startService(new Intent(this, PlaceItService.class));
+		int launchPlaceItId = getIntent().getIntExtra(PlaceItService.NOTIFICATION_MAP_FORM, 0);
+		if(launchPlaceItId != 0)
+			startPlaceIt(launchPlaceItId);
+			
+		//startService(new Intent(this, PlaceItService.class));
+	}
+	private void startPlaceIt(int id){
+		Intent i = new Intent(this, FormActivity.class);
+		i.putExtra(PlaceItService.NOTIFICATION_MAP_FORM, id);
+		
+		
+		LatLng loc = Database.getPlaceIt(id, this).getLocation();
+		
+		Bundle b = new Bundle();
+		b.putDouble(PLACEIT_LATITUDE, loc.latitude);
+		b.putDouble(PLACEIT_LONGITUDE, loc.longitude);
+		b.putInt(ListActivity.ID_BUNDLE_KEY, id);
+		
+		i.putExtra(PLACEIT_KEY, b);
+		
+		Log.d("MapActivity.startPlaceIt", "Started Placeit");
+		
+		startActivity(i);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -162,6 +185,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		Bundle b = new Bundle();
 		b.putDouble(PLACEIT_LATITUDE, lat);
 		b.putDouble(PLACEIT_LONGITUDE, longitude);
+		
 		i.putExtra(PLACEIT_KEY, b);
 		
 		startActivityForResult(i, 1);
@@ -185,6 +209,9 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 
 	public boolean onMarkerClick(Marker marker) {
+		PlaceIt p = Database.getPlaceIt(marker.getPosition(), this);
+		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));
+		startPlaceIt(p.getID());
 		
 		return false;
 	}
