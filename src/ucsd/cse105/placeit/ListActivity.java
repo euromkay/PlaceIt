@@ -1,12 +1,7 @@
 package ucsd.cse105.placeit;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;

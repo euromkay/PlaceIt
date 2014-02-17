@@ -3,6 +3,7 @@ package ucsd.cse105.placeit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,7 +63,7 @@ public class PlaceItService extends Service {
 		for (PlaceIt item : placeIts) {
 			Date dueDate = item.getDueDate();
 			Date now = new Date();
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			String s_dueDate = df.format(dueDate);
 			String s_now = df.format(now);
 			Log.d("PlaceItService - item.dueDate", s_dueDate);
