@@ -85,6 +85,11 @@
                 <action android:name="ucsd.cse105.placeit.discardreceiver" />
             </intent-filter>
         </receiver>
+        <receiver android:name="RepostReceiver" >
+            <intent-filter>
+                <action android:name="ucsd.cse105.placeit.repostreceiver" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
