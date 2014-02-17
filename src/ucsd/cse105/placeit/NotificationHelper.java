@@ -54,7 +54,7 @@ public class NotificationHelper {
 
 		// This will be used by MapActivity to auto load FormActivity
 		intent.putExtra(NOTIFICATION_MAP_FORM, id);
-		return PendingIntent.getActivity(_context, mapRequestCode, intent,
+		return PendingIntent.getActivity(_context, mapRequestCode++, intent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 	
