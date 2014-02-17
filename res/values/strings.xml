@@ -21,6 +21,7 @@
 	<string name="btBasicNotification">Discard</string>
 	<string name="tvHandleNotification">REPLACE ME!</string>
 	<string name="title_handle_activity">NotificationMainActivity</string>
+	<string name="form_spinner_title">Recurring</string>
 	
 	<string-array name="rules_formValues">
         <item>None</item>

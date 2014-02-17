@@ -31,7 +31,8 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 
 		setContentView(R.layout.activity_list);
 
-		setUpList();
+		if(list == null)
+			setUpList();
 	}
 	protected void onResume(){
 		super.onResume();
@@ -83,6 +84,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		cb.setId((4 * id) + 1);
 		cb.setOnCheckedChangeListener(this);
 		
+		Log.d("ListActivity.addPlaceItToList", Integer.toString((4*id)+1));
 		list.add((4 * id) + 1);
 		
 		
@@ -134,6 +136,10 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		layout.removeView(cb);
 		layout.removeView(longTV);
 		layout.removeView(tv);
+		
+		LinearLayout bigLayout = (LinearLayout) findViewById(R.id.listLayout);
+		bigLayout.removeView(layout);
+		list.remove((Object) id);
 	}
 	
 	public void onClick(View v) {
@@ -152,8 +158,10 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		i.putExtra(MapActivity.PLACEIT_KEY, b);
 		
 		
-		for(int j: list)
+		for(int j: list){
+			Log.d("ListActivity.onClick", "Id being removed: " + Integer.toString(j));
 			removeLayoutFromScreen(j);
+		}
 		
 		startActivityForResult(i, 1);
 	}
