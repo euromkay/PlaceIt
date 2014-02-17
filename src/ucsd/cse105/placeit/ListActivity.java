@@ -1,8 +1,12 @@
 package ucsd.cse105.placeit;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,7 +51,10 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 			addPlaceItToList(list.get(i), i);
 	}
 	protected void onPause(){
+		ArrayList<Integer> listt = new ArrayList<Integer>();
 		for(int i: list)
+			listt.add(i);
+		for(int i: listt)
 			removeLayoutFromScreen(i);
 		list = null;
 		super.onPause();
@@ -122,11 +129,30 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		
 		int placeItID = Integer.parseInt(cb.getText().toString());
 
-		list.remove((Object) (id));
-		Database.removePlaceIt(placeItID, this);
+		PlaceIt p = Database.getPlaceIt(placeItID, this);
 		
-		removeLayoutFromScreen(id);
+		//Check if PlaceIt is on a recurring schedule
+        if (p.getSchedule() > 0){
+        	Date dueDate = new Date();
+    		Calendar cal = Calendar.getInstance();
+    		cal.setTime(dueDate);
+    		cal.add(Calendar.SECOND, p.getSchedule());
+    		p.setDueDate(cal.getTime());
+    		
+    		Database.save(p, this);
+        }
+        else{
+        	//Remove Place-It from Database
+    		Database.removePlaceIt(placeItID, this);
+    		// cancel notification
+            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.cancel(placeItID);
+            
+        }	
+        list.remove((Object) (id));
+        removeLayoutFromScreen(id);
 	}
+	
 	private void removeLayoutFromScreen(int id){
 		//id is the id of the checkbox
 		View tv = findViewById(id - 1);

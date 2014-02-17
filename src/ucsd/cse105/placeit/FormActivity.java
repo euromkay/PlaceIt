@@ -181,7 +181,7 @@ public class FormActivity extends Activity implements OnClickListener{
 		if(s.equals("10 Seconds"))
 			return 10;
 		
-		if(s.equals("1 Minue"))
+		if(s.equals("1 Minute"))
 			return 60;
 		
 		if(s.equals("1 Hour"))
