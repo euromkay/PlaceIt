@@ -57,8 +57,8 @@ public class PlaceIt implements Parcelable {
 	
 	public String getTitle(){
 		if(title.length() == 0){
-			int max = Math.max(description.length(), 20);
-			return description.substring(0, max);
+			int min = Math.min(description.length(), 20);
+			return description.substring(0, min);
 		}
 		return title;
 	}

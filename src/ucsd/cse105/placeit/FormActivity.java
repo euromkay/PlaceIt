@@ -30,16 +30,22 @@ public class FormActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_form);
 		setupViews();
 		
-		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
-		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Integer.toString(id));
-		if(id != 0){
+		if(hasId()){
 			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
-			PlaceIt p = Database.getPlaceIt(id, this);
+			PlaceIt p = Database.getPlaceIt(getId(), this);
 			loadPlaceIt(p);
 		
 		}else
 			Log.d("FormActivity.onCreate", "No id found");
 		
+	}
+	private boolean hasId(){
+		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
+		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Integer.toString(id));
+		return id != 0;
+	}
+	private int getId(){
+		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);
 	}
 	
 	private void loadPlaceIt(PlaceIt p){
@@ -114,22 +120,12 @@ public class FormActivity extends Activity implements OnClickListener{
 	
 	public void onClick(View arg0) {
 		if(arg0.getId() == R.id.formCancelButton){
-			boolean emptyForms = emptyForms();
-			if(counter == 2 || emptyForms){
-				setResult(RESULT_CANCELED, new Intent());
-				clearForms();
-				finish();//exits and finishes the activity
-			}
-				
-			else if(counter == 1 || emptyForms){
-				counter++;
-				makeToast(warning);
-				return;
-			}
+			onBackPressed();
 		}
 		else if(arg0.getId() == R.id.formSaveButton){
 			if(emptyForms()){
 				makeToast("Please put something in the title or description!");
+				return;
 			}
 			int id = nextID();
 			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
@@ -220,4 +216,21 @@ public class FormActivity extends Activity implements OnClickListener{
 	private void makeToast(String s){
 		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 	}
+
+	public void onBackPressed(){
+		Log.d("FormActivity.onBackPressed", "back was pressed");
+		boolean emptyForms = emptyForms();
+		if(counter == 2 || emptyForms || hasId()){
+			setResult(RESULT_CANCELED, new Intent());
+			clearForms();
+			finish();//exits and finishes the activity
+		}
+			
+		else if(counter == 1 || emptyForms){
+			counter++;
+			makeToast(warning);
+			return;
+		}
+	}
+
 }

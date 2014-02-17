@@ -157,8 +157,11 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		
 		i.putExtra(MapActivity.PLACEIT_KEY, b);
 		
+		ArrayList<Integer> newList = new ArrayList<Integer>();
+		for(int j: list)
+			newList.add(j);
 		
-		for(int j: list){
+		for(int j: newList){
 			Log.d("ListActivity.onClick", "Id being removed: " + Integer.toString(j));
 			removeLayoutFromScreen(j);
 		}
