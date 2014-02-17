@@ -201,21 +201,16 @@ public class FormActivity extends Activity implements OnClickListener{
 			throw new NullPointerException("Couldn't find the value in stringToSched");
 	}
 	
-//	private int retrieveID(){
-//		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
-//		int id = b.getInt(ListActivity.ID_BUNDLE_KEY);
-//		if(id == 0){
-//			Time now = new Time();
-//			now.setToNow();
-//			return (int) now.toMillis(true);
-//		}
-//		else
-//			return id;
-//	}
 	
 	private int nextID() {
-	        return new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE);
+		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
+		
+		if(id == 0)
+			return new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE);
+		else
+			return id;
 	}
+	
 	
 	private void clearForms(){
 		titleET.setText("");

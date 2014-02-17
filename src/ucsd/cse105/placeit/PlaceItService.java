@@ -6,22 +6,22 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+<<<<<<< HEAD
 import com.google.android.gms.maps.model.LatLng;
 
 import android.app.Activity;
+=======
+>>>>>>> 6eeecbbdd2214a8088d49b36b187114ff7c484b6
 import android.app.Notification;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class PlaceItService extends Service {
