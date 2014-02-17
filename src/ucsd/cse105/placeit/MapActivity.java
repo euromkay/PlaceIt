@@ -32,6 +32,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private GoogleMap mMap;
 	private LocationClient locationManager;
 	
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -40,7 +41,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		setContentView(R.layout.activity_map);
 
 		setUpMapIfNeeded();
-		startService(new Intent(this, PlaceItService.class));
+		//startService(new Intent(this, PlaceItService.class));
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){

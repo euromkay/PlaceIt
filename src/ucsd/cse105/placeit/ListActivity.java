@@ -61,7 +61,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		
 		TextView tv = new TextView(this);
 		tv.setText(p.getTitle());
-		tv.setTextColor(Color.WHITE);
+		tv.setTextColor(Color.BLACK);
 		tv.setTextSize(23);
 		tv.setId(4 * id);
 		tv.setOnClickListener(this);
@@ -89,10 +89,11 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 		FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT);
 		cb.setLayoutParams(param2);
 		
+		Log.d("ListActivity.addingPlaceItToList", "id was " + Integer.toString(p.getID()));
 		TextView longTV = new TextView(this);
 		longTV.setVisibility(View.GONE);
 		longTV.setId((4 * id) + 3);
-		longTV.setText(Long.toString(p.getID()));
+		longTV.setText(Integer.toString(p.getID()));
 		
 		
 		LinearLayout layout = new LinearLayout(this);
@@ -138,15 +139,15 @@ public class ListActivity extends Activity implements OnCheckedChangeListener, O
 	public void onClick(View v) {
 		Intent i = new Intent(this, FormActivity.class);
 		
-		TextView cb = (TextView) findViewById(v.getId() + 3);
-		int id = Integer.parseInt(cb.getText().toString());
+		TextView tv = (TextView) findViewById(v.getId() + 3);
+		int id = Integer.parseInt(tv.getText().toString());
 		
 		LatLng loc = Database.getPlaceIt(id, this).getLocation();
 		
 		Bundle b = new Bundle();
 		b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
 		b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
-		b.putLong(ID_BUNDLE_KEY, id);
+		b.putInt(ID_BUNDLE_KEY, id);
 		
 		i.putExtra(MapActivity.PLACEIT_KEY, b);
 		

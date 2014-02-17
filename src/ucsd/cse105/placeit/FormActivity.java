@@ -7,12 +7,13 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -44,16 +45,68 @@ public class FormActivity extends Activity implements OnClickListener{
 	private void loadPlaceIt(PlaceIt p){
 		titleET.setText(p.getTitle());
 		descriptionET.setText(p.getDescription());
+		Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+		
+		int value;
+		Log.d("FormActivity.loadPlaceIt", "the schedule is " + Integer.toString(p.getSchedule()));
+		switch(p.getSchedule()){
+		case -1:
+			value = 0;
+			break;
+			
+		case 10:
+			value = 1;
+			break;
+			
+		case 60:
+			value = 2;
+			break;
+			
+		case 60*60:
+			value = 3;
+			break;
+			
+		case 60*60*24:
+			value = 4;
+			break;
+		
+		case 60*60*24*7:
+			value = 5;
+			break;
+			
+		default:
+			throw new NullPointerException("Bad value in placeit");
+		}
+		
+		spinner.setSelection(value);
 	}
 	protected void onResume(){
 		super.onResume();
+		setupViews();
 		counter = 1;
 	}
 	private void setupViews(){
-		titleET = (EditText) findViewById(R.id.form_title);
-		descriptionET = (EditText) findViewById(R.id.form_description);
-		findViewById(R.id.formCancelButton).setOnClickListener(this);
-		findViewById(R.id.formSaveButton).setOnClickListener(this);
+		if(titleET == null){
+			titleET = (EditText) findViewById(R.id.form_title);
+			descriptionET = (EditText) findViewById(R.id.form_description);
+			findViewById(R.id.formCancelButton).setOnClickListener(this);
+			findViewById(R.id.formSaveButton).setOnClickListener(this);
+			
+			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+			// Create an ArrayAdapter using the string array and a default spinner layout
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+			        R.array.rules_formValues, android.R.layout.simple_spinner_item);
+			// Specify the layout to use when the list of choices appears
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			
+			// Apply the adapter to the spinner
+			
+			spinner.setAdapter(adapter);
+			//spinner.setSelection(prefs.getInt(Constants.RULES_SK_ALIGNMENT, 3));
+			
+			
+			//spinner.setOnItemSelectedListener(this);
+		}
 	}
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
@@ -79,6 +132,7 @@ public class FormActivity extends Activity implements OnClickListener{
 				makeToast("Please put something in the title or description!");
 			}
 			int id = nextID();
+			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
 			PlaceIt placeIt = new PlaceIt(retrieveLocation(), id);
 			placeIt.setTitle(titleET);
 			placeIt.setDescription(descriptionET);
@@ -86,8 +140,18 @@ public class FormActivity extends Activity implements OnClickListener{
 			Date dueDate = new Date();
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dueDate);
-			cal.add(Calendar.MINUTE, 1);
-			placeIt.setDueDate(cal.getTime());
+			cal.add(Calendar.SECOND, 10);
+			dueDate = cal.getTime();
+			placeIt.setDueDate(dueDate);
+			
+			
+			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+			String s = (String) spinner.getSelectedItem();
+			Log.d("FormActivity.onCLick", s + " is the spinner selection");
+			
+			placeIt.setSchedule(stringToSched(s));
+			Log.d("FormActivity.loadOnClick", "the schedule is " + Integer.toString(placeIt.getSchedule()));
+			
 			
 			Intent i = new Intent();
 			i.putExtra(COMPLETED_PLACEIT, placeIt);
@@ -114,6 +178,28 @@ public class FormActivity extends Activity implements OnClickListener{
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
 		return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE), b.getDouble(MapActivity.PLACEIT_LONGITUDE));
 	}
+	private int stringToSched(String s){
+		if(s.equals("None"))
+			return -1;
+		
+		if(s.equals("10 Seconds"))
+			return 10;
+		
+		if(s.equals("1 Minue"))
+			return 60;
+		
+		if(s.equals("1 Hour"))
+			return 60 * 60;
+		
+		if(s.equals("1 Day"))
+			return 60 * 60 * 24;
+		
+		if(s.equals("1 Week"))
+			return 60 * 60 * 24 * 7;
+		
+		else
+			throw new NullPointerException("Couldn't find the value in stringToSched");
+	}
 	
 //	private int retrieveID(){
 //		Bundle b = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY);
@@ -127,9 +213,8 @@ public class FormActivity extends Activity implements OnClickListener{
 //			return id;
 //	}
 	
-	private Random generator = new Random(System.currentTimeMillis());
-	int nextID() {
-	        return generator.nextInt(Integer.MAX_VALUE);
+	private int nextID() {
+	        return new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE);
 	}
 	
 	private void clearForms(){

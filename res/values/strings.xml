@@ -21,4 +21,14 @@
 	<string name="btBasicNotification">Discard</string>
 	<string name="tvHandleNotification">BITCH!</string>
 	<string name="title_handle_activity">NotificationMainActivity</string>
+	
+	<string-array name="rules_formValues">
+        <item>None</item>
+        <item>10 Seconds</item>
+        <item>1 Minute</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+        <item>1 Week</item>
+    </string-array>
+	
 </resources>

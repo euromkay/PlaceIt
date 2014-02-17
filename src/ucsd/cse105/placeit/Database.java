@@ -11,11 +11,9 @@ import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -62,8 +60,6 @@ public class Database {
 	
 	private static final String FILE_POSITION = "last_known_location file";
 	public static void savePosition(LatLng pos, Activity a) {
-		double lat = pos.latitude;
-		double lng = pos.longitude;
 		String[] data = new String[]{Double.toString(pos.latitude), Double.toString(pos.longitude)};
 		
 		try {
@@ -123,7 +119,7 @@ public class Database {
 				Log.d("Database.getAllPlaceIts", "longitude of placeit being created: " + long_double);
 				String dueDate_Date = content[position++];
 				Log.d("Database.getAllPlaceIts", "dueDate of placeit being created: " + dueDate_Date);
-				
+				String schedule_String = content[position++];
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
 				
@@ -137,6 +133,7 @@ public class Database {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				p.setSchedule(Integer.parseInt(schedule_String));
 				list.add(p);
 			}
 			
@@ -148,7 +145,7 @@ public class Database {
 	}
 
 	public static PlaceIt getPlaceIt(int id, Context a){
-		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Long.toString(id));
+		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Integer.toString(id));
 		for(PlaceIt p: getAllPlaceIts(a))
 			if(p.getID() == id)
 				return p;
@@ -195,10 +192,11 @@ public class Database {
 		for(PlaceIt p: list){
 			stringList.add(p.getTitle());
 			stringList.add(p.getDescription());
-			stringList.add(Long.toString(p.getID()));
+			stringList.add(Integer.toString(p.getID()));
 			stringList.add(Double.toString(p.getLocation().latitude));
 			stringList.add(Double.toString(p.getLocation().longitude));
 			stringList.add(df.format(p.getDueDate()));
+			stringList.add(Integer.toString(p.getSchedule()));
 		}
 		
 		String[] array = toStringArray(stringList.toArray());

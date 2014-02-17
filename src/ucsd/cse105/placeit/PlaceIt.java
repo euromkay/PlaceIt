@@ -16,15 +16,15 @@ public class PlaceIt implements Parcelable {
 	private String description = "";
 	private int id;
 	private Date dueDate;
+	private int schedule;
+	
 	
 	public PlaceIt(LatLng location, int id){
 		this.location = location;
 		this.id = id;
 	}
 	
-	public void setDueDate(Date dueDate){
-		this.dueDate = dueDate;
-	}
+	
 	
 	public void setTitle(EditText text){
 		title = getText(text);
@@ -41,10 +41,19 @@ public class PlaceIt implements Parcelable {
 	private String getText(EditText text){
 		return text.getText().toString();
 	}
+	public String getDescription(){
+		return description;
+	}
+
+
 	
 	public Date getDueDate(){
 		return dueDate;
 	}
+	public void setDueDate(Date dueDate){
+		this.dueDate = dueDate;
+	}
+	
 	
 	public String getTitle(){
 		if(title.length() == 0){
@@ -53,9 +62,7 @@ public class PlaceIt implements Parcelable {
 		}
 		return title;
 	}
-	public String getDescription(){
-		return description;
-	}
+	
 	public LatLng getLocation(){
 		return location;
 	}
@@ -75,7 +82,11 @@ public class PlaceIt implements Parcelable {
 		dest.writeString(title);
 		dest.writeDouble(location.latitude);
 		dest.writeDouble(location.longitude);
-		dest.writeLong(id);
+		dest.writeInt(id);
+		
+		dest.writeInt(schedule);
+		
+		dest.writeLong(dueDate.getTime());
 	}
 	
 	public PlaceIt(Parcel in){
@@ -83,6 +94,12 @@ public class PlaceIt implements Parcelable {
 		title = in.readString();
 		location = new LatLng(in.readDouble(), in.readDouble());
 		id = in.readInt();
+		
+		schedule = in.readInt();
+		
+		long time = in.readLong();
+		dueDate = new Date();
+		dueDate.setTime(time);
 	}
 	
 	public int getID(){
@@ -98,4 +115,19 @@ public class PlaceIt implements Parcelable {
 		     return new PlaceIt[size];
 		  	}
 		  };
+
+
+	public void setSchedule(int sched) {
+		schedule = sched;
+	}
+	public int getSchedule(){
+		return schedule;
+	}
+
+
+
+	public void setID(int nextID) {
+		// TODO Auto-generated method stub
+		
+	}
 }

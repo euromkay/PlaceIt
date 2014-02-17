@@ -8,6 +8,9 @@
 package ucsd.cse105.placeit;
 
 public final class R {
+    public static final class array {
+        public static final int rules_formValues=0x7f090000;
+    }
     public static final class attr {
         /** 
     The size of the ad. It must be one of BANNER, FULL_BANNER, LEADERBOARD,
@@ -228,12 +231,13 @@ containing a value of this type.
         public static final int btBigPictureNotification=0x7f050011;
         public static final int btBigTextNotification=0x7f050010;
         public static final int btInboxStyleNotification=0x7f050012;
-        public static final int button1=0x7f050006;
+        public static final int button1=0x7f050015;
         public static final int formCancelButton=0x7f050009;
         public static final int formSaveButton=0x7f05000a;
-        public static final int form_description=0x7f050008;
+        public static final int form_description=0x7f050007;
         public static final int form_layout=0x7f050005;
-        public static final int form_title=0x7f050007;
+        public static final int form_title=0x7f050006;
+        public static final int from_spinner=0x7f050008;
         public static final int hybrid=0x7f050004;
         public static final int listLayout=0x7f05000b;
         public static final int map=0x7f05000c;
@@ -256,9 +260,9 @@ containing a value of this type.
         public static final int handle_notification_activity=0x7f030004;
     }
     public static final class menu {
-        public static final int map=0x7f0a0000;
-        public static final int menu_map=0x7f0a0001;
-        public static final int notification_main=0x7f0a0002;
+        public static final int map=0x7f0b0000;
+        public static final int menu_map=0x7f0b0001;
+        public static final int notification_main=0x7f0b0002;
     }
     public static final class string {
         public static final int action_settings=0x7f06001b;
@@ -398,11 +402,11 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f090000;
+        public static final int AppBaseTheme=0x7f0a0000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f090001;
+        public static final int AppTheme=0x7f0a0001;
     }
     public static final class styleable {
         /** Attributes that can be used with a AdsAttrs.
