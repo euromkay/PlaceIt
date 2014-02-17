@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class FormActivity extends Activity implements OnClickListener{
 
 	private EditText titleET, descriptionET;
-	private int counter;
+	private int counter; //keeps track of how many times the back/cancel button was pressed
 	
 	
 	protected void onCreate(Bundle b) {
@@ -39,10 +39,11 @@ public class FormActivity extends Activity implements OnClickListener{
 			Log.d("FormActivity.onCreate", "No id found");
 		
 	}
+	//returns true if the intent passed an id to load, else it won't load anything.
 	private boolean hasId(){
 		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
 		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Integer.toString(id));
-		return id != 0;
+		return (id != 0);
 	}
 	private int getId(){
 		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);
@@ -53,38 +54,35 @@ public class FormActivity extends Activity implements OnClickListener{
 		descriptionET.setText(p.getDescription());
 		Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 		
-		int value;
+		int value = spinnerHelperMethod(p.getSchedule());
 		Log.d("FormActivity.loadPlaceIt", "the schedule is " + Integer.toString(p.getSchedule()));
-		switch(p.getSchedule()){
+		
+		
+		spinner.setSelection(value);
+	}
+	private int spinnerHelperMethod(int i){
+		switch(i){
 		case -1:
-			value = 0;
-			break;
+			return 0;
 			
 		case 10:
-			value = 1;
-			break;
+			return 1;
 			
 		case 60:
-			value = 2;
-			break;
+			return 2;
 			
 		case 60*60:
-			value = 3;
-			break;
+			return 3;
 			
 		case 60*60*24:
-			value = 4;
-			break;
+			return 4;
 		
 		case 60*60*24*7:
-			value = 5;
-			break;
+			return 5;
 			
 		default:
 			throw new NullPointerException("Bad value in placeit");
 		}
-		
-		spinner.setSelection(value);
 	}
 	protected void onResume(){
 		super.onResume();
@@ -116,7 +114,7 @@ public class FormActivity extends Activity implements OnClickListener{
 	}
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
-	public static final String COMPLETED_PLACEIT = "completedPlaceit";
+	protected static final String COMPLETED_PLACEIT = "completedPlaceit";
 	
 	public void onClick(View arg0) {
 		if(arg0.getId() == R.id.formCancelButton){
@@ -169,6 +167,7 @@ public class FormActivity extends Activity implements OnClickListener{
 	private boolean isEmpty(EditText et){
 		return et.getText().toString().length() == 0;
 	}
+	//gets the location from the intent
 	private LatLng retrieveLocation(){
 		Intent i = getIntent();
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
@@ -197,7 +196,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			throw new NullPointerException("Couldn't find the value in stringToSched");
 	}
 	
-	
+	//gets a random ID if there was no id passed in
 	private int nextID() {
 		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
 		
@@ -207,7 +206,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			return id;
 	}
 	
-	
+	//clears the title and description
 	private void clearForms(){
 		titleET.setText("");
 		descriptionET.setText("");

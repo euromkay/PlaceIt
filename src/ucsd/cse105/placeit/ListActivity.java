@@ -44,16 +44,17 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 	private void setUpList() {
 		list = new ArrayList<Integer>();
 		ArrayList<PlaceIt> list = Database.getAllPlaceIts(this);
+		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
+		
 		for (int i = 0; i < list.size(); i++)
 			addPlaceItToList(list.get(i), i);
 	}
 
 	protected void onPause() {
-		ArrayList<Integer> listt = new ArrayList<Integer>();
-		for (int i : list)
-			listt.add(i);
-		for (int i : listt)
+		
+	
+		for (int i : getCopyList())
 			removeLayoutFromScreen(i);
 		list = null;
 		super.onPause();
@@ -147,18 +148,22 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		removeLayoutFromScreen(id);
 	}
 
+	//takes the id of visible textview and removes the layout its in so they all disappear
 	private void removeLayoutFromScreen(int id) {
 		// id is the id of the checkbox
-		View tv = findViewById(id - 1);
-		View cb = findViewById(id);
+		View textview = findViewById(id - 1);
+		View checkbox = findViewById(id);
 		View longTV = findViewById(id + 2);
 		LinearLayout layout = (LinearLayout) findViewById(id + 1);
-		layout.removeView(cb);
+		
+		layout.removeView(checkbox);
 		layout.removeView(longTV);
-		layout.removeView(tv);
+		layout.removeView(textview);
 
 		LinearLayout bigLayout = (LinearLayout) findViewById(R.id.listLayout);
 		bigLayout.removeView(layout);
+		
+		//removes the id from the list, so it doesn't delete it again.
 		list.remove((Object) id);
 	}
 
@@ -177,17 +182,22 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 		i.putExtra(MapActivity.PLACEIT_KEY, b);
 
-		ArrayList<Integer> newList = new ArrayList<Integer>();
-		for (int j : list)
-			newList.add(j);
 
-		for (int j : newList) {
+		for (int j : getCopyList()) {
 			Log.d("ListActivity.onClick",
 					"Id being removed: " + Integer.toString(j));
 			removeLayoutFromScreen(j);
 		}
 
 		startActivityForResult(i, 1);
+	}
+	//copies the list of ids because we're going to be removing them,
+	//otherwise you get a concurrent notification error
+	private ArrayList<Integer> getCopyList(){
+		ArrayList<Integer> copyList = new ArrayList<Integer>();
+		for (int j : list)
+			copyList.add(j);
+		return copyList;
 	}
 
 	public static final String ID_BUNDLE_KEY = "longIdKeyBundle";
