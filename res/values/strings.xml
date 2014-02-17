@@ -19,6 +19,6 @@
     <string name="title_activity_notification_main">NotificationMainActivity</string>
     <string name="hello_world">Hello world!</string>
 	<string name="btBasicNotification">Discard</string>
-	<string name="tvHandleNotification">BITCH!</string>
+	<string name="tvHandleNotification">REPLACE ME!</string>
 	<string name="title_handle_activity">NotificationMainActivity</string>
 </resources>
