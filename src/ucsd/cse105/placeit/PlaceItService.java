@@ -6,11 +6,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-import android.app.Notification;
-import android.app.Notification.Builder;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -24,6 +19,7 @@ public class PlaceItService extends Service {
 
 	private Timer timer = new Timer();
 
+	//Sets the timer to run a the TimerTask on the given schedule
 	private void setTimer() {
 		timer.scheduleAtFixedRate(task, initDelay, delay);
 	}
@@ -36,77 +32,8 @@ public class PlaceItService extends Service {
 		}
 	};
 
-	// Returns a reference to they NotificationManager
-	public NotificationManager getNotificationManager() {
-		return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-	}
-
-	private int discardRequestCode = 0; // Used for unique request code
-
-	// Discarding Place-Its
-	public PendingIntent getDiscardPendingIntent(int id) {
-		// Create an Intent for the BroadcastReceiver
-		Intent buttonIntent = new Intent(this, DiscardReceiver.class);
-		buttonIntent.putExtra("notificationId", id);
-
-		// Create the PendingIntent
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-				discardRequestCode++, buttonIntent,
-				PendingIntent.FLAG_CANCEL_CURRENT);
-
-		return pendingIntent;
-	}
-
-	private int repostRequestCode = 0; // Used for unique request code
-
-	// Reposting Place-Its
-	public PendingIntent getRepostPendingIntent(int id) {
-		// Create an Intent for the BroadcastReceiver
-		Intent buttonIntent = new Intent(this, RepostReceiver.class);
-		buttonIntent.putExtra("notificationId", id);
-
-		// Create the PendingIntent
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
-				repostRequestCode++, buttonIntent,
-				PendingIntent.FLAG_CANCEL_CURRENT);
-
-		return pendingIntent;
-	}
-
-	private int mapRequestCode = 0;
-	public static final String NOTIFICATION_MAP_FORM = "NOTIFICATION_MAP_FORM";
-
-	// MapActivity
-	private PendingIntent getMapActivityIntent(int id) {
-		Intent intent = new Intent(this, MapActivity.class);
-
-		// This will be used by MapActivity to auto load FormActivity
-		intent.putExtra(NOTIFICATION_MAP_FORM, id);
-		return PendingIntent.getActivity(this, mapRequestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-	}
-
-	private void setNotification(int id, String title, String description) {
-		Builder builder = new Notification.Builder(this)
-				.setContentIntent(getMapActivityIntent(id))
-				.setContentTitle(title)
-				.setContentText(description)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.addAction(R.drawable.ic_menu_close_clear_cancel, "Discard",
-						getDiscardPendingIntent(id))
-				.addAction(R.drawable.ic_audio_alarm, "Repost",
-						getRepostPendingIntent(id));
-
-		Notification notification = new Notification.InboxStyle(builder)
-				.addLine(description).build();
-		// This flag prevents swiping reminder to clear
-		notification.flags |= Notification.FLAG_NO_CLEAR;
-		NotificationManager notificationManager = getNotificationManager();
-		notificationManager.notify(id, notification);
-	}
-
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -126,6 +53,9 @@ public class PlaceItService extends Service {
 		timer.purge();
 	}
 
+	//Checks to see if any Place-its have dueDate values that are less than
+	//the current system time and if the current location is within the specified
+	//threshold. If so, then have NotificationHelper create a notification.
 	private void checkNotify() {
 		ArrayList<PlaceIt> placeIts = Database.getAllPlaceIts(this);
 
@@ -143,11 +73,12 @@ public class PlaceItService extends Service {
 				//Check to see if Place-It is within desired range
 				if (Distance.isWithinRange(getApplicationContext(),
 						item.getLocation(), MILES_RANGE)) {
-					setNotification(item.getID(), item.getTitle(),
+					NotificationHelper notify = new NotificationHelper(this);
+					//Create notification
+					notify.sendNotification(item.getID(), item.getTitle(),
 							item.getDescription());
 				}
 			}
 		}
 	}
-
 }

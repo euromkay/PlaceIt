@@ -45,7 +45,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		managePlaceItService();
 
 		setUpMapIfNeeded();
-		int launchPlaceItId = getIntent().getIntExtra(PlaceItService.NOTIFICATION_MAP_FORM, 0);
+		int launchPlaceItId = getIntent().getIntExtra(NotificationHelper.NOTIFICATION_MAP_FORM, 0);
 		
 		if(launchPlaceItId != 0){
 			Log.d("MapActivity.onCreate", "Calling startPlaceIt()");
@@ -68,7 +68,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	private void startPlaceIt(int id){
 		Intent i = new Intent(this, FormActivity.class);
-		i.putExtra(PlaceItService.NOTIFICATION_MAP_FORM, id);
+		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
 		
 		
 		LatLng loc = Database.getPlaceIt(id, this).getLocation();
