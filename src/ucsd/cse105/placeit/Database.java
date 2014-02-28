@@ -108,7 +108,7 @@ public class Database {
 	
 	private static final String FILE_PLACEITS = "place_it_file";
 	//returns an active list of all the placeits
-	public static ArrayList<PlaceIt> getAllPlaceIts(Context a) {
+	public static ArrayList<LocationPlaceIt> getAllPlaceIts(Context a) {
 		try {
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
@@ -116,7 +116,7 @@ public class Database {
 			int position = 0; //what part of the content you're in
 			int count = Integer.parseInt(content[position++]);//how many placeits there are in the file
 
-			ArrayList<PlaceIt> list = new ArrayList<PlaceIt>(count);
+			ArrayList<LocationPlaceIt> list = new ArrayList<LocationPlaceIt>(count);
 			for(int i = 0; i < count; i++){
 				Log.d("Database.getAllPlaceIts", "# " + Integer.toString(i) + " placeit being loaded");
 				String title = content[position++];
@@ -141,7 +141,7 @@ public class Database {
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
 				
-				PlaceIt p = new PlaceIt(location, Integer.parseInt(id_int));
+				LocationPlaceIt p = new LocationPlaceIt(location, Integer.parseInt(id_int));
 				p.setTitle(title);
 				p.setDescription(description);
 				try {
@@ -158,19 +158,19 @@ public class Database {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<PlaceIt>();
+		return new ArrayList<LocationPlaceIt>();
 	}
 
-	public static PlaceIt getPlaceIt(int id, Context a){
+	public static LocationPlaceIt getPlaceIt(int id, Context a){
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Integer.toString(id));
-		for(PlaceIt p: getAllPlaceIts(a))
+		for(LocationPlaceIt p: getAllPlaceIts(a))
 			if(p.getID() == id)
 				return p;
 
 		return null;
 	}
-	public static PlaceIt getPlaceIt(LatLng pos, Context a){
-		for(PlaceIt p: getAllPlaceIts(a))
+	public static IPlaceIt getPlaceIt(LatLng pos, Context a){
+		for(IPlaceIt p: getAllPlaceIts(a))
 			if(p.getLocation().equals(pos))
 				return p;
 
@@ -178,8 +178,8 @@ public class Database {
 	}	
 	public static void removePlaceIt(int placeItID, Context a) {
 		Log.d("Database.removePlaceIt", "called here");
-		ArrayList<PlaceIt> list = getAllPlaceIts(a);
-		for(PlaceIt p: list)
+		ArrayList<LocationPlaceIt> list = getAllPlaceIts(a);
+		for(IPlaceIt p: list)
 			if(p.getID() == (placeItID)){
 				Log.d("Database.remove", "found the placeit to remove");
 				//Log.d("Database.remvoe", "size of the list before remove is: " + list.size();)
@@ -190,24 +190,24 @@ public class Database {
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 	
-	public static void save(PlaceIt p, Context a) {
+	public static void save(LocationPlaceIt p, Context a) {
 		if(getPlaceIt(p.getID(), a) != null){
 			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);
 		}
-		ArrayList<PlaceIt> list = getAllPlaceIts(a);
+		ArrayList<LocationPlaceIt> list = getAllPlaceIts(a);
 		
 		list.add(p);
 		
 		writePlaceIts(list, a);
 	}
-	private static void writePlaceIts(ArrayList<PlaceIt> list, Context a){
+	private static void writePlaceIts(ArrayList<LocationPlaceIt> list, Context a){
 		ArrayList<String> stringList = new ArrayList<String>();
 		stringList.add(Integer.toString(list.size()));
 		
 		SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 		
-		for(PlaceIt p: list){
+		for(LocationPlaceIt p: list){
 			stringList.add(p.getTitle());
 			stringList.add(p.getDescription());
 			stringList.add(Integer.toString(p.getID()));

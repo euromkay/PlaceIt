@@ -95,7 +95,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		if(requestCode == 1){
 			if(resultCode == RESULT_OK){
 				//placeit was saved to database
-				PlaceIt p = getPlaceIt(data);
+				IPlaceIt p = getPlaceIt(data);
 				addPlaceItToMap(p);
 			}
 			if(resultCode == RESULT_CANCELED){
@@ -117,7 +117,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.clear();
 		populatePlaceIts();
 	}
-	private PlaceIt getPlaceIt(Intent data){
+	private IPlaceIt getPlaceIt(Intent data){
 		return data.getParcelableExtra(FormActivity.COMPLETED_PLACEIT);
 	}
 	
@@ -187,13 +187,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		mMap.moveCamera(center);
 	}
-	private void addPlaceItToMap(PlaceIt p){
+	private void addPlaceItToMap(IPlaceIt p){
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
 	//loads teh placeits onto the map
 	private void populatePlaceIts(){
-		for(PlaceIt p: Database.getAllPlaceIts(this))
+		for(IPlaceIt p: Database.getAllPlaceIts(this))
 			addPlaceItToMap(p);
 	}
 
@@ -240,7 +240,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 
 	public boolean onMarkerClick(Marker marker) {
-		PlaceIt p = Database.getPlaceIt(marker.getPosition(), this);
+		IPlaceIt p = Database.getPlaceIt(marker.getPosition(), this);
 		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));
 		startPlaceIt(p.getID());
 		

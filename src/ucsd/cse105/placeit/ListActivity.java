@@ -43,7 +43,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 	private void setUpList() {
 		list = new ArrayList<Integer>();
-		ArrayList<PlaceIt> list = Database.getAllPlaceIts(this);
+		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts(this);
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		
@@ -66,7 +66,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		finish();
 	}
 
-	private void addPlaceItToList(PlaceIt p, int id) {
+	private void addPlaceItToList(IPlaceIt p, int id) {
 
 		TextView tv = new TextView(this);
 		tv.setText(p.getTitle());
@@ -128,7 +128,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 		int placeItID = Integer.parseInt(cb.getText().toString());
 
-		PlaceIt p = Database.getPlaceIt(placeItID, this);
+		LocationPlaceIt p = Database.getPlaceIt(placeItID, this);
 
 		// Check if PlaceIt is on a recurring schedule
 		if (p.getSchedule() > 0) {

@@ -11,7 +11,7 @@ public class RepostReceiver  extends BroadcastReceiver {
 
         int notificationId = intent.getIntExtra("notificationId", 0);
         
-        PlaceIt placeIt = Database.getPlaceIt(notificationId, context);
+        LocationPlaceIt placeIt = Database.getPlaceIt(notificationId, context);
         placeIt.setDueDate(10);
 		
 		Database.save(placeIt, context);

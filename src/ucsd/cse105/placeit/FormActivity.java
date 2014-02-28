@@ -32,7 +32,7 @@ public class FormActivity extends Activity implements OnClickListener{
 		
 		if(hasId()){
 			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
-			PlaceIt p = Database.getPlaceIt(getId(), this);
+			LocationPlaceIt p = Database.getPlaceIt(getId(), this);
 			loadPlaceIt(p);
 		
 		}else
@@ -49,7 +49,7 @@ public class FormActivity extends Activity implements OnClickListener{
 		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);
 	}
 	
-	private void loadPlaceIt(PlaceIt p){
+	private void loadPlaceIt(LocationPlaceIt p){
 		titleET.setText(p.getTitle());
 		descriptionET.setText(p.getDescription());
 		Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
@@ -127,7 +127,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			}
 			int id = nextID();
 			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
-			PlaceIt placeIt = new PlaceIt(retrieveLocation(), id);
+			LocationPlaceIt placeIt = new LocationPlaceIt(retrieveLocation(), id);
 			placeIt.setTitle(titleET);
 			placeIt.setDescription(descriptionET);
 			

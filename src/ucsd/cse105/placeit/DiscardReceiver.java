@@ -11,7 +11,7 @@ public class DiscardReceiver extends BroadcastReceiver {
 
         int notificationID = intent.getIntExtra("notificationId", 0);
         
-        PlaceIt p = Database.getPlaceIt(notificationID, context);
+        LocationPlaceIt p = Database.getPlaceIt(notificationID, context);
         
         //Check if PlaceIt is on a recurring schedule
         if (p.getSchedule() > 0){
