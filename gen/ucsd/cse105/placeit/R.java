@@ -167,6 +167,7 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f010010;
     }
     public static final class color {
+        public static final int black=0x7f04000b;
         public static final int common_action_bar_splitter=0x7f040009;
         /**  Sign-in Button Colors 
          */
@@ -179,8 +180,9 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f040006;
         public static final int common_signin_btn_light_text_focused=0x7f040007;
         public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000a;
-        public static final int common_signin_btn_text_light=0x7f04000b;
+        public static final int common_signin_btn_text_dark=0x7f04000c;
+        public static final int common_signin_btn_text_light=0x7f04000d;
+        public static final int white=0x7f04000a;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -226,12 +228,12 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f02001e;
     }
     public static final class id {
-        public static final int action_settings=0x7f050014;
-        public static final int btBasicNotification=0x7f05000f;
-        public static final int btBigPictureNotification=0x7f050011;
-        public static final int btBigTextNotification=0x7f050010;
-        public static final int btInboxStyleNotification=0x7f050012;
-        public static final int button1=0x7f050015;
+        public static final int action_settings=0x7f050017;
+        public static final int btBasicNotification=0x7f050012;
+        public static final int btBigPictureNotification=0x7f050014;
+        public static final int btBigTextNotification=0x7f050013;
+        public static final int btInboxStyleNotification=0x7f050015;
+        public static final int button1=0x7f050018;
         public static final int formCancelButton=0x7f050009;
         public static final int formSaveButton=0x7f05000a;
         public static final int form_description=0x7f050007;
@@ -240,14 +242,17 @@ containing a value of this type.
         public static final int from_spinner=0x7f050008;
         public static final int hybrid=0x7f050004;
         public static final int listLayout=0x7f05000b;
-        public static final int map=0x7f05000c;
-        public static final int mapHomeButton=0x7f05000e;
-        public static final int mapListButton=0x7f05000d;
+        public static final int login_button=0x7f05000e;
+        public static final int login_password=0x7f05000d;
+        public static final int login_username=0x7f05000c;
+        public static final int map=0x7f05000f;
+        public static final int mapHomeButton=0x7f050011;
+        public static final int mapListButton=0x7f050010;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f050013;
+        public static final int textView1=0x7f050016;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f070000;
@@ -255,9 +260,10 @@ containing a value of this type.
     public static final class layout {
         public static final int activity_form=0x7f030000;
         public static final int activity_list=0x7f030001;
-        public static final int activity_map=0x7f030002;
-        public static final int activity_notification_main=0x7f030003;
-        public static final int handle_notification_activity=0x7f030004;
+        public static final int activity_login=0x7f030002;
+        public static final int activity_map=0x7f030003;
+        public static final int activity_notification_main=0x7f030004;
+        public static final int handle_notification_activity=0x7f030005;
     }
     public static final class menu {
         public static final int map=0x7f0b0000;
@@ -373,6 +379,12 @@ containing a value of this type.
         public static final int form_title_editText=0x7f060021;
         public static final int hello_world=0x7f060026;
         public static final int list_title=0x7f060024;
+        public static final int login_button=0x7f06002e;
+        public static final int login_password=0x7f06002d;
+        /**  Login Strings 
+         */
+        public static final int login_title=0x7f06002b;
+        public static final int login_username=0x7f06002c;
         /**  Map Strings 
          */
         public static final int map_home_button=0x7f06001c;

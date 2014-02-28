@@ -23,6 +23,13 @@
 	<string name="title_handle_activity">NotificationMainActivity</string>
 	<string name="form_spinner_title">Recurring</string>
 	
+	<!-- Login Strings -->
+    <string name="login_title">Place-It!</string>
+    <string name="login_username">username</string>
+    <string name="login_password">password</string>
+    <string name="login_button">Login</string>
+	
+	
 	<string-array name="rules_formValues">
         <item>None</item>
         <item>10 Seconds</item>
@@ -31,5 +38,9 @@
         <item>1 Day</item>
         <item>1 Week</item>
     </string-array>
+	
+	<color name="white">#ffffff</color>
+	<color name="black">#000000</color>
+	
 	
 </resources>

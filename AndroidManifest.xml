@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDJlP0OT4vbBS-KR4a1tuOa9ml-cr0uhWY" />
+            android:value="AIzaSyDjyq_C7PYp05iNZtdKvuWCT6OtRR5PWnQ" />
 
         <activity
             android:name="ucsd.cse105.placeit.MapActivity"
