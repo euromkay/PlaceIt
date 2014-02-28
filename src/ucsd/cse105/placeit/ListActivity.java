@@ -110,6 +110,9 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		layout.addView(tv);
 		layout.addView(longTV);
 		layout.addView(cb);
+		
+		if(p instanceof LocationPlaceIt)
+			layout.setBackgroundColor(Color.LTGRAY);
 
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
 	}

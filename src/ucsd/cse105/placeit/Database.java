@@ -63,8 +63,33 @@ public class Database {
 	
 	
 	
-	private static final String FILE_CREDENTIALS = "logincredentials file";
+	private static final String FILE_USERNAME = "username file";
+	public static void saveUsername(String username, Activity a){
+		
+		try {
+			FileOutputStream fos = a.openFileOutput(FILE_USERNAME, Context.MODE_PRIVATE);
+			writer(fos, new String[]{username});
+		} catch (FileNotFoundException e) {
+			Log.d("Database", "something went wrong?");
+			e.printStackTrace();
+		}
+		
+	}
+	public static String getUsername(Activity a){
+		try {
+			FileInputStream fis = a.openFileInput(FILE_USERNAME);
+			return reader(fis)[0];
+		} catch (FileNotFoundException e) {
+			Log.d("Database", "something went wrong?");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	
 	//checks to see if the user has already logged in
+	private static final String FILE_CREDENTIALS = "logincredentials file";
 	public static boolean checkLoginCredentials(Activity a) {
 		try{
 			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
@@ -78,7 +103,7 @@ public class Database {
 	public static void clearCredentials(Activity a) {
 		Log.d("Database.clearCredentials", "clearing credentials");
 		try {
-			FileOutputStream fos = a.openFileOutput(FILE_ZOOM, Context.MODE_PRIVATE);
+			FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS, Context.MODE_PRIVATE);
 			//write the one line to the file
 			writer(fos, new String[]{Boolean.FALSE.toString()});
 		} catch (FileNotFoundException e) {
@@ -91,8 +116,10 @@ public class Database {
 		if(!password.equals("password"))
 			return false;
 		
-		if(username.equals("account1") || username.equals("acount2"))
+		if(username.equals("account1") || username.equals("acount2")){
+			saveUsername(username, a);
 			return true;
+		}
 		
 		return false;
 		
