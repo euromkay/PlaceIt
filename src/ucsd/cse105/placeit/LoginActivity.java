@@ -28,7 +28,7 @@ public class LoginActivity extends Activity implements OnClickListener{
 	}
 	
 	private boolean hasLoginCreds(){
-		return false;
+		return Database.checkLoginCredentials(this);
 	}
 	
 	private String getUsername(){
@@ -63,8 +63,8 @@ public class LoginActivity extends Activity implements OnClickListener{
 	}
 	
 	private boolean validCreds(String username, String password){
-
-		return false;
+		
+		return Database.checkLogin(username, password, this);
 	}
 	
 }

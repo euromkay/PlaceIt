@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/map_logout_button" />
+            android:text="@string/map_list_button" />
 
         <Button
             android:id="@+id/mapPlaceItButton"
@@ -33,12 +33,12 @@
             android:text="@string/map_placeIt_button" />
 
         <Button
-            android:id="@+id/mapHomeButton"
+            android:id="@+id/mapLogoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/map_home_button" />
+            android:text="@string/map_logout_button" />
     </LinearLayout>
 
 </FrameLayout>

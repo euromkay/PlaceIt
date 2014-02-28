@@ -223,13 +223,24 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 	
 	public void onClick(View arg0) {
-		if(arg0.getId() == R.id.mapListButton)
+		int buttonID = arg0.getId();
+		if(buttonID == R.id.mapListButton)
 			startListActivity();
+		else if(buttonID == R.id.mapLogoutButton)
+			logout();
+		else if(buttonID == R.id.mapPlaceItButton)
+			makeNewPlaceIt(null);
 	}
 	private void startListActivity(){
 		Intent i = new Intent(this, ListActivity.class);
 		mMap.clear();//removes placeits from the map
 		startActivityForResult(i, 3);
+	}
+	private void logout(){
+		Intent i = new Intent(this, LoginActivity.class);
+		mMap.clear();
+		Database.clearCredentials(this);
+		finish();
 	}
 	
 	

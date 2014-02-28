@@ -63,6 +63,43 @@ public class Database {
 	
 	
 	
+	private static final String FILE_CREDENTIALS = "logincredentials file";
+	//checks to see if the user has already logged in
+	public static boolean checkLoginCredentials(Activity a) {
+		try{
+			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
+			String content = reader(fis)[0];
+			
+			return Boolean.parseBoolean(content);
+		}catch(Exception e){
+			return false;
+		}
+	}
+	public static void clearCredentials(Activity a) {
+		Log.d("Database.clearCredentials", "clearing credentials");
+		try {
+			FileOutputStream fos = a.openFileOutput(FILE_ZOOM, Context.MODE_PRIVATE);
+			//write the one line to the file
+			writer(fos, new String[]{Boolean.FALSE.toString()});
+		} catch (FileNotFoundException e) {
+			Log.d("Database", "something went wrong?");
+			e.printStackTrace();
+		}
+	}
+	//checks to see if the login was correct
+	public static boolean checkLogin(String username, String password, Activity a){
+		if(!password.equals("password"))
+			return false;
+		
+		if(username.equals("account1") || username.equals("acount2"))
+			return true;
+		
+		return false;
+		
+	}
+	
+	
+	
 	
 	private static final String FILE_POSITION = "last_known_location file";
 	public static void savePosition(LatLng pos, Activity a) {
@@ -290,4 +327,6 @@ public class Database {
 		}
 		return null;
 	}
+	
+	
 }

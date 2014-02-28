@@ -246,8 +246,8 @@ containing a value of this type.
         public static final int login_password=0x7f05000d;
         public static final int login_username=0x7f05000c;
         public static final int map=0x7f05000f;
-        public static final int mapHomeButton=0x7f050012;
         public static final int mapListButton=0x7f050010;
+        public static final int mapLogoutButton=0x7f050012;
         public static final int mapPlaceItButton=0x7f050011;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
@@ -388,7 +388,7 @@ containing a value of this type.
         public static final int login_username=0x7f06002d;
         /**  Map Strings 
          */
-        public static final int map_home_button=0x7f06001c;
+        public static final int map_list_button=0x7f06001c;
         public static final int map_logout_button=0x7f06001e;
         public static final int map_placeIt_button=0x7f06001d;
         public static final int title_activity_notification_main=0x7f060026;
