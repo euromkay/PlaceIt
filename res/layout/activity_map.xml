@@ -12,9 +12,9 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <Button
             android:id="@+id/mapListButton"
@@ -22,14 +22,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/map_list_button" />
+            android:text="@string/map_logout_button" />
+
+        <Button
+            android:id="@+id/mapPlaceItButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/map_placeIt_button" />
 
         <Button
             android:id="@+id/mapHomeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:visibility="invisible"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/map_home_button" />
     </LinearLayout>

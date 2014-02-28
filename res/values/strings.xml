@@ -6,7 +6,8 @@
 
     <!-- Map Strings -->
     <string name="map_home_button">Center</string>
-    <string name="map_list_button">List</string>
+    <string name="map_placeIt_button">List</string>
+    <string name="map_logout_button">List</string>
 
     <!-- Form Strings -->
     <string name="form_show_map">Show Map</string>
