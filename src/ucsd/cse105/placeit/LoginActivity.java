@@ -32,7 +32,7 @@ public class LoginActivity extends Activity implements OnClickListener{
 	}
 	
 	private String getUsername(){
-		return null;
+		return Database.getUsername(this);
 	}
 	
 	public static final String USERNAME_KEY = "user name key";

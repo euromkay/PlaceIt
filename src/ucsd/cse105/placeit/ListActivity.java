@@ -52,8 +52,6 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 	}
 
 	protected void onPause() {
-		
-	
 		for (int i : getCopyList())
 			removeLayoutFromScreen(i);
 		list = null;
