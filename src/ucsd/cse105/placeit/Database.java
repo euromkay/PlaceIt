@@ -160,12 +160,9 @@ public class Database {
 	
 	
 	private static final String FILE_PLACEITS = "place_it_file";
-<<<<<<< HEAD
 	//returns an active list of all the placeits
 	public static ArrayList<LocationPlaceIt> getAllPlaceIts(Context a) {
-=======
-	public static ArrayList<PlaceIt> getAllPlaceIts(Context a) {
->>>>>>> parent of 3d6a27a... Added Comments
+
 		try {
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
@@ -221,7 +218,7 @@ public class Database {
 
 		return null;
 	}
-<<<<<<< HEAD
+	
 	public static IPlaceIt getPlaceIt(LatLng pos, Context a){
 		for(IPlaceIt p: getAllPlaceIts(a))
 			if(p.getLocation().equals(pos))
@@ -229,8 +226,7 @@ public class Database {
 
 		return null;
 	}	
-=======
->>>>>>> parent of 3d6a27a... Added Comments
+	
 	public static void removePlaceIt(int placeItID, Context a) {
 		Log.d("Database.removePlaceIt", "called here");
 		ArrayList<LocationPlaceIt> list = getAllPlaceIts(a);
@@ -244,19 +240,8 @@ public class Database {
 			}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
-<<<<<<< HEAD
-	
-	public static void save(LocationPlaceIt p, Context a) {
-=======
-	public static PlaceIt getPlaceIt(LatLng pos, Context a){
-		for(PlaceIt p: getAllPlaceIts(a))
-			if(p.getLocation().equals(pos))
-				return p;
 
-		return null;
-	}
-	public static void save(PlaceIt p, Context a) {
->>>>>>> parent of 3d6a27a... Added Comments
+	public static void save(IPlaceIt p, Context a) {
 		if(getPlaceIt(p.getID(), a) != null){
 			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);

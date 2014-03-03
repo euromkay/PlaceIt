@@ -88,12 +88,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		if(requestCode == 1){
 			if(resultCode == RESULT_OK){
-<<<<<<< HEAD
 				//placeit was saved to database
 				IPlaceIt p = getPlaceIt(data);
-=======
-				PlaceIt p = getPlaceIt(data);
->>>>>>> parent of 3d6a27a... Added Comments
 				addPlaceItToMap(p);
 			}
 			if(resultCode == RESULT_CANCELED){

@@ -43,27 +43,23 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 	private void setUpList() {
 		list = new ArrayList<Integer>();
-<<<<<<< HEAD
 		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts(this);
 		
-=======
-		ArrayList<PlaceIt> list = Database.getAllPlaceIts(this);
->>>>>>> parent of 3d6a27a... Added Comments
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for (int i = 0; i < list.size(); i++)
 			addPlaceItToList(list.get(i), i);
 	}
 
 	protected void onPause() {
-<<<<<<< HEAD
-		for (int i : getCopyList())
-=======
+
+
 		ArrayList<Integer> listt = new ArrayList<Integer>();
 		for (int i : list)
 			listt.add(i);
+		
 		for (int i : listt)
->>>>>>> parent of 3d6a27a... Added Comments
 			removeLayoutFromScreen(i);
+		
 		list = null;
 		super.onPause();
 	}
