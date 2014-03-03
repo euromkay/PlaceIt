@@ -38,18 +38,15 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//makes it so the title bar isn't in the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.activity_map);
 		
-		//will start the PlaceItService if its not already running
 		managePlaceItService();
 
 		setUpMapIfNeeded();
-		
-		
 		int launchPlaceItId = getIntent().getIntExtra(NotificationHelper.NOTIFICATION_MAP_FORM, 0);
+		
 		if(launchPlaceItId != 0){
 			Log.d("MapActivity.onCreate", "Calling startPlaceIt()");
 			startPlaceIt(launchPlaceItId);
@@ -61,21 +58,18 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	private void managePlaceItService() {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-	    //iterates through the running services, and if it finds it, the method will return
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	        if (PlaceItService.class.getName().equals(service.service.getClassName())) {
 	            return;
 	        }
 	    }
-	    //it didn't find it, so its going to start a new service
 	    startService(new Intent(this, PlaceItService.class));
 	}
 	
 	private void startPlaceIt(int id){
 		Intent i = new Intent(this, FormActivity.class);
-		
-		//puts the id into the intent, so it knows what placeit to open
 		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
+		
 		
 		LatLng loc = Database.getPlaceIt(id, this).getLocation();
 		
@@ -94,25 +88,27 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		if(requestCode == 1){
 			if(resultCode == RESULT_OK){
+<<<<<<< HEAD
 				//placeit was saved to database
 				IPlaceIt p = getPlaceIt(data);
+=======
+				PlaceIt p = getPlaceIt(data);
+>>>>>>> parent of 3d6a27a... Added Comments
 				addPlaceItToMap(p);
 			}
 			if(resultCode == RESULT_CANCELED){
-				//no placeits were added
+				
 			}	
 		}
 		if(requestCode == 3){
 			if(resultCode == RESULT_OK){
-				//list activity is being returned, and something was changed
 				redoMarkers();
 			}
 			if(resultCode == RESULT_CANCELED){
-				//nothing was changed from the list activity
+				
 			}
 		}
 	}
-	//redraws the markers on the map
 	private void redoMarkers(){
 		mMap.clear();
 		populatePlaceIts();
@@ -125,6 +121,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	protected void onStart(){
 		super.onStart();
 		locationManager.connect();
+		
 	}
 	protected void onStop(){
 		locationManager.disconnect();
@@ -166,13 +163,11 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 				setPreviousZoom();
 				setPreviousLocation();
 				
-				//add listeners
 				mMap.setOnMapClickListener(this);
 				mMap.setOnMarkerClickListener(this);
 				mMap.setMyLocationEnabled(true);
 				
 				findViewById(R.id.mapListButton).setOnClickListener(this);
-				//put the placeits on the map
 				populatePlaceIts();
 			}
 		}
@@ -191,7 +186,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
-	//loads teh placeits onto the map
 	private void populatePlaceIts(){
 		for(IPlaceIt p: Database.getAllPlaceIts(this))
 			addPlaceItToMap(p);
@@ -205,14 +199,12 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	public static final String PLACEIT_LATITUDE = "latitude";
 	public static final String PLACEIT_LONGITUDE = "longitude";
 	public static final String PLACEIT_KEY = "placeitkey";
-	//starts the form activity so a new placeit can be created
 	private void makeNewPlaceIt(LatLng pos){
 		double lat = pos.latitude;
 		double longitude = pos.longitude;
 		
 		Intent i = new Intent(this, FormActivity.class);
 		
-		//loads the location of the placeit
 		Bundle b = new Bundle();
 		b.putDouble(PLACEIT_LATITUDE, lat);
 		b.putDouble(PLACEIT_LONGITUDE, longitude);

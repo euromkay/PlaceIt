@@ -12,27 +12,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-@SuppressLint("SimpleDateFormat")
 public class Database {
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
 	private static final String FILE_ZOOM = "zoom_file";
 	public static float getLastZoom(Activity a){
 		Log.d("Database.getLastZoom", "entering getLastZoom");
-		
 		try {
 			FileInputStream fis = a.openFileInput(FILE_ZOOM);
 			String[] content = reader(fis);
 			Log.d("Database.getLastZoom", "returning for zoom level " + content[0]);
-			
-			//there should be only one line in that file, so the first line is the zoom level
 			return Float.parseFloat(content[0]);
 		} catch (FileNotFoundException e ) {
 			Log.d("Database.getLastZoom", "File not found");
@@ -45,12 +40,11 @@ public class Database {
 		return 20;
 		
 	}
-	public static void saveZoomLevel(float level, Activity a) {
+	public static void saveZoomLevel(float level, MapActivity a) {
 		String data = Float.toString(level);
 		Log.d("Database.saveZoomLevel", data + " is the saved zoom level");
 		try {
 			FileOutputStream fos = a.openFileOutput(FILE_ZOOM, Context.MODE_PRIVATE);
-			//write the one line to the file
 			writer(fos, new String[]{data});
 		} catch (FileNotFoundException e) {
 			Log.d("Database", "something went wrong?");
@@ -130,7 +124,6 @@ public class Database {
 	
 	private static final String FILE_POSITION = "last_known_location file";
 	public static void savePosition(LatLng pos, Activity a) {
-		//saves the doubles as strings, and puts them into an array so it can be written to the file
 		String[] data = new String[]{Double.toString(pos.latitude), Double.toString(pos.longitude)};
 		
 		try {
@@ -143,15 +136,11 @@ public class Database {
 	}
 	public static LatLng getLastPosition(Activity a){
 		Log.d("Database.getLastZoom", "entering getLastZoom");
-		
-		
 		try {
 			FileInputStream fis = a.openFileInput(FILE_ZOOM);
 			String[] content = reader(fis);
-			
 			double lat = Double.parseDouble(content[0]);
 			double lng = Double.parseDouble(content[1]);
-			
 			return new LatLng(lat, lng);
 		} catch (FileNotFoundException e ) {
 			Log.d("Database.getLastZoom", "File not found");
@@ -161,7 +150,7 @@ public class Database {
 		
 	}
 	//default return value if file isn't found
-	return new LatLng(0,0);
+		return new LatLng(0,0);
 	}
 
 	
@@ -171,35 +160,33 @@ public class Database {
 	
 	
 	private static final String FILE_PLACEITS = "place_it_file";
+<<<<<<< HEAD
 	//returns an active list of all the placeits
 	public static ArrayList<LocationPlaceIt> getAllPlaceIts(Context a) {
+=======
+	public static ArrayList<PlaceIt> getAllPlaceIts(Context a) {
+>>>>>>> parent of 3d6a27a... Added Comments
 		try {
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
 			
 			int position = 0; //what part of the content you're in
-			int count = Integer.parseInt(content[position++]);//how many placeits there are in the file
+			int count = Integer.parseInt(content[position++]);
 
 			ArrayList<LocationPlaceIt> list = new ArrayList<LocationPlaceIt>(count);
 			for(int i = 0; i < count; i++){
 				Log.d("Database.getAllPlaceIts", "# " + Integer.toString(i) + " placeit being loaded");
 				String title = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "title of placeit being created: " + title);
 				String description = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "description of placeit being created: " + description);
 				String id_int = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "id of placeit being created: " + id_int);
 				String lat_double = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "latitude of placeit being created: " + lat_double);
 				String long_double = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "longitude of placeit being created: " + long_double);
 				String dueDate_Date = content[position++];
-				
 				Log.d("Database.getAllPlaceIts", "dueDate of placeit being created: " + dueDate_Date);
 				String schedule_String = content[position++];
 				
@@ -212,6 +199,7 @@ public class Database {
 					SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 					p.setDueDate(df.parse(dueDate_Date));
 				} catch (ParseException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				p.setSchedule(Integer.parseInt(schedule_String));
@@ -233,6 +221,7 @@ public class Database {
 
 		return null;
 	}
+<<<<<<< HEAD
 	public static IPlaceIt getPlaceIt(LatLng pos, Context a){
 		for(IPlaceIt p: getAllPlaceIts(a))
 			if(p.getLocation().equals(pos))
@@ -240,6 +229,8 @@ public class Database {
 
 		return null;
 	}	
+=======
+>>>>>>> parent of 3d6a27a... Added Comments
 	public static void removePlaceIt(int placeItID, Context a) {
 		Log.d("Database.removePlaceIt", "called here");
 		ArrayList<LocationPlaceIt> list = getAllPlaceIts(a);
@@ -253,8 +244,19 @@ public class Database {
 			}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
+<<<<<<< HEAD
 	
 	public static void save(LocationPlaceIt p, Context a) {
+=======
+	public static PlaceIt getPlaceIt(LatLng pos, Context a){
+		for(PlaceIt p: getAllPlaceIts(a))
+			if(p.getLocation().equals(pos))
+				return p;
+
+		return null;
+	}
+	public static void save(PlaceIt p, Context a) {
+>>>>>>> parent of 3d6a27a... Added Comments
 		if(getPlaceIt(p.getID(), a) != null){
 			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);
@@ -293,7 +295,6 @@ public class Database {
 			Log.d("Database", "Something went wrong in saving PlaceIt");
 		}
 	}
-	//helper method that turns object arrays into string arrays
 	private static String[] toStringArray(Object[] input){
 		String[] array = new String[input.length];
 		for(int i = 0; i < array.length; i++)
@@ -303,7 +304,7 @@ public class Database {
 	
 	
 	
-	//takes a string array and writes each line to the file
+	
 	private static void writer(FileOutputStream fos, String[] data){
 		try{
 			OutputStreamWriter out = new OutputStreamWriter(fos);
@@ -319,8 +320,6 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	//reads a file and for each line, it puts it into a string array. 
-	//the methods have to deal with the array
 	private static String[] reader(FileInputStream fis){
 		try {
 			InputStreamReader input = new InputStreamReader(fis);
