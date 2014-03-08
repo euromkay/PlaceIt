@@ -158,7 +158,7 @@ public class FormActivity extends Activity implements OnClickListener{
 				String s = (String) spinner.getSelectedItem();
 				Log.d("FormActivity.onCLick", s + " is the spinner selection");
 				
-				placeIt.setSchedule(stringToSched(s));
+				((LocationPlaceIt) placeIt).setSchedule(stringToSched(s));
 				Log.d("FormActivity.loadOnClick", "the schedule is " + Integer.toString(((LocationPlaceIt) placeIt).getSchedule()));
 			}
 			else

@@ -7,7 +7,6 @@ public abstract class IPlaceIt implements Parcelable{
 	private String title = "";
 	private String description = "";
 	private int id;
-	private int sched;
 
 	public IPlaceIt(int id) {
 		this.id = id;
@@ -55,7 +54,4 @@ public abstract class IPlaceIt implements Parcelable{
 		return 0;
 	}
 	
-	public void setSchedule(int sched) {
-		this.sched = sched;
-	}
 }
