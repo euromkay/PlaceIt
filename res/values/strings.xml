@@ -31,13 +31,17 @@
     <string name="login_button">Login</string>
 	
 	
-	<string-array name="rules_formValues">
+	<string-array name="formValues">
         <item>None</item>
         <item>10 Seconds</item>
         <item>1 Minute</item>
         <item>1 Hour</item>
         <item>1 Day</item>
         <item>1 Week</item>
+    </string-array>
+    <string-array name="categoryValues">
+        <item>Grocery</item>
+        <item>School</item>
     </string-array>
 	
 	<color name="white">#ffffff</color>

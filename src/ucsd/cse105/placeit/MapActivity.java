@@ -90,7 +90,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			if(resultCode == RESULT_OK){
 				//placeit was saved to database
 				IPlaceIt p = getPlaceIt(data);
-				addPlaceItToMap(p);
+				if(p instanceof LocationPlaceIt)
+					addPlaceItToMap((LocationPlaceIt) p);
 			}
 			if(resultCode == RESULT_CANCELED){
 				
@@ -178,13 +179,14 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		mMap.moveCamera(center);
 	}
-	private void addPlaceItToMap(IPlaceIt p){
+	private void addPlaceItToMap(LocationPlaceIt p){
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
 	private void populatePlaceIts(){
 		for(IPlaceIt p: Database.getAllPlaceIts(this))
-			addPlaceItToMap(p);
+			if(p instanceof LocationPlaceIt)
+				addPlaceItToMap((LocationPlaceIt) p);
 	}
 
 	
@@ -194,16 +196,23 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 	public static final String PLACEIT_LATITUDE = "latitude";
 	public static final String PLACEIT_LONGITUDE = "longitude";
+	public static final String PLACEIT_HAS_POS = "position";
 	public static final String PLACEIT_KEY = "placeitkey";
 	private void makeNewPlaceIt(LatLng pos){
-		double lat = pos.latitude;
-		double longitude = pos.longitude;
-		
 		Intent i = new Intent(this, FormActivity.class);
-		
 		Bundle b = new Bundle();
-		b.putDouble(PLACEIT_LATITUDE, lat);
-		b.putDouble(PLACEIT_LONGITUDE, longitude);
+		
+		
+		if(pos != null){
+			double lat = pos.latitude;
+			double longitude = pos.longitude;
+			b.putBoolean(PLACEIT_HAS_POS, true);
+			b.putDouble(PLACEIT_LATITUDE, lat);
+			b.putDouble(PLACEIT_LONGITUDE, longitude);
+		}else
+			b.putBoolean(PLACEIT_HAS_POS, false);
+		
+		
 		
 		i.putExtra(PLACEIT_KEY, b);
 		
@@ -228,6 +237,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		Intent i = new Intent(this, LoginActivity.class);
 		mMap.clear();
 		Database.clearCredentials(this);
+		startActivity(i);
 		finish();
 	}
 	

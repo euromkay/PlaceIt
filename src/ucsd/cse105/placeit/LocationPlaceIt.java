@@ -5,50 +5,23 @@ import java.util.Date;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.EditText;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class LocationPlaceIt implements IPlaceIt, Parcelable {
+public class LocationPlaceIt extends IPlaceIt {
 
 	// Fields
 	private LatLng location;
-	private String title = "";
-	private String description = "";
-	private int id;
 	private Date dueDate;
 	private int schedule;
 
 	// Constructor
-	public LocationPlaceIt(LatLng location, int id) {
-		this.location = location;
-		this.id = id;
+	public LocationPlaceIt(int id) {
+		super(id);
 	}
 
-	// Setters
-	public void setTitle(EditText text) {
-		title = getText(text);
-	}
 
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#setTitle(java.lang.String)
-	 */
-	@Override
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public void setDescription(EditText text) {
-		description = getText(text);
-	}
-
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#setDescription(java.lang.String)
-	 */
-	@Override
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	
 
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
@@ -68,47 +41,17 @@ public class LocationPlaceIt implements IPlaceIt, Parcelable {
 		schedule = sched;
 	}
 
-	// Getters
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#getID()
-	 */
-	@Override
-	public int getID() {
-		return id;
-	}
 
-	private String getText(EditText text) {
-		return text.getText().toString();
-	}
-
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return description;
-	}
+	
 
 	public Date getDueDate() {
 		return dueDate;
 	}
 
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#getTitle()
-	 */
-	@Override
-	public String getTitle() {
-		if (title.length() == 0) {
-			int min = Math.min(description.length(), 20);
-			return description.substring(0, min);
-		}
-		return title;
-	}
+	
+	
 
-	/* (non-Javadoc)
-	 * @see ucsd.cse105.placeit.IPlaceIt#getLocation()
-	 */
-	@Override
+	
 	public LatLng getLocation() {
 		return location;
 	}
@@ -126,23 +69,17 @@ public class LocationPlaceIt implements IPlaceIt, Parcelable {
 	}
 
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(description);
-		dest.writeString(title);
+		super.writeToParcel(dest, flags);
 		dest.writeDouble(location.latitude);
 		dest.writeDouble(location.longitude);
-		dest.writeInt(id);
-
 		dest.writeInt(schedule);
-
 		dest.writeLong(dueDate.getTime());
 	}
 
 	//Special constructor for Parcel
 	public LocationPlaceIt(Parcel in) {
-		description = in.readString();
-		title = in.readString();
+		super(in);
 		location = new LatLng(in.readDouble(), in.readDouble());
-		id = in.readInt();
 
 		schedule = in.readInt();
 
@@ -160,4 +97,9 @@ public class LocationPlaceIt implements IPlaceIt, Parcelable {
 			return new LocationPlaceIt[size];
 		}
 	};
+
+	public void setLocation(LatLng location) {
+		this.location = location;
+		
+	}
 }

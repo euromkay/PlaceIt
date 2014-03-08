@@ -35,10 +35,10 @@ public class Distance {
 		// go to the settings
 		if (enabled) {
 
-			Criteria criteria = new Criteria();
-			String provider = locationManager.getBestProvider(criteria, false);
+			//Criteria criteria = new Criteria();
+			//String provider = locationManager.getBestProvider(criteria, false);
 			Location currentLocation = locationManager
-					.getLastKnownLocation(provider);
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			float distanceTo = currentLocation.distanceTo(location);
 			return distanceTo / CONVERSION_CONSTANT;
 		}

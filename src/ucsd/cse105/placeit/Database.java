@@ -38,7 +38,6 @@ public class Database {
 		}
 		//default return value if file isn't found
 		return 20;
-		
 	}
 	public static void saveZoomLevel(float level, MapActivity a) {
 		String data = Float.toString(level);
@@ -189,7 +188,8 @@ public class Database {
 				
 				LatLng location = new LatLng(Double.parseDouble(lat_double), Double.parseDouble(long_double));
 				
-				LocationPlaceIt p = new LocationPlaceIt(location, Integer.parseInt(id_int));
+				LocationPlaceIt p = new LocationPlaceIt(Integer.parseInt(id_int));
+				p.setLocation(location);
 				p.setTitle(title);
 				p.setDescription(description);
 				try {
@@ -221,8 +221,9 @@ public class Database {
 	
 	public static IPlaceIt getPlaceIt(LatLng pos, Context a){
 		for(IPlaceIt p: getAllPlaceIts(a))
-			if(p.getLocation().equals(pos))
-				return p;
+			if(p instanceof LocationPlaceIt)
+				if(((LocationPlaceIt) p).getLocation().equals(pos))
+					return p;
 
 		return null;
 	}	
@@ -233,7 +234,6 @@ public class Database {
 		for(IPlaceIt p: list)
 			if(p.getID() == (placeItID)){
 				Log.d("Database.remove", "found the placeit to remove");
-				//Log.d("Database.remvoe", "size of the list before remove is: " + list.size();)
 				list.remove(p);
 				writePlaceIts(list, a);
 				return;
@@ -241,7 +241,7 @@ public class Database {
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
-	public static void save(IPlaceIt p, Context a) {
+	public static void save(LocationPlaceIt p, Context a) {
 		if(getPlaceIt(p.getID(), a) != null){
 			Log.d("Database.save", "going to call removePlaceit");
 			removePlaceIt(p.getID(), a);
@@ -338,6 +338,5 @@ public class Database {
 		}
 		return null;
 	}
-	
 	
 }
