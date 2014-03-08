@@ -1,27 +1,19 @@
 package ucsd.cse105.placeit;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
-
-public class ListActivity extends Activity implements OnCheckedChangeListener,
-		OnClickListener {
+public class PullDownListActivity extends Activity {
 
 	private ArrayList<Integer> list;
 
@@ -29,7 +21,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		setContentView(R.layout.activity_list);
+		setContentView(R.layout.activity_pulllist);
 
 		if (list == null)
 			setUpList();
@@ -42,9 +34,8 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 	}
 
 	private void setUpList() {
-		findViewById(R.id.pullDownListButton).setOnClickListener(this);
 		list = new ArrayList<Integer>();
-		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts(this);
+		ArrayList<LocationPlaceIt> list = Database.getCompletedPlaceIts(this);
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for (int i = 0; i < list.size(); i++)
@@ -78,12 +69,10 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		tv.setTextColor(Color.BLACK);
 		tv.setTextSize(23);
 		tv.setId(4 * id);
-		tv.setOnClickListener(this);
 
-		LayoutParams param = new LinearLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
+		LayoutParams param = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
 		tv.setLayoutParams(param);
-
+/*
 		CheckBox cb = new CheckBox(this);
 		cb.setChecked(true);
 		cb.setBackgroundColor(Color.RED);
@@ -91,14 +80,12 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		cb.setScaleY(0.75f);
 		cb.setId((4 * id) + 1);
 		cb.setOnCheckedChangeListener(this);
-
+*/
 		Log.d("ListActivity.addPlaceItToList", Integer.toString((4 * id) + 1));
 		list.add((4 * id) + 1);
 
-		FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-				Gravity.RIGHT);
-		cb.setLayoutParams(param2);
+		//FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,Gravity.RIGHT);
+		//cb.setLayoutParams(param2);
 
 		Log.d("ListActivity.addingPlaceItToList",
 				"id was " + Integer.toString(p.getID()));
@@ -114,14 +101,14 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		layout.setId((4 * id) + 2);
 		layout.addView(tv);
 		layout.addView(longTV);
-		layout.addView(cb);
+		//layout.addView(cb);
 		
 		if(p instanceof LocationPlaceIt)
 			layout.setBackgroundColor(Color.LTGRAY);
 
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
 	}
-
+/*
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 		int id = arg0.getId();
 
@@ -154,7 +141,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		}
 		list.remove((Object) (id));
 		removeLayoutFromScreen(id);
-	}
+	}*/
 
 	private void removeLayoutFromScreen(int id) {
 		// id is the id of the checkbox
@@ -170,14 +157,8 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		bigLayout.removeView(layout);
 		list.remove((Object) id);
 	}
-
+/*
 	public void onClick(View v) {
-		if(v.getId() == R.id.pullDownListButton){
-			Intent i = new Intent(this, PullDownListActivity.class);
-			startActivity(i);
-			return;
-		}
-			
 		Intent i = new Intent(this, FormActivity.class);
 
 		TextView tv = (TextView) findViewById(v.getId() + 3);
@@ -203,7 +184,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		}
 
 		startActivityForResult(i, 1);
-	}
+	}*/
 
 	public static final String ID_BUNDLE_KEY = "longIdKeyBundle";
 }

@@ -338,5 +338,10 @@ public class Database {
 		}
 		return null;
 	}
+	public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(
+			PullDownListActivity pullDownListActivity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

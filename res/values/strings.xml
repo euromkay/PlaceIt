@@ -16,7 +16,6 @@
     <string name="form_title_editText">My Title</string>
     <string name="form_save_button">Save</string>
     <string name="form_cancel_button">Cancel</string>
-    <string name="list_title">List of PlaceIts</string>
     <string name="title_activity_notification_main">NotificationMainActivity</string>
     <string name="hello_world">Hello world!</string>
 	<string name="btBasicNotification">Discard</string>
@@ -30,7 +29,13 @@
     <string name="login_password">password</string>
     <string name="login_button">Login</string>
 	
+	<!-- List Strings -->
+    <string name="list_title">List of PlaceIts</string>
+    <string name="list_button">Completed PlaceIts</string>
+    
+    <string name="pull_list_title">Completed PlaceIts</string>
 	
+    
 	<string-array name="formValues">
         <item>None</item>
         <item>10 Seconds</item>
