@@ -50,6 +50,10 @@ public abstract class IPlaceIt implements Parcelable{
 		dest.writeInt(id);
 	}
 
+	public int describeContents() {
+
+		return 0;
+	}
 	
 	public void setSchedule(int sched) {
 		this.sched = sched;

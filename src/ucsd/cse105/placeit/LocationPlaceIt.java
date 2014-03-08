@@ -63,10 +63,7 @@ public class LocationPlaceIt extends IPlaceIt {
 	
 
 	// Parcelable Members
-	public int describeContents() {
-
-		return 0;
-	}
+	
 
 	public void writeToParcel(Parcel dest, int flags) {
 		super.writeToParcel(dest, flags);
