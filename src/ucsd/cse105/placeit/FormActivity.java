@@ -7,6 +7,7 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -112,6 +113,7 @@ public class FormActivity extends Activity implements OnClickListener{
 			else{
 				((TextView) findViewById(R.id.form_spinner_titleTV)).setText("Category");
 				array = R.array.categoryValues;
+				setUpRestOfSpinners();
 			}
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
 			// Specify the layout to use when the list of choices appears
@@ -125,6 +127,21 @@ public class FormActivity extends Activity implements OnClickListener{
 			
 			//spinner.setOnItemSelectedListener(this);
 		}
+	}
+	private void setUpRestOfSpinners(){
+		Spinner spinner = (Spinner) findViewById(R.id.from_spinner2);
+		spinner.setVisibility(View.VISIBLE);
+		int array = R.array.categoryValues;
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+		
+
+		spinner = (Spinner) findViewById(R.id.from_spinner3);
+		spinner.setVisibility(View.VISIBLE);
+		adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
 	}
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
@@ -144,7 +161,8 @@ public class FormActivity extends Activity implements OnClickListener{
 			IPlaceIt placeIt;
 
 			if(getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS, true)){
-				placeIt = new LocationPlaceIt(id);
+				LocationPlaceIt LPlaceIt = new LocationPlaceIt(id);
+				placeIt = LPlaceIt;
 				((LocationPlaceIt) placeIt).setLocation(retrieveLocation());
 				Date dueDate = new Date();
 				Calendar cal = Calendar.getInstance();
@@ -161,9 +179,21 @@ public class FormActivity extends Activity implements OnClickListener{
 				((LocationPlaceIt) placeIt).setSchedule(stringToSched(s));
 				Log.d("FormActivity.loadOnClick", "the schedule is " + Integer.toString(((LocationPlaceIt) placeIt).getSchedule()));
 			}
-			else
-				placeIt = new CategoryPlaceIt(id);
-			
+			else{
+				CategoryPlaceIt CPlaceIt = new CategoryPlaceIt(id);
+				placeIt = CPlaceIt;
+				
+				Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+				String s1 = (String) spinner.getSelectedItem();
+				
+				spinner = (Spinner) findViewById(R.id.from_spinner2);
+				String s2 = (String) spinner.getSelectedItem();
+
+				spinner = (Spinner) findViewById(R.id.from_spinner3);
+				String s3 = (String) spinner.getSelectedItem();
+				
+				CPlaceIt.setCategory(s1, s2, s3);
+			}
 			
 			
 			placeIt.setTitle(titleET.getText().toString());

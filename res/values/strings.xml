@@ -43,6 +43,7 @@
         <item>1 Week</item>
     </string-array>
     <string-array name="categoryValues">
+        <item>Empty</item>
         <item>accounting</item>
         <item>airport</item>
         <item>amusement_park</item>
