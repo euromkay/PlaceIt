@@ -98,7 +98,7 @@ public class GoogleAppEngineService extends Service implements LocationListener 
 	@Override
 	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
-		if( arg0  )
+		while( arg0. <= MILES_RANGE )
 		checkNotify();
 	}
 
