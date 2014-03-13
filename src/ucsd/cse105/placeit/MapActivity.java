@@ -236,6 +236,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		startActivityForResult(i, 3);
 	}
 	private void logout(){
+		Log.d("MapActivity", "Logout button pressed");
 		Intent i = new Intent(this, LoginActivity.class);
 		mMap.clear();
 		Database.clearCredentials(this);

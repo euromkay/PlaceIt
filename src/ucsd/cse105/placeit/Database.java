@@ -56,11 +56,11 @@ public class Database {
 	
 	
 	
-	private static final String FILE_USERNAME = "username file";
+	
 	public static void saveUsername(String username, Activity a){
 		
 		try {
-			FileOutputStream fos = a.openFileOutput(FILE_USERNAME, Context.MODE_PRIVATE);
+			FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS, Context.MODE_PRIVATE);
 			writer(fos, new String[]{username});
 		} catch (FileNotFoundException e) {
 			Log.d("Database", "something went wrong?");
@@ -70,7 +70,7 @@ public class Database {
 	}
 	public static String getUsername(Activity a){
 		try {
-			FileInputStream fis = a.openFileInput(FILE_USERNAME);
+			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
 			return reader(fis)[0];
 		} catch (FileNotFoundException e) {
 			Log.d("Database", "something went wrong?");
@@ -94,14 +94,10 @@ public class Database {
 	}
 	public static void clearCredentials(Activity a) {
 		Log.d("Database.clearCredentials", "clearing credentials");
-		try {
-			FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS, Context.MODE_PRIVATE);
-			//write the one line to the file
-			writer(fos, new String[]{Boolean.FALSE.toString()});
-		} catch (FileNotFoundException e) {
-			Log.d("Database", "something went wrong?");
-			e.printStackTrace();
-		}
+		a.deleteFile(FILE_CREDENTIALS);
+		//FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS, Context.MODE_PRIVATE);
+		//write the one line to the file
+		//writer(fos, new String[]{"SHOULD FAIL"});
 	}
 	//checks to see if the login was correct
 	public static boolean checkLogin(String username, String password, Activity a){
@@ -162,7 +158,7 @@ public class Database {
 				writer.write(s+"\n");
 			writer.close();
 			out.flush();
-			out.close();
+			//out.close();
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
