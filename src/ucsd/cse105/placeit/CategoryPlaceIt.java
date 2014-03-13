@@ -5,30 +5,38 @@ import android.os.Parcelable;
 
 public class CategoryPlaceIt extends IPlaceIt{
 
-	private String category1, category2, category3;
+	private static final int NUMBER_OF_CATEGORIES = 3;
+	
+	private String[] category;
 	
 	public CategoryPlaceIt(int id) {
 		super(id);
+		category = new String[NUMBER_OF_CATEGORIES];
 	}
 	
 	public CategoryPlaceIt(Parcel in){
 		super(in);
+		category = new String[NUMBER_OF_CATEGORIES];
+		for(int i = 0; i < NUMBER_OF_CATEGORIES; i++)
+			category[i] = in.readString();
 	}
 
 	public void writeToParcel(Parcel dest, int flags) {
 		super.writeToParcel(dest, flags);
-		dest.writeString(category1);
-		dest.writeString(category2);
-		dest.writeString(category3);
+		for(int i = 0; i < NUMBER_OF_CATEGORIES; i++)
+			category[i] = dest.readString();
 	}
 	
-	public void setCategory(String category1, String category2, String category3){
-		if(!category1.equals("Empty"))
-			this.category1 = category1;
-		if(!category2.equals("Empty"))
-			this.category2 = category2; 
-		if(!category2.equals("Empty"))
-			this.category3 = category3;
+	public String getCategory(int i){
+		if(-1 < i  && i < NUMBER_OF_CATEGORIES)
+			return category[i];
+		else 
+			throw new IllegalArgumentException();
+	}
+	
+	public void setCategory(String ... category){
+		for(int i = 0; i < NUMBER_OF_CATEGORIES; i++)
+			this.category[i] = category[i];
 	}
 	
 	public static final Parcelable.Creator<CategoryPlaceIt> CREATOR = new Parcelable.Creator<CategoryPlaceIt>() {

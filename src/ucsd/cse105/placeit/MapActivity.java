@@ -165,6 +165,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 				mMap.setMyLocationEnabled(true);
 				
 				findViewById(R.id.mapListButton).setOnClickListener(this);
+				findViewById(R.id.mapPlaceItButton).setOnClickListener(this);
+				findViewById(R.id.mapLogoutButton).setOnClickListener(this);
 				populatePlaceIts();
 			}
 		}

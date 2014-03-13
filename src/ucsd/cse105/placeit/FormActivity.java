@@ -7,7 +7,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.transition.Visibility;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,7 +37,7 @@ public class FormActivity extends Activity implements OnClickListener{
 		
 		if(hasId()){
 			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
-			LocationPlaceIt p = Database.getPlaceIt(getId(), this);
+			IPlaceIt p = Database.getPlaceIt(getId(), this);
 			loadPlaceIt(p);
 		}else
 			Log.d("FormActivity.onCreate", "No id found");
@@ -52,43 +51,68 @@ public class FormActivity extends Activity implements OnClickListener{
 		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);
 	}
 	
-	private void loadPlaceIt(LocationPlaceIt p){
-		titleET.setText(p.getTitle());
-		descriptionET.setText(p.getDescription());
-		Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+	private void loadPlaceIt(IPlaceIt placeIt){
+		titleET.setText(placeIt.getTitle());
+		descriptionET.setText(placeIt.getDescription());
+		if(placeIt instanceof LocationPlaceIt){
+			LocationPlaceIt p = (LocationPlaceIt) placeIt;
+			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+			int value;
+			Log.d("FormActivity.loadPlaceIt", "the schedule is " + Integer.toString(p.getSchedule()));
+			switch(p.getSchedule()){
+				case -1:
+					value = 0;
+					break;
+			
+				case 10:
+					value = 1;
+					break;
+			
+				case 60:
+					value = 2;
+					break;
+			
+				case 60*60:
+					value = 3;
+					break;
+			
+				case 60*60*24:
+					value = 4;
+					break;
 		
-		int value;
-		Log.d("FormActivity.loadPlaceIt", "the schedule is " + Integer.toString(p.getSchedule()));
-		switch(p.getSchedule()){
-		case -1:
-			value = 0;
-			break;
+				case 60*60*24*7:
+					value = 5;
+					break;
 			
-		case 10:
-			value = 1;
-			break;
-			
-		case 60:
-			value = 2;
-			break;
-			
-		case 60*60:
-			value = 3;
-			break;
-			
-		case 60*60*24:
-			value = 4;
-			break;
-		
-		case 60*60*24*7:
-			value = 5;
-			break;
-			
-		default:
-			throw new NullPointerException("Bad value in placeit");
+				default:
+					throw new NullPointerException("Bad value in placeit");
+			}
+			spinner.setSelection(value);
 		}
-		
-		spinner.setSelection(value);
+		else{
+			CategoryPlaceIt p = (CategoryPlaceIt) placeIt;
+			
+			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
+			int position = categoryToId(p.getCategory(0));
+			spinner.setSelection(position);
+			
+			spinner = (Spinner) findViewById(R.id.from_spinner2);
+			position = categoryToId(p.getCategory(1));
+			spinner.setSelection(position);
+			
+			spinner = (Spinner) findViewById(R.id.from_spinner3);
+			position = categoryToId(p.getCategory(2));
+			spinner.setSelection(position);
+		}
+	}
+	private int categoryToId(String s){
+		int i = 0;
+		for(String t: categoryList){
+			if(t.equals(s))
+				return i;
+			i++;
+		}
+		throw new NullPointerException("Incorrect String");
 	}
 	protected void onResume(){
 		super.onResume();
@@ -287,4 +311,101 @@ public class FormActivity extends Activity implements OnClickListener{
 		}
 	}
 
+	private static final String[] categoryList = {"accounting",
+		"airport",
+		"amusement_park",
+		"aquarium",
+		"art_gallery",
+		"atm",
+		"bakery",
+		"bank",
+		"bar",
+		"beauty_salon",
+		"bicycle_store",
+		"book_store",
+		"bowling_alley",
+		"bus_station",
+		"cafe",
+		"campground",
+		"car_dealer",
+		"car_rental",
+		"car_repair",
+		"car_wash",
+		"casino",
+		"cemetery",
+		"church",
+		"city_hall",
+		"clothing_store",
+		"convenience_store",
+		"courthouse",
+		"dentist",
+		"department_store",
+		"doctor",
+		"electrician",
+		"electronics_store",
+		"embassy",
+		"establishment",
+		"finance",
+		"fire_station",
+		"florist",
+		"food",
+		"funeral_home",
+		"furniture_store",
+		"gas_station",
+		"general_contractor",
+		"grocery_or_supermarket",
+		"gym",
+		"hair_care",
+		"hardware_store",
+		"health",
+		"hindu_temple",
+		"home_goods_store",
+		"hospital",
+		"insurance_agency",
+		"jewelry_store",
+		"laundry",
+		"lawyer",
+		"library",
+		"liquor_store",
+		"local_government_office",
+		"locksmith",
+		"lodging",
+		"meal_delivery",
+		"meal_takeaway",
+		"mosque",
+		"movie_rental",
+		"movie_theater",
+		"moving_company",
+		"museum",
+		"night_club",
+		"painter",
+		"park",
+		"parking",
+		"pet_store",
+		"pharmacy",
+		"physiotherapist",
+		"place_of_worship",
+		"plumber",
+		"police",
+		"post_office",
+		"real_estate_agency",
+		"restaurant",
+		"roofing_contractor",
+		"rv_park",
+		"school",
+		"shoe_store",
+		"shopping_mall",
+		"spa",
+		"stadium",
+		"storage",
+		"store",
+		"subway_station",
+		"synagogue",
+		"taxi_stand",
+		"train_station",
+		"travel_agency",
+		"university",
+		"veterinary_care",
+		"zoo",};
+	
 }

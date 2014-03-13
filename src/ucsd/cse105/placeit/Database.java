@@ -85,10 +85,9 @@ public class Database {
 	private static final String FILE_CREDENTIALS = "logincredentials file";
 	public static boolean checkLoginCredentials(Activity a) {
 		try{
-			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
-			String content = reader(fis)[0];
-			
-			return Boolean.parseBoolean(content);
+			String content = getUsername(a);
+			Log.d("Database.checkLoginCredentials", "content is " + content);
+			return content.equals("account1") || content.equals("account2");
 		}catch(Exception e){
 			return false;
 		}
@@ -109,7 +108,7 @@ public class Database {
 		if(!password.equals("password"))
 			return false;
 		
-		if(username.equals("account1") || username.equals("acount2")){
+		if(username.equals("account1") || username.equals("account2")){
 			saveUsername(username, a);
 			return true;
 		}
@@ -153,7 +152,55 @@ public class Database {
 	}
 
 	
-	
+
+	private static void writer(FileOutputStream fos, String[] data){
+		try{
+			OutputStreamWriter out = new OutputStreamWriter(fos);
+			BufferedWriter writer = new BufferedWriter(out);
+			
+			for(String s: data)
+				writer.write(s+"\n");
+			writer.close();
+			out.flush();
+			out.close();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private static String[] reader(FileInputStream fis){
+		try {
+			InputStreamReader input = new InputStreamReader(fis);
+			BufferedReader reader = new BufferedReader(input);
+			
+			ArrayList<String> list = new ArrayList<String>();
+			while(true){
+				String s = reader.readLine();
+				Log.d("Database", " Read line: " + s);
+				if(s == null)
+					break;
+				list.add(s);
+			}
+			
+			if(list.size() == 0)
+				Log.d("Database", "Came up with empty file");
+			
+			reader.close();
+			input.close();
+			fis.close();
+			
+			
+			return toStringArray(list.toArray());
+			
+		} catch (FileNotFoundException e) {
+			Log.d("Database", "unable to get last zoom level");
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("Database", "unable to get last zoom level");
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 	
@@ -290,54 +337,6 @@ public class Database {
 	
 	
 	
-	private static void writer(FileOutputStream fos, String[] data){
-		try{
-			OutputStreamWriter out = new OutputStreamWriter(fos);
-			BufferedWriter writer = new BufferedWriter(out);
-			
-			for(String s: data)
-				writer.write(s+"\n");
-			writer.close();
-			out.flush();
-			out.close();
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	private static String[] reader(FileInputStream fis){
-		try {
-			InputStreamReader input = new InputStreamReader(fis);
-			BufferedReader reader = new BufferedReader(input);
-			
-			ArrayList<String> list = new ArrayList<String>();
-			while(true){
-				String s = reader.readLine();
-				Log.d("Database", " Read line: " + s);
-				if(s == null)
-					break;
-				list.add(s);
-			}
-			
-			if(list.size() == 0)
-				Log.d("Database", "Came up with empty file");
-			
-			reader.close();
-			input.close();
-			fis.close();
-			
-			
-			return toStringArray(list.toArray());
-			
-		} catch (FileNotFoundException e) {
-			Log.d("Database", "unable to get last zoom level");
-			e.printStackTrace();
-		} catch (IOException e) {
-			Log.d("Database", "unable to get last zoom level");
-			e.printStackTrace();
-		}
-		return null;
-	}
 	public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(
 			PullDownListActivity pullDownListActivity) {
 		// TODO Auto-generated method stub

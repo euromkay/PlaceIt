@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="18" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -58,7 +58,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ucsd.cse105.placeit.MapActivity" />
         </activity>
-
+		<activity
+            android:name="ucsd.cse105.placeit.PullDownListActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="ucsd.cse105.placeit.ListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ucsd.cse105.placeit.ListActivity" />
+        </activity>
+        
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
