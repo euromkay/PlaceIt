@@ -58,7 +58,7 @@ public class PlaceItService extends Service {
 	//the current system time and if the current location is within the specified
 	//threshold. If so, then have NotificationHelper create a notification.
 	private void checkNotify() {
-		ArrayList<LocationPlaceIt> placeIts = Database.getAllPlaceIts(this);
+		ArrayList<LocationPlaceIt> placeIts = Database.getAllPlaceIts();
 
 		for (LocationPlaceIt item : placeIts) {
 			Date dueDate = item.getDueDate();

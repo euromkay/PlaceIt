@@ -1,5 +1,5 @@
 package ucsd.cse105.placeit.test;
-
+/*
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
@@ -75,6 +75,7 @@ public class DiscardInNotification extends BroadcastReceiver {
 	solo.takeScreenshot();
 	boolean activeDelete = solo.searchText("DeletePulledDown");
     assertFalse("Delete from Active List failed",activeDelete);
-    */
+    
 
 }
+*/

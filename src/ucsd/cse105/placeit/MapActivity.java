@@ -1,7 +1,10 @@
 package ucsd.cse105.placeit;
 
+import java.util.ArrayList;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -31,8 +34,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnClickListener, OnMarkerClickListener, ConnectionCallbacks, OnConnectionFailedListener{
-//	public static final String PLACEIT_LOC_URI = "http://localhost:8888/location";
-//	public static final String PLACEIT_CAT_URI = "http://localhost:8888/category";
+	// this is declare for all separate thread tasks
+	private ArrayList<LocationPlaceIt> placeIts = null;
+	ProgressDialog dialog;
+	
 	public static final String PLACEIT_LOC_URI = "http://cse110-placeit.appspot.com/location";
 	public static final String PLACEIT_CAT_URI = "http://cse110-placeit.appspot.com/category";
 	
@@ -159,7 +164,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 	
 	private void setUpMapIfNeeded() {
-			
+		
 		// Do a null check to confirm that we have not already instantiated the map.
 		if (mMap == null) {
 			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -167,7 +172,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			
 			// Check if we were successful in obtaining the map.
 			if (mMap != null) {
-
+				dialog = ProgressDialog.show(this, "Loading data...", "Please wait...", false);
 			    locationManager = new LocationClient(this,this,this);
 			    if(locationManager == null)
 			    	makeToast("SOMETHINGS WRONG");
@@ -200,8 +205,25 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
+	
 	private void populatePlaceIts(){
-		for(IPlaceIt p: Database.getAllPlaceIts(this))
+		placeIts = null;
+		
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				placeIts = Database.getAllPlaceIts();
+			}
+		});
+		t.start();
+		
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(IPlaceIt p: placeIts)
 			if(p instanceof LocationPlaceIt)
 				addPlaceItToMap((LocationPlaceIt) p);
 	}

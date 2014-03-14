@@ -22,7 +22,7 @@ import android.util.Log;
  * 
  * Note: Use Own valid Key in API_KEY = "YourMapKeyHere" and any where else needed.
 */
-
+/*
 public class PlaceRequest {
 	 // ArraList to store corresponding lat, lng
 	 static List<Double> latList = new ArrayList<Double>();
@@ -206,7 +206,7 @@ public class PlaceRequest {
 	  }
 	   
 	 }
-	 */
+	
 	 
 	 public static HttpRequestFactory createRequestFactory(final HttpTransport transport) {
 	      
@@ -223,3 +223,4 @@ public class PlaceRequest {
 	  });
 	 }
 }
+*/

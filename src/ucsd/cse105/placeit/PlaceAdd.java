@@ -17,7 +17,7 @@ import android.widget.Toast;
 /*
  * Now call PlaceRequest.java from PlaceAdd.java to add you actual location into Google Map.
  */
-
+/*
 public class PlaceAdd extends Activity {
 	 static String placeName;
 	 static String vic;
@@ -116,3 +116,4 @@ public class PlaceAdd extends Activity {
 	     }
 	    } // End of class SearchSrv here 
 }
+*/

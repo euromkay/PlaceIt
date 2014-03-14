@@ -18,7 +18,7 @@ import android.widget.Toast;
 /*
  * Now call PlaceRequest.java from ShowPlaceDetail.java to view Place detail
  */
-
+/*
 public class ShowPlaceDetail extends Activity {
 	 ProgressDialog progressDialog;
      @Override
@@ -98,3 +98,4 @@ public class ShowPlaceDetail extends Activity {
       }
      } // End of class SearchSrv here
 }
+*/

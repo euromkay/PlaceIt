@@ -43,8 +43,9 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 	private void setUpList() {
 		findViewById(R.id.pullDownListButton).setOnClickListener(this);
-		list = new ArrayList<Integer>();
-		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts(this);
+		this.list = new ArrayList<Integer>();
+		//TODO: need to run in separate thread
+		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts();
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for (int i = 0; i < list.size(); i++)

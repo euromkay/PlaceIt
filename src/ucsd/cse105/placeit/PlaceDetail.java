@@ -1,5 +1,5 @@
 package ucsd.cse105.placeit;
-
+/*
 public class PlaceDetail {
 
 	 @Key
@@ -14,3 +14,4 @@ public class PlaceDetail {
 	  
 	 }
 }
+*/
