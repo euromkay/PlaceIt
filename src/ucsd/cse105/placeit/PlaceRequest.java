@@ -15,8 +15,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
-import ucsd.cse105.placeit.Place.PlaceDetail;
-
 import android.util.Log;
 
 /*
@@ -67,7 +65,7 @@ public class PlaceRequest {
 	 //double latitude = 51.034823;
 	 //double longitude = 4.483774;
 	 
-	 public PlacesList performSearch() throws Exception {
+	 public PlaceRequest performSearch() throws Exception {
 	  try {
 	   Log.v(LOG_KEY, "Start Search...");
 	   GenericUrl reqUrl = new GenericUrl(PLACES_SEARCH_URL);
@@ -135,6 +133,7 @@ public class PlaceRequest {
 	   
 	 }
 	 
+	 /*
 	 public JSONObject addPlace(double lat, double lng, String type, String name) throws Exception {
 	  try {
 	   Log.v(LOG_KEY, "Adding Place...");
@@ -207,6 +206,7 @@ public class PlaceRequest {
 	  }
 	   
 	 }
+	 */
 	 
 	 public static HttpRequestFactory createRequestFactory(final HttpTransport transport) {
 	      

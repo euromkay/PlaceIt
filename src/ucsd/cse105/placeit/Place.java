@@ -1,63 +1,65 @@
 package ucsd.cse105.placeit;
 
+import java.util.List;
+
 /*
  *  All Bean classes for Search Place, Add Place and Place details look like:
  */
 
 public class Place {
-	 @Key
+	 //@Key
 	 public String id;
 	 
-	 @Key
+	 //@Key
 	 public String name;
 	 
-	 @Key
+	 //@Key
 	 public String reference;
 	 
-	 @Key
+	 //@Key
 	 public String types[];
 	 
-	 @Key
+	 //@Key
 	 public String international_phone_number;
 	 
-	 @Key
+	 //@Key
 	 public String vicinity;
 	 
-	 @Key
+	 //@Key
 	 public String formatted_address;
 	 
-	 @Key
+	 //@Key
 	 public String url;
 	 
-	 @Key
+	 //@Key
 	 public String rating;
 	 
-	 @Key
+	 //@Key
 	 public String website;
 	 
-	 @Key
+	 //@Key
 	 public List<Place> address_components;
 	 
-	 @Key
+	 //@Key
 	 public String long_name;
 	 
-	 @Key
+	 //@Key
 	 public String short_name;
 	 
 	   
-	 @Key
+	 //@Key
 	 public PlaceGeometry geometry;
 	 
 	 public static class PlaceGeometry {
-	  @Key
+	  //@Key
 	  public Location location;
 	 }
 
 	 public static class Location {
-	  @Key
+	  //@Key
 	  public double lat;
 
-	  @Key
+	  //@Key
 	  public double lng;
 	 }
 	 
@@ -65,6 +67,4 @@ public class Place {
 	 public String toString() {
 	  return name + " - " + id + " - " + reference;
 	 }
-	}
-
 }
