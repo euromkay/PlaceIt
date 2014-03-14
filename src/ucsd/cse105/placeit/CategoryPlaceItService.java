@@ -33,8 +33,8 @@ public class CategoryPlaceItService extends Service implements LocationListener 
 	LocationManager manager;
 	android.location.LocationListener listener;
 	String bestProvider;
-	int minUpdateTime = 5000;
-	int minDistance = 100; // Distance in meters
+	int minUpdateTime = 2000;
+	public static final int minDistance = 1; // Distance in meters
 
 	
 	@Override
@@ -47,15 +47,25 @@ public class CategoryPlaceItService extends Service implements LocationListener 
 	// When location changes, check if there are any locations with categories
 	// that match existing CategoryPlaceIts within configured radius.
 	@Override
-	public void onLocationChanged(Location arg0) {
+	public void onLocationChanged(Location pos) {
 		// Call GAE requesting Category PlaceIts
-		new CloudControllerGet().execute(MapActivity.PLACEIT_CAT_URI);
+		try {
+			ArrayList<CategoryData> list = PlaceRequest.performSearch(pos, Database.getAllCategoryPlaceIts());
+			list.size();
+			NotificationHelper helper = new NotificationHelper(this);
+			helper.sendNotification(1, "Category Works!", "Bedtime!");
+			if (list.size() > 0){
+				helper.sendNotification(1, "Category Results!", "$");	
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// Register for location changes
 	@Override
 	public void onStart(Intent intent, int startid) {
-		new CloudControllerGet().execute(MapActivity.PLACEIT_CAT_URI);
 		manager.requestLocationUpdates(bestProvider, minUpdateTime,
 				minDistance, listener);
 	}
@@ -70,53 +80,5 @@ public class CategoryPlaceItService extends Service implements LocationListener 
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	private class CloudControllerGet extends
-			AsyncTask<String, Void, List<String>> {
-		@Override
-		protected List<String> doInBackground(String... url) {
-
-			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url[0]);
-			List<String> list = new ArrayList<String>();
-			try {
-				HttpResponse response = client.execute(request);
-				HttpEntity entity = response.getEntity();
-				String data = EntityUtils.toString(entity);
-				Log.d(TAG, data);
-				JSONObject myjson;
-
-				try {
-					myjson = new JSONObject(data);
-					JSONArray array = myjson.getJSONArray("data");
-					for (int i = 0; i < array.length(); i++) {
-						JSONObject obj = array.getJSONObject(i);
-						list.add(obj.get("name").toString());
-					}
-
-				} catch (JSONException e) {
-
-					Log.d(TAG, "Error in parsing JSON");
-				}
-
-			} catch (ClientProtocolException e) {
-
-				Log.d(TAG,
-						"ClientProtocolException while trying to connect to GAE");
-			} catch (IOException e) {
-
-				Log.d(TAG, "IOException while trying to connect to GAE");
-			}
-			return list;
-		}
-
-		//Process any acquired Category PlaceIts
-		protected void onPostExecute(List<String> list) {
-			for(String s : list){
-				String test = s;
-			}
-		}
-
 	}
 }

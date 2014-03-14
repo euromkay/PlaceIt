@@ -51,7 +51,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		setContentView(R.layout.activity_map);
 		
-		//manageCategoryPlaceItService();
+		manageCategoryPlaceItService();
 		manageLocationPlaceItService();
 
 		setUpMapIfNeeded();
@@ -172,7 +172,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			
 			// Check if we were successful in obtaining the map.
 			if (mMap != null) {
-				dialog = ProgressDialog.show(this, "Loading data...", "Please wait...", false);
+				
 			    locationManager = new LocationClient(this,this,this);
 			    if(locationManager == null)
 			    	makeToast("SOMETHINGS WRONG");
@@ -215,9 +215,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			}
 		});
 		t.start();
-		
+		dialog = ProgressDialog.show(this, "Loading data...", "Please wait...", false);
 		try {
 			t.join();
+			dialog.dismiss();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
