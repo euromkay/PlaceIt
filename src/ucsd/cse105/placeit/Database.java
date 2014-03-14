@@ -284,47 +284,48 @@ public class Database {
 		}
 		return list;
 	}
+	
+	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts() {
+		String tag = "Database.getAllCategoryPlaceIts()";
 
-	// return new ArrayList<LocationPlaceIt>();
-	/*
-	 * try { FileInputStream fis = a.openFileInput(FILE_PLACEITS); String[]
-	 * content = reader(fis);
-	 * 
-	 * int position = 0; //what part of the content you're in int count =
-	 * Integer.parseInt(content[position++]);
-	 * 
-	 * ArrayList<LocationPlaceIt> list = new ArrayList<LocationPlaceIt>(count);
-	 * for(int i = 0; i < count; i++){ Log.d("Database.getAllPlaceIts", "# " +
-	 * Integer.toString(i) + " placeit being loaded"); String title =
-	 * content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "title of placeit being created: " + title); String description =
-	 * content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "description of placeit being created: " + description); String id_int =
-	 * content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "id of placeit being created: " + id_int); String lat_double =
-	 * content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "latitude of placeit being created: " + lat_double); String long_double =
-	 * content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "longitude of placeit being created: " + long_double); String
-	 * dueDate_Date = content[position++]; Log.d("Database.getAllPlaceIts",
-	 * "dueDate of placeit being created: " + dueDate_Date); String
-	 * schedule_String = content[position++];
-	 * 
-	 * LatLng location = new LatLng(Double.parseDouble(lat_double),
-	 * Double.parseDouble(long_double));
-	 * 
-	 * LocationPlaceIt p = new LocationPlaceIt(Integer.parseInt(id_int));
-	 * p.setLocation(location); p.setTitle(title);
-	 * p.setDescription(description); try { SimpleDateFormat df = new
-	 * SimpleDateFormat(DATE_FORMAT); p.setDueDate(df.parse(dueDate_Date)); }
-	 * catch (ParseException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } p.setSchedule(Integer.parseInt(schedule_String));
-	 * list.add(p); }
-	 * 
-	 * return list; } catch (FileNotFoundException e) { e.printStackTrace(); }
-	 * return new ArrayList<LocationPlaceIt>();
-	 */
-	// }
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(MapActivity.PLACEIT_CAT_URI);
+		ArrayList<CategoryPlaceIt> list = new ArrayList<CategoryPlaceIt>();
+		try {
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			Log.d(tag, data);
+			JSONObject myjson;
+
+			try {
+				myjson = new JSONObject(data);
+				JSONArray array = myjson.getJSONArray("data");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject obj = array.getJSONObject(i);
+					CategoryPlaceIt placeIt = new CategoryPlaceIt(
+							obj.getInt("name"));
+					placeIt.setTitle(obj.getString("title"));
+					placeIt.setDescription(obj.getString("description"));
+					placeIt.setCategory(obj.getString("cat1"), obj.getString("cat2"),
+							obj.getString("cat3"));
+					list.add(placeIt);
+				}
+
+			} catch (JSONException e) {
+
+				Log.d(tag, "Error in parsing JSON");
+			}
+
+		} catch (ClientProtocolException e) {
+
+			Log.d(tag, "ClientProtocolException while trying to connect to GAE");
+		} catch (IOException e) {
+
+			Log.d(tag, "IOException while trying to connect to GAE");
+		}
+		return list;
+	}
 
 	private static ArrayList<LocationPlaceIt> placeIts = null;
 
