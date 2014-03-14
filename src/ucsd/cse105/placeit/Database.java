@@ -11,14 +11,26 @@ import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
 public class Database {
+	final static String TAG_LOCATION_PLACEIT = "GAE Location PlaceIt";
+	final static String TAG_CATEGORY_PLACEIT = "GAE Category PlaceIt";
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
 	private static final String FILE_ZOOM = "zoom_file";
@@ -208,7 +220,8 @@ public class Database {
 	private static final String FILE_PLACEITS = "place_it_file";
 	//returns an active list of all the placeits
 	public static ArrayList<LocationPlaceIt> getAllPlaceIts(Context a) {
-
+		return new ArrayList<LocationPlaceIt>();
+		/*
 		try {
 			FileInputStream fis = a.openFileInput(FILE_PLACEITS);
 			String[] content = reader(fis);
@@ -254,7 +267,7 @@ public class Database {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<LocationPlaceIt>();
+		return new ArrayList<LocationPlaceIt>();*/
 	}
 
 	public static LocationPlaceIt getPlaceIt(int id, Context a){
@@ -288,17 +301,115 @@ public class Database {
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
-	public static void save(LocationPlaceIt p, Context a) {
-		if(getPlaceIt(p.getID(), a) != null){
-			Log.d("Database.save", "going to call removePlaceit");
-			removePlaceIt(p.getID(), a);
-		}
-		ArrayList<LocationPlaceIt> list = getAllPlaceIts(a);
+	public static void save(final LocationPlaceIt placeIt, Context a) {
+//		final ProgressDialog dialog = ProgressDialog.show(a,
+//				"Posting Data...", "Please wait...", false);
 		
-		list.add(p);
+		Thread t = new Thread() {
+			
+			public void run() {
+				HttpClient client = new DefaultHttpClient();
+				HttpPost post = new HttpPost(MapActivity.PLACEIT_LOC_URI);
+
+			    try {
+			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(8);
+			      nameValuePairs.add(new BasicNameValuePair("id",
+			    		  Integer.toString(placeIt.getID())));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("title",
+			    		  placeIt.getTitle()));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("description",
+			    		  placeIt.getDescription()));
+			      
+			      LatLng location = placeIt.getLocation();
+			      nameValuePairs.add(new BasicNameValuePair("longitude",
+				          Double.toString(location.longitude)));
+			      nameValuePairs.add(new BasicNameValuePair("latitude",
+			    		  Double.toString(location.latitude)));
+			      
+			      String dueDate = new SimpleDateFormat(DATE_FORMAT).format(placeIt.getDueDate());
+			      nameValuePairs.add(new BasicNameValuePair("dueDate", dueDate));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("schedule",
+			    		  Integer.toString(placeIt.getSchedule())));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("action", "put"));
+			      
+			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			 
+			      HttpResponse response = client.execute(post);
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			      String line = "";
+			      while ((line = rd.readLine()) != null) {
+			        Log.d(TAG_LOCATION_PLACEIT, line);
+			      }
+
+			    } catch (IOException e) {
+			    	Log.d(TAG_LOCATION_PLACEIT, "IOException while trying to conect to GAE");
+			    }
+			    //dialog.dismiss();
+			}
+			
+			
+		};
 		
-		writePlaceIts(list, a);
+		t.start();
+		//dialog.show();
 	}
+	
+	public static void save(final CategoryPlaceIt placeIt, Context a) {
+//		final ProgressDialog dialog = ProgressDialog.show(a,
+//				"Posting Data...", "Please wait...", false);
+		
+		Thread t = new Thread() {
+			
+			public void run() {
+				HttpClient client = new DefaultHttpClient();
+				HttpPost post = new HttpPost(MapActivity.PLACEIT_CAT_URI);
+
+			    try {
+			      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
+			      
+			      nameValuePairs.add(new BasicNameValuePair("id",
+			    		  Integer.toString(placeIt.getID())));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("title",
+			    		  placeIt.getTitle()));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("description",
+			    		  placeIt.getDescription()));	      
+			      
+			      nameValuePairs.add(new BasicNameValuePair("cat1",
+				          placeIt.getCategory(0)));
+			      nameValuePairs.add(new BasicNameValuePair("cat2",
+			    		  placeIt.getCategory(1)));
+			      nameValuePairs.add(new BasicNameValuePair("cat3",
+			    		  placeIt.getCategory(2)));
+			      
+			      nameValuePairs.add(new BasicNameValuePair("action", "put"));
+			      
+			      post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			 
+			      HttpResponse response = client.execute(post);
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			      String line = "";
+			      while ((line = rd.readLine()) != null) {
+			        Log.d(TAG_CATEGORY_PLACEIT, line);
+			      }
+
+			    } catch (IOException e) {
+			    	Log.d(TAG_CATEGORY_PLACEIT, "IOException while trying to conect to GAE");
+			    }
+			    //dialog.dismiss();
+			}
+		};
+		
+		t.start();
+		//dialog.show();
+	}
+
+	
 	private static void writePlaceIts(ArrayList<LocationPlaceIt> list, Context a){
 		ArrayList<String> stringList = new ArrayList<String>();
 		stringList.add(Integer.toString(list.size()));

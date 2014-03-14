@@ -1,10 +1,24 @@
 package ucsd.cse105.placeit;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,393 +33,346 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class FormActivity extends Activity implements OnClickListener{
+public class FormActivity extends Activity implements OnClickListener {
 
 	private EditText titleET, descriptionET;
 	private int counter;
-	
+
 	private Boolean hasLocation;
-	
+
 	protected void onCreate(Bundle b) {
 		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_form);
-		
-		
-		hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS);
+
+		hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY)
+				.getBoolean(MapActivity.PLACEIT_HAS_POS);
 		setupViews(hasLocation);
-		
-		if(hasId()){
-			Log.d("FormActivity.onCreate", "Found an id,therefore going to modify it");
+
+		if (hasId()) {
+			Log.d("FormActivity.onCreate",
+					"Found an id,therefore going to modify it");
 			IPlaceIt p = Database.getPlaceIt(getId(), this);
 			loadPlaceIt(p);
-		}else
+		} else
 			Log.d("FormActivity.onCreate", "No id found");
 	}
-	private boolean hasId(){
-		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
-		Log.d("FormActivity.onCreate", "id pulled from the bundle was : " + Integer.toString(id));
+
+	private boolean hasId() {
+		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
+				ListActivity.ID_BUNDLE_KEY);
+		;
+		Log.d("FormActivity.onCreate", "id pulled from the bundle was : "
+				+ Integer.toString(id));
 		return id != 0;
 	}
-	private int getId(){
-		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);
+
+	private int getId() {
+		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
+				ListActivity.ID_BUNDLE_KEY);
 	}
-	
-	private void loadPlaceIt(IPlaceIt placeIt){
+
+	private void loadPlaceIt(IPlaceIt placeIt) {
 		titleET.setText(placeIt.getTitle());
 		descriptionET.setText(placeIt.getDescription());
-		if(placeIt instanceof LocationPlaceIt){
+		if (placeIt instanceof LocationPlaceIt) {
 			LocationPlaceIt p = (LocationPlaceIt) placeIt;
 			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 			int value;
-			Log.d("FormActivity.loadPlaceIt", "the schedule is " + Integer.toString(p.getSchedule()));
-			switch(p.getSchedule()){
-				case -1:
-					value = 0;
-					break;
-			
-				case 10:
-					value = 1;
-					break;
-			
-				case 60:
-					value = 2;
-					break;
-			
-				case 60*60:
-					value = 3;
-					break;
-			
-				case 60*60*24:
-					value = 4;
-					break;
-		
-				case 60*60*24*7:
-					value = 5;
-					break;
-			
-				default:
-					throw new NullPointerException("Bad value in placeit");
+			Log.d("FormActivity.loadPlaceIt",
+					"the schedule is " + Integer.toString(p.getSchedule()));
+			switch (p.getSchedule()) {
+			case -1:
+				value = 0;
+				break;
+
+			case 10:
+				value = 1;
+				break;
+
+			case 60:
+				value = 2;
+				break;
+
+			case 60 * 60:
+				value = 3;
+				break;
+
+			case 60 * 60 * 24:
+				value = 4;
+				break;
+
+			case 60 * 60 * 24 * 7:
+				value = 5;
+				break;
+
+			default:
+				throw new NullPointerException("Bad value in placeit");
 			}
 			spinner.setSelection(value);
-		}
-		else{
+		} else {
 			CategoryPlaceIt p = (CategoryPlaceIt) placeIt;
-			
+
 			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 			int position = categoryToId(p.getCategory(0));
 			spinner.setSelection(position);
-			
+
 			spinner = (Spinner) findViewById(R.id.from_spinner2);
 			position = categoryToId(p.getCategory(1));
 			spinner.setSelection(position);
-			
+
 			spinner = (Spinner) findViewById(R.id.from_spinner3);
 			position = categoryToId(p.getCategory(2));
 			spinner.setSelection(position);
 		}
 	}
-	private int categoryToId(String s){
+
+	private int categoryToId(String s) {
 		int i = 0;
-		for(String t: categoryList){
-			if(t.equals(s))
+		for (String t : categoryList) {
+			if (t.equals(s))
 				return i;
 			i++;
 		}
 		throw new NullPointerException("Incorrect String");
 	}
-	protected void onResume(){
+
+	protected void onResume() {
 		super.onResume();
-		if(hasLocation == null){
-			hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS);
+		if (hasLocation == null) {
+			hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY)
+					.getBoolean(MapActivity.PLACEIT_HAS_POS);
 			setupViews(hasLocation);
 		}
 		counter = 1;
 	}
-	private void setupViews(boolean isLocation){
-		if(titleET == null){
+
+	private void setupViews(boolean isLocation) {
+		if (titleET == null) {
 			titleET = (EditText) findViewById(R.id.form_title);
 			descriptionET = (EditText) findViewById(R.id.form_description);
 			findViewById(R.id.formCancelButton).setOnClickListener(this);
 			findViewById(R.id.formSaveButton).setOnClickListener(this);
-			
+
 			Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
-			// Create an ArrayAdapter using the string array and a default spinner layout
+			// Create an ArrayAdapter using the string array and a default
+			// spinner layout
 			int array;
-			if(isLocation)
+			if (isLocation)
 				array = R.array.formValues;
-			else{
-				((TextView) findViewById(R.id.form_spinner_titleTV)).setText("Category");
+			else {
+				((TextView) findViewById(R.id.form_spinner_titleTV))
+						.setText("Category");
 				array = R.array.categoryValues;
 				setUpRestOfSpinners();
 			}
-			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter
+					.createFromResource(this, array,
+							android.R.layout.simple_spinner_item);
 			// Specify the layout to use when the list of choices appears
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			
+
 			// Apply the adapter to the spinner
-			
+
 			spinner.setAdapter(adapter);
-			//spinner.setSelection(prefs.getInt(Constants.RULES_SK_ALIGNMENT, 3));
-			
-			
-			//spinner.setOnItemSelectedListener(this);
+			// spinner.setSelection(prefs.getInt(Constants.RULES_SK_ALIGNMENT,
+			// 3));
+
+			// spinner.setOnItemSelectedListener(this);
 		}
 	}
-	private void setUpRestOfSpinners(){
+
+	private void setUpRestOfSpinners() {
 		Spinner spinner = (Spinner) findViewById(R.id.from_spinner2);
 		spinner.setVisibility(View.VISIBLE);
 		int array = R.array.categoryValues;
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, array, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
-		
 
 		spinner = (Spinner) findViewById(R.id.from_spinner3);
 		spinner.setVisibility(View.VISIBLE);
-		adapter = ArrayAdapter.createFromResource(this, array, android.R.layout.simple_spinner_item);
+		adapter = ArrayAdapter.createFromResource(this, array,
+				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 	}
 
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
 	public static final String COMPLETED_PLACEIT = "completedPlaceit";
-	
+
 	public void onClick(View arg0) {
-		if(arg0.getId() == R.id.formCancelButton){
+		if (arg0.getId() == R.id.formCancelButton) {
 			onBackPressed();
-		}
-		else if(arg0.getId() == R.id.formSaveButton){
-			if(emptyForms()){
+		} else if (arg0.getId() == R.id.formSaveButton) {
+			if (emptyForms()) {
 				makeToast("Please put something in the title or description!");
 				return;
 			}
 			int id = nextID();
 			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
-			IPlaceIt placeIt;
 
-			if(getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS, true)){
-				LocationPlaceIt LPlaceIt = new LocationPlaceIt(id);
-				placeIt = LPlaceIt;
-				((LocationPlaceIt) placeIt).setLocation(retrieveLocation());
+			IPlaceIt placeIt;
+			if (getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(
+					MapActivity.PLACEIT_HAS_POS, true)) {
+				LocationPlaceIt locPlaceIt = new LocationPlaceIt(id);
+				placeIt = locPlaceIt;
+
+				locPlaceIt.setTitle(titleET.getText().toString());
+				locPlaceIt.setDescription(descriptionET.getText().toString());
+
+				locPlaceIt.setLocation(retrieveLocation());
 				Date dueDate = new Date();
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(dueDate);
 				cal.add(Calendar.SECOND, 10);
 				dueDate = cal.getTime();
-				((LocationPlaceIt) placeIt).setDueDate(dueDate);
-				
-				
+				locPlaceIt.setDueDate(dueDate);
+
 				Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 				String s = (String) spinner.getSelectedItem();
 				Log.d("FormActivity.onCLick", s + " is the spinner selection");
-				
-				((LocationPlaceIt) placeIt).setSchedule(stringToSched(s));
-				Log.d("FormActivity.loadOnClick", "the schedule is " + Integer.toString(((LocationPlaceIt) placeIt).getSchedule()));
-			}
-			else{
-				CategoryPlaceIt CPlaceIt = new CategoryPlaceIt(id);
-				placeIt = CPlaceIt;
-				
+
+				locPlaceIt.setSchedule(stringToSched(s));
+				Log.d("FormActivity.loadOnClick",
+						"the schedule is "
+								+ Integer.toString(locPlaceIt.getSchedule()));
+				Database.save(locPlaceIt, this);
+			} else {
+				CategoryPlaceIt catPlaceIt = new CategoryPlaceIt(id);
+				placeIt = catPlaceIt;
+
+				catPlaceIt.setTitle(titleET.getText().toString());
+				catPlaceIt.setDescription(descriptionET.getText().toString());
+
 				Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 				String s1 = (String) spinner.getSelectedItem();
-				
+
 				spinner = (Spinner) findViewById(R.id.from_spinner2);
 				String s2 = (String) spinner.getSelectedItem();
 
 				spinner = (Spinner) findViewById(R.id.from_spinner3);
 				String s3 = (String) spinner.getSelectedItem();
-				
-				CPlaceIt.setCategory(s1, s2, s3);
+
+				catPlaceIt.setCategory(s1, s2, s3);
+				Database.save(catPlaceIt, this);
 			}
-			
-			
-			placeIt.setTitle(titleET.getText().toString());
-			placeIt.setDescription(descriptionET.getText().toString());
-			
-			
+
 			Intent i = new Intent();
 			i.putExtra(COMPLETED_PLACEIT, placeIt);
 			setResult(RESULT_OK, i);
-			
-			//Database.save(placeIt, this);
-			
+
 			clearForms();
 			finish();
 			return;
 		}
-	
+
 	}
-	private boolean emptyForms(){
-		if(isEmpty(titleET) && isEmpty(descriptionET))
+
+	private boolean emptyForms() {
+		if (isEmpty(titleET) && isEmpty(descriptionET))
 			return true;
 		return false;
 	}
-	private boolean isEmpty(EditText et){
+
+	private boolean isEmpty(EditText et) {
 		return et.getText().toString().length() == 0;
 	}
-	private LatLng retrieveLocation(){
+
+	private LatLng retrieveLocation() {
 		Intent i = getIntent();
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
-		if(b.getBoolean(MapActivity.PLACEIT_HAS_POS))
-			return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE), b.getDouble(MapActivity.PLACEIT_LONGITUDE));
+		if (b.getBoolean(MapActivity.PLACEIT_HAS_POS))
+			return new LatLng(b.getDouble(MapActivity.PLACEIT_LATITUDE),
+					b.getDouble(MapActivity.PLACEIT_LONGITUDE));
 		else
 			return null;
 	}
-	private int stringToSched(String s){
-		if(s.equals("None"))
+
+	private int stringToSched(String s) {
+		if (s.equals("None"))
 			return -1;
-		
-		if(s.equals("10 Seconds"))
+
+		if (s.equals("10 Seconds"))
 			return 10;
-		
-		if(s.equals("1 Minute"))
+
+		if (s.equals("1 Minute"))
 			return 60;
-		
-		if(s.equals("1 Hour"))
+
+		if (s.equals("1 Hour"))
 			return 60 * 60;
-		
-		if(s.equals("1 Day"))
+
+		if (s.equals("1 Day"))
 			return 60 * 60 * 24;
-		
-		if(s.equals("1 Week"))
+
+		if (s.equals("1 Week"))
 			return 60 * 60 * 24 * 7;
-		
+
 		else
-			throw new NullPointerException("Couldn't find the value in stringToSched");
+			throw new NullPointerException(
+					"Couldn't find the value in stringToSched");
 	}
-	
-	
+
 	private int nextID() {
-		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(ListActivity.ID_BUNDLE_KEY);;
-		
-		if(id == 0)
-			return new Random(System.currentTimeMillis()).nextInt(Integer.MAX_VALUE);
+		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
+				ListActivity.ID_BUNDLE_KEY);
+		;
+
+		if (id == 0)
+			return new Random(System.currentTimeMillis())
+					.nextInt(Integer.MAX_VALUE);
 		else
 			return id;
 	}
-	
-	
-	private void clearForms(){
+
+	private void clearForms() {
 		titleET.setText("");
 		descriptionET.setText("");
 	}
-	
-	private void makeToast(String s){
+
+	private void makeToast(String s) {
 		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 	}
 
-	public void onBackPressed(){
+	public void onBackPressed() {
 		Log.d("FormActivity.onBackPressed", "back was pressed");
 		boolean emptyForms = emptyForms();
-		if(counter == 2 || emptyForms || hasId()){
+		if (counter == 2 || emptyForms || hasId()) {
 			setResult(RESULT_CANCELED, new Intent());
 			clearForms();
-			finish();//exits and finishes the activity
+			finish();// exits and finishes the activity
 		}
-			
-		else if(counter == 1 || emptyForms){
+
+		else if (counter == 1 || emptyForms) {
 			counter++;
 			makeToast(warning);
 			return;
 		}
 	}
 
-	private static final String[] categoryList = {"accounting",
-		"airport",
-		"amusement_park",
-		"aquarium",
-		"art_gallery",
-		"atm",
-		"bakery",
-		"bank",
-		"bar",
-		"beauty_salon",
-		"bicycle_store",
-		"book_store",
-		"bowling_alley",
-		"bus_station",
-		"cafe",
-		"campground",
-		"car_dealer",
-		"car_rental",
-		"car_repair",
-		"car_wash",
-		"casino",
-		"cemetery",
-		"church",
-		"city_hall",
-		"clothing_store",
-		"convenience_store",
-		"courthouse",
-		"dentist",
-		"department_store",
-		"doctor",
-		"electrician",
-		"electronics_store",
-		"embassy",
-		"establishment",
-		"finance",
-		"fire_station",
-		"florist",
-		"food",
-		"funeral_home",
-		"furniture_store",
-		"gas_station",
-		"general_contractor",
-		"grocery_or_supermarket",
-		"gym",
-		"hair_care",
-		"hardware_store",
-		"health",
-		"hindu_temple",
-		"home_goods_store",
-		"hospital",
-		"insurance_agency",
-		"jewelry_store",
-		"laundry",
-		"lawyer",
-		"library",
-		"liquor_store",
-		"local_government_office",
-		"locksmith",
-		"lodging",
-		"meal_delivery",
-		"meal_takeaway",
-		"mosque",
-		"movie_rental",
-		"movie_theater",
-		"moving_company",
-		"museum",
-		"night_club",
-		"painter",
-		"park",
-		"parking",
-		"pet_store",
-		"pharmacy",
-		"physiotherapist",
-		"place_of_worship",
-		"plumber",
-		"police",
-		"post_office",
-		"real_estate_agency",
-		"restaurant",
-		"roofing_contractor",
-		"rv_park",
-		"school",
-		"shoe_store",
-		"shopping_mall",
-		"spa",
-		"stadium",
-		"storage",
-		"store",
-		"subway_station",
-		"synagogue",
-		"taxi_stand",
-		"train_station",
-		"travel_agency",
-		"university",
-		"veterinary_care",
-		"zoo",};
-	
+	private static final String[] categoryList = { "accounting", "airport",
+			"amusement_park", "aquarium", "art_gallery", "atm", "bakery",
+			"bank", "bar", "beauty_salon", "bicycle_store", "book_store",
+			"bowling_alley", "bus_station", "cafe", "campground", "car_dealer",
+			"car_rental", "car_repair", "car_wash", "casino", "cemetery",
+			"church", "city_hall", "clothing_store", "convenience_store",
+			"courthouse", "dentist", "department_store", "doctor",
+			"electrician", "electronics_store", "embassy", "establishment",
+			"finance", "fire_station", "florist", "food", "funeral_home",
+			"furniture_store", "gas_station", "general_contractor",
+			"grocery_or_supermarket", "gym", "hair_care", "hardware_store",
+			"health", "hindu_temple", "home_goods_store", "hospital",
+			"insurance_agency", "jewelry_store", "laundry", "lawyer",
+			"library", "liquor_store", "local_government_office", "locksmith",
+			"lodging", "meal_delivery", "meal_takeaway", "mosque",
+			"movie_rental", "movie_theater", "moving_company", "museum",
+			"night_club", "painter", "park", "parking", "pet_store",
+			"pharmacy", "physiotherapist", "place_of_worship", "plumber",
+			"police", "post_office", "real_estate_agency", "restaurant",
+			"roofing_contractor", "rv_park", "school", "shoe_store",
+			"shopping_mall", "spa", "stadium", "storage", "store",
+			"subway_station", "synagogue", "taxi_stand", "train_station",
+			"travel_agency", "university", "veterinary_care", "zoo", };
+
 }

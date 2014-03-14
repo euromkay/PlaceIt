@@ -31,7 +31,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnClickListener, OnMarkerClickListener, ConnectionCallbacks, OnConnectionFailedListener{
-
+//	public static final String PLACEIT_LOC_URI = "http://localhost:8888/location";
+//	public static final String PLACEIT_CAT_URI = "http://localhost:8888/category";
+	public static final String PLACEIT_LOC_URI = "http://cse110-placeit.appspot.com/location";
+	public static final String PLACEIT_CAT_URI = "http://cse110-placeit.appspot.com/category";
+	
 	private GoogleMap mMap;
 	private LocationClient locationManager;
 	
@@ -42,7 +46,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		setContentView(R.layout.activity_map);
 		
-		managePlaceItService();
+		//manageCategoryPlaceItService();
+		manageLocationPlaceItService();
 
 		setUpMapIfNeeded();
 		int launchPlaceItId = getIntent().getIntExtra(NotificationHelper.NOTIFICATION_MAP_FORM, 0);
@@ -56,7 +61,17 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 	}
 	
-	private void managePlaceItService() {
+	private void manageCategoryPlaceItService() {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (CategoryPlaceItService.class.getName().equals(service.service.getClassName())) {
+	            return;
+	        }
+	    }
+	    startService(new Intent(this, CategoryPlaceItService.class));
+	}
+
+	private void manageLocationPlaceItService() {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	        if (PlaceItService.class.getName().equals(service.service.getClassName())) {
