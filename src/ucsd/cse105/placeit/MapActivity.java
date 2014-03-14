@@ -61,7 +61,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			Log.d("MapActivity.onCreate", "Calling startPlaceIt()");
 			startPlaceIt(launchPlaceItId);
 		}
-			
 		
 		
 	}
@@ -91,7 +90,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
 		
 		
-		LatLng loc = Database.getPlaceIt(id, this).getLocation();
+		LatLng loc = Database.getLocationPlaceIt(id).getLocation();
 		
 		Bundle b = new Bundle();
 		b.putDouble(PLACEIT_LATITUDE, loc.latitude);
@@ -211,7 +210,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				placeIts = Database.getAllPlaceIts();
+				placeIts = Database.getAllLocationPlaceIts();
 			}
 		});
 		t.start();
@@ -290,7 +289,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 
 	public boolean onMarkerClick(Marker marker) {
-		IPlaceIt p = Database.getPlaceIt(marker.getPosition(), this);
+		IPlaceIt p = Database.getLocationPlaceIt(marker.getPosition());
 		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));
 		startPlaceIt(p.getID());
 		

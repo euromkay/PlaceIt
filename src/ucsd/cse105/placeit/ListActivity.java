@@ -41,15 +41,30 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 			setUpList();
 	}
 
+	private ArrayList<IPlaceIt> placeItList;
 	private void setUpList() {
 		findViewById(R.id.pullDownListButton).setOnClickListener(this);
 		this.list = new ArrayList<Integer>();
-		//TODO: need to run in separate thread
-		ArrayList<LocationPlaceIt> list = Database.getAllPlaceIts();
+		//TODO: need to run in separate threa
 		
-		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
-		for (int i = 0; i < list.size(); i++)
-			addPlaceItToList(list.get(i), i);
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				placeItList = Database.getAllPlaceIts();
+			}
+		});
+		t.start();
+		
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Log.d("ListActivity.setUpList", "Number of Placeits is :" + placeItList.size());
+		
+		for (int i = 0; i < placeItList.size(); i++)
+			addPlaceItToList(placeItList.get(i), i);
 	}
 
 	protected void onPause() {
@@ -137,21 +152,24 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 		int placeItID = Integer.parseInt(cb.getText().toString());
 
-		LocationPlaceIt p = Database.getPlaceIt(placeItID, this);
+		IPlaceIt placeIt = Database.getPlaceIt(placeItID);
+		if (placeIt instanceof LocationPlaceIt){
+				LocationPlaceIt p = (LocationPlaceIt) placeIt;
 
-		// Check if PlaceIt is on a recurring schedule
-		if (p.getSchedule() > 0) {
-			// Update dueDate & save to DB
-			p.setDueDate(p.getSchedule());
-			Database.save(p, this);
-		} else {
-			// Remove Place-It from Database
-			Database.removePlaceIt(placeItID, this);
+			// Check if PlaceIt is on a recurring schedule
+			if (p.getSchedule() > 0) {
+				// Update dueDate & save to DB
+				p.setDueDate(p.getSchedule());
+				Database.save(p, this);
+			} else {
+				// Remove Place-It from Database
+				Database.removePlaceIt(placeItID, this);
 
-			// remove notification
-			NotificationHelper helper = new NotificationHelper(this);
-			helper.dismissNotificationByID(placeItID);
+				// remove notification
+				NotificationHelper helper = new NotificationHelper(this);
+				helper.dismissNotificationByID(placeItID);
 
+			}
 		}
 		list.remove((Object) (id));
 		removeLayoutFromScreen(id);
@@ -172,6 +190,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		list.remove((Object) id);
 	}
 
+	private LatLng loc;
 	public void onClick(View v) {
 		if(v.getId() == R.id.pullDownListButton){
 			Intent i = new Intent(this, PullDownListActivity.class);
@@ -182,10 +201,23 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		Intent i = new Intent(this, FormActivity.class);
 
 		TextView tv = (TextView) findViewById(v.getId() + 3);
-		int id = Integer.parseInt(tv.getText().toString());
+		final int id = Integer.parseInt(tv.getText().toString());
 
-		LatLng loc = Database.getPlaceIt(id, this).getLocation();
-
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				loc = Database.getLocationPlaceIt(id).getLocation();
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 		Bundle b = new Bundle();
 		b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
 		b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);

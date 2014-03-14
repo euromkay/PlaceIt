@@ -78,6 +78,8 @@ public class Database {
 
 	}
 
+	
+	
 	public static void saveUsername(String username, Activity a) {
 
 		try {
@@ -139,6 +141,11 @@ public class Database {
 
 	}
 
+	
+	
+	
+	
+	
 	private static final String FILE_POSITION = "last_known_location file";
 
 	public static void savePosition(LatLng pos, Activity a) {
@@ -174,6 +181,9 @@ public class Database {
 		return new LatLng(0, 0);
 	}
 
+	
+	
+	
 	private static void writer(FileOutputStream fos, String[] data) {
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(fos);
@@ -189,7 +199,6 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-
 	private static String[] reader(FileInputStream fis) {
 		try {
 			InputStreamReader input = new InputStreamReader(fis);
@@ -222,15 +231,24 @@ public class Database {
 		}
 		return null;
 	}
+	private static String[] toStringArray(Object[] input) {
+		String[] array = new String[input.length];
+		for (int i = 0; i < array.length; i++)
+			array[i] = (String) input[i];
+		return array;
+	}
+	
+	
 
-	static ProgressDialog dialog;
-
+	private static ArrayList<CategoryPlaceIt> cPlaceIts = null;
+	private static ArrayList<IPlaceIt> placeIts = null;
+	private static ArrayList<LocationPlaceIt> lPlaceIts = null;
+	private static ProgressDialog dialog;
 	private static final String FILE_PLACEITS = "place_it_file";
-
 	// returns an active list of all the placeits
 	// uses network calls so must be called on a separate thread if 
 	// being called from main ui thread.
-	public static ArrayList<LocationPlaceIt> getAllPlaceIts() {
+	public static ArrayList<LocationPlaceIt> getAllLocationPlaceIts() {
 		String tag = "Database.getAllPlaceIts()";
 
 		HttpClient client = new DefaultHttpClient();
@@ -284,7 +302,6 @@ public class Database {
 		}
 		return list;
 	}
-	
 	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts() {
 		String tag = "Database.getAllCategoryPlaceIts()";
 
@@ -326,28 +343,47 @@ public class Database {
 		}
 		return list;
 	}
+	public static ArrayList<IPlaceIt> getAllPlaceIts(){
+		ArrayList<IPlaceIt> list = new ArrayList<IPlaceIt>();
+		list.addAll(getAllCategoryPlaceIts());
+		list.addAll(getAllLocationPlaceIts());
+		return list;
+	}
+	
+	public static LocationPlaceIt getLocationPlaceIt(LatLng position) {
+		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
+				+ position.toString());
 
-	private static ArrayList<LocationPlaceIt> placeIts = null;
+		new Thread(new Runnable() {
+			public void run() {
+				lPlaceIts = getAllLocationPlaceIts();
+			}
+		}).start();
 
-	public static LocationPlaceIt getPlaceIt(int id, Context a) {
+		for (LocationPlaceIt p : lPlaceIts)
+			if (p.getLocation().equals(position))
+				return p;
+
+		return null;
+	}
+	public static LocationPlaceIt getLocationPlaceIt(int id) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
 
 		new Thread(new Runnable() {
 			public void run() {
-				placeIts = getAllPlaceIts();
+				lPlaceIts = getAllLocationPlaceIts();
 			}
 		}).start();
 
-		for (LocationPlaceIt p : placeIts)
+		for (LocationPlaceIt p : lPlaceIts)
 			if (p.getID() == id)
 				return p;
 
 		return null;
 	}
-
-	public static IPlaceIt getPlaceIt(LatLng pos, Context a) {
-		placeIts = null;
+	public static IPlaceIt getPlaceIt(int id) {
+		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Integer.toString(id));
 
 		new Thread(new Runnable() {
 			public void run() {
@@ -356,9 +392,8 @@ public class Database {
 		}).start();
 
 		for (IPlaceIt p : placeIts)
-			if (p instanceof LocationPlaceIt)
-				if (((LocationPlaceIt) p).getLocation().equals(pos))
-					return p;
+			if (p.getID() == id)
+				return p;
 
 		return null;
 	}
@@ -369,7 +404,7 @@ public class Database {
 
 		new Thread(new Runnable() {
 			public void run() {
-				placeIts = getAllPlaceIts();
+				placeIts = getAllLocationPlaceIts();
 			}
 		}).start();
 
@@ -377,7 +412,7 @@ public class Database {
 			if (p.getID() == (placeItID)) {
 				Log.d("Database.remove", "found the placeit to remove");
 				placeIts.remove(p);
-				writePlaceIts(placeIts, a);
+				writePlaceIts(placeIts);
 				return;
 			}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
@@ -529,17 +564,14 @@ public class Database {
 		}
 	}
 
-	private static String[] toStringArray(Object[] input) {
-		String[] array = new String[input.length];
-		for (int i = 0; i < array.length; i++)
-			array[i] = (String) input[i];
-		return array;
-	}
+	
 
 	public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(
 			PullDownListActivity pullDownListActivity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

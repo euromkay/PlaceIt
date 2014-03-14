@@ -52,7 +52,7 @@ public class FormActivity extends Activity implements OnClickListener {
 		if (hasId()) {
 			Log.d("FormActivity.onCreate",
 					"Found an id,therefore going to modify it");
-			IPlaceIt p = Database.getPlaceIt(getId(), this);
+			IPlaceIt p = Database.getPlaceIt(getId());
 			loadPlaceIt(p);
 		} else
 			Log.d("FormActivity.onCreate", "No id found");
