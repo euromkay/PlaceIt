@@ -218,8 +218,7 @@ public class FormActivity extends Activity implements OnClickListener {
 			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
 
 			IPlaceIt placeIt;
-			if (getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(
-					MapActivity.PLACEIT_HAS_POS, true)) {
+			if ( ((Spinner) findViewById(R.id.from_spinner)).getVisibility() != View.VISIBLE ) {
 				LocationPlaceIt locPlaceIt = new LocationPlaceIt(id);
 				placeIt = locPlaceIt;
 

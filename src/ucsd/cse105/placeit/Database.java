@@ -457,7 +457,7 @@ public class Database {
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
-	public static void save(final LocationPlaceIt placeIt, Context a) {
+	public static void save(final LocationPlaceIt placeIt) {
 		// final ProgressDialog dialog = ProgressDialog.show(a,
 		// "Posting Data...", "Please wait...", false);
 
@@ -522,6 +522,12 @@ public class Database {
 		};
 
 		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// dialog.show();
 	}
 
