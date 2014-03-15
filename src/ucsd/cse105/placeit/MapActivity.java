@@ -88,10 +88,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private void startPlaceIt(final int id){
 		Intent i = new Intent(this, FormActivity.class);
 		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
-		
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				loc = Database.getLocationPlaceIt(id).getLocation();
+				loc = Database.getLocationPlaceIt(id, username).getLocation();
 			}
 		});
 		t.start();
@@ -225,10 +225,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	private void populatePlaceIts(){
 		placeIts = null;
-		
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				placeIts = Database.getAllLocationPlaceIts();
+				placeIts = Database.getAllLocationPlaceIts(username);
 			}
 		});
 		t.start();
@@ -237,14 +237,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			t.join();
 			dialog.dismiss();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String username = Database.getUsername(this);
+		
 		for(IPlaceIt p: placeIts)
 			if(p instanceof LocationPlaceIt){
 				LocationPlaceIt placeIt = (LocationPlaceIt) p;
-				if(p.getUser().equals(username)  && !p.getIsCompleted())
+				if(!p.getIsCompleted())
 					addPlaceItToMap(placeIt);
 			}
 	}
@@ -314,23 +313,12 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
 	}
 
-	private IPlaceIt p;
 	public boolean onMarkerClick(final Marker marker) {
-		/*
-		Thread t = new Thread(new Runnable(){
-			public void run(){
-				p = ;
-			}
-		});
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		final String username = Database.getUsername(this);
 		
-		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));*/
-		startPlaceIt(Database.getLocationPlaceIt(marker.getPosition()).getID());
+		IPlaceIt p = Database.getLocationPlaceIt(marker.getPosition(), username);
+		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));
+		startPlaceIt(p.getID());
 		
 		return false;
 	}

@@ -30,12 +30,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+@SuppressLint("SimpleDateFormat")
 public class Database {
 	final static String TAG_LOCATION_PLACEIT = "GAE Location PlaceIt";
 	final static String TAG_CATEGORY_PLACEIT = "GAE Category PlaceIt";
@@ -78,7 +80,7 @@ public class Database {
 
 	
 	
-	public static void saveUsername(String username, Activity a) {
+	public static void saveUsername(String username, Context a) {
 
 		try {
 			FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS,
@@ -91,7 +93,7 @@ public class Database {
 
 	}
 
-	public static String getUsername(Activity a) {
+	public static String getUsername(Context a) {
 		try {
 			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
 			return reader(fis)[0];
@@ -105,7 +107,7 @@ public class Database {
 	// checks to see if the user has already logged in
 	private static final String FILE_CREDENTIALS = "logincredentials file";
 
-	public static boolean checkLoginCredentials(Activity a) {
+	public static boolean checkLoginCredentials(Context a) {
 		try {
 			String content = getUsername(a);
 			Log.d("Database.checkLoginCredentials", "content is " + content);
@@ -115,7 +117,7 @@ public class Database {
 		}
 	}
 
-	public static void clearCredentials(Activity a) {
+	public static void clearCredentials(Context a) {
 		Log.d("Database.clearCredentials", "clearing credentials");
 		a.deleteFile(FILE_CREDENTIALS);
 		// FileOutputStream fos = a.openFileOutput(FILE_CREDENTIALS,
@@ -126,7 +128,7 @@ public class Database {
 
 	// checks to see if the login was correct
 	public static boolean checkLogin(String username, String password,
-			Activity a) {
+			Context a) {
 		if (!password.equals("password"))
 			return false;
 
@@ -146,7 +148,7 @@ public class Database {
 	
 	private static final String FILE_POSITION = "last_known_location file";
 
-	public static void savePosition(LatLng pos, Activity a) {
+	public static void savePosition(LatLng pos, Context a) {
 		String[] data = new String[] { Double.toString(pos.latitude),
 				Double.toString(pos.longitude) };
 
@@ -160,7 +162,7 @@ public class Database {
 		}
 	}
 
-	public static LatLng getLastPosition(Activity a) {
+	public static LatLng getLastPosition(Context a) {
 		Log.d("Database.getLastZoom", "entering getLastZoom");
 		try {
 			FileInputStream fis = a.openFileInput(FILE_ZOOM);
@@ -241,7 +243,7 @@ public class Database {
 	// returns an active list of all the placeits
 	// uses network calls so must be called on a separate thread if 
 	// being called from main ui thread.
-	public static ArrayList<LocationPlaceIt> getAllLocationPlaceIts() {
+	public static ArrayList<LocationPlaceIt> getAllLocationPlaceIts(String username) {
 		String tag = "Database.getAllPlaceIts()";
 
 		HttpClient client = new DefaultHttpClient();
@@ -299,7 +301,7 @@ public class Database {
 		return list;
 	}
 	
-	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts() {
+	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts(String username) {
 		String tag = "Database.getAllCategoryPlaceIts()";
 
 		HttpClient client = new DefaultHttpClient();
@@ -343,21 +345,21 @@ public class Database {
 		return list;
 	}
 	
-	public static ArrayList<IPlaceIt> getAllPlaceIts(){
+	public static ArrayList<IPlaceIt> getAllPlaceIts(String username){
 		ArrayList<IPlaceIt> list = new ArrayList<IPlaceIt>();
-		list.addAll(getAllCategoryPlaceIts());
-		list.addAll(getAllLocationPlaceIts());
+		list.addAll(getAllCategoryPlaceIts(username));
+		list.addAll(getAllLocationPlaceIts(username));
 		return list;
 	}
 	
 	
-	public static LocationPlaceIt getLocationPlaceIt(LatLng position) {
+	public static LocationPlaceIt getLocationPlaceIt(LatLng position, final String username) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ position.toString());
 
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				lPlaceIts = getAllLocationPlaceIts();
+				lPlaceIts = getAllLocationPlaceIts(username);
 			}
 		});
 		t.start();
@@ -374,11 +376,11 @@ public class Database {
 		return null;
 	}
 	
-	public static LocationPlaceIt getLocationPlaceIt(int id) {
+	public static LocationPlaceIt getLocationPlaceIt(int id, String username) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
 
-		ArrayList<LocationPlaceIt> lPlaceIts = getAllLocationPlaceIts();
+		ArrayList<LocationPlaceIt> lPlaceIts = getAllLocationPlaceIts(username);
 		
 
 		for (LocationPlaceIt p : lPlaceIts)
@@ -388,11 +390,11 @@ public class Database {
 		return null;
 	}
 	
-	public static CategoryPlaceIt getCategoryPlaceIt(int id) {
+	public static CategoryPlaceIt getCategoryPlaceIt(int id, String userName) {
 		Log.d("Database.getCategoryPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
 
-		ArrayList<CategoryPlaceIt> placeIts = getAllCategoryPlaceIts();
+		ArrayList<CategoryPlaceIt> placeIts = getAllCategoryPlaceIts(userName);
 		
 
 		for (CategoryPlaceIt p : placeIts)
@@ -402,11 +404,11 @@ public class Database {
 		return null;
 	}
 	
-	public static IPlaceIt getPlaceIt(int id) {
+	public static IPlaceIt getPlaceIt(int id, String userName) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
 
-		ArrayList<IPlaceIt> iPlaceIts = getAllPlaceIts();
+		ArrayList<IPlaceIt> iPlaceIts = getAllPlaceIts(userName);
 		
 
 		for (IPlaceIt p : iPlaceIts)
@@ -466,15 +468,12 @@ public class Database {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
 	public static void save(final LocationPlaceIt placeIt) {
-		// final ProgressDialog dialog = ProgressDialog.show(a,
-		// "Posting Data...", "Please wait...", false);
 
 		Thread t = new Thread() {
 
@@ -540,15 +539,12 @@ public class Database {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// dialog.show();
 	}
 
 	public static void save(final CategoryPlaceIt placeIt) {
-		// final ProgressDialog dialog = ProgressDialog.show(a,
-		// "Posting Data...", "Please wait...", false);
 
 		Thread t = new Thread() {
 
@@ -607,7 +603,6 @@ public class Database {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -648,7 +643,6 @@ public class Database {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -698,10 +692,8 @@ public class Database {
 	}
 	
 
-	public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(
-			PullDownListActivity pullDownListActivity) {
-		// TODO Auto-generated method stub
+	/*public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(PullDownListActivity pullDownListActivity) {
 		return null;
-	}
+	}*/
 	
 }

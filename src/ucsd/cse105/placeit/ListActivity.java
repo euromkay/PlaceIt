@@ -1,6 +1,7 @@
 package ucsd.cse105.placeit;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,11 +13,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -47,9 +46,10 @@ public class ListActivity extends Activity implements
 		findViewById(R.id.backToMap).setOnClickListener(this);
 		list = new ArrayList<Integer>();
 		
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				placeItList = Database.getAllPlaceIts();
+				placeItList = Database.getAllPlaceIts(username);
 			}
 		});
 		t.start();
@@ -66,7 +66,7 @@ public class ListActivity extends Activity implements
 		
 		for (int i = 0; i < placeItList.size(); i++){
 			IPlaceIt p = placeItList.get(i);
-			if(p.getUser().equals(Database.getUsername(this)) && !p.getIsCompleted())
+			if(!p.getIsCompleted())
 				addPlaceItToList(p, i);
 		}
 	}
@@ -167,9 +167,10 @@ public class ListActivity extends Activity implements
 
 		final int placeItID = Integer.parseInt(cb.getText().toString());
 
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				placeIt = Database.getPlaceIt(placeItID);
+				placeIt = Database.getPlaceIt(placeItID, username);
 			}
 		});
 		t.start();
@@ -207,10 +208,11 @@ public class ListActivity extends Activity implements
 		TextView cb = (TextView) findViewById(viewId + 2);
 
 		final int placeItID = Integer.parseInt(cb.getText().toString());
-
+		
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				placeIt = Database.getPlaceIt(placeItID);
+				placeIt = Database.getPlaceIt(placeItID, username);
 			}
 		});
 		t.start();
@@ -289,9 +291,10 @@ public class ListActivity extends Activity implements
 		TextView tv = (TextView) findViewById(v.getId() + 3);
 		final int id = Integer.parseInt(tv.getText().toString());
 
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				p = Database.getPlaceIt(id);
+				p = Database.getPlaceIt(id, username);
 			}
 		});
 		t.start();

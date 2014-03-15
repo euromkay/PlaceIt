@@ -8,11 +8,11 @@ public class DiscardReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, final Intent intent) {
-
+		final String username = Database.getUsername(context);
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				int notificationID = intent.getIntExtra("notificationId", 0);
-				IPlaceIt p = Database.getPlaceIt(notificationID);
+				IPlaceIt p = Database.getPlaceIt(notificationID, username);
 				p.setIsCompleted(true);
 
 				if (p instanceof LocationPlaceIt) {

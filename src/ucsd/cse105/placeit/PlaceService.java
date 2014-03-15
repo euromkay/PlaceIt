@@ -7,7 +7,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.location.Address;
 import android.util.Log;
 
 public class PlaceService {
@@ -79,7 +77,6 @@ public class PlaceService {
 			latVal = URLEncoder.encode(String.valueOf(latitude), "UTF-8");
 			lngVal = URLEncoder.encode(String.valueOf(longitude), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -88,7 +85,7 @@ public class PlaceService {
 			urlString.append(latVal);
 			urlString.append(",");
 			urlString.append(lngVal);
-			urlString.append("&radius=3000");
+			urlString.append("&radius=1609");
 			// urlString.append("&types="+place);
 			urlString.append("&sensor=false&key=" + API_KEY);
 			urlString.append("&userIP=128.54.46.159");
@@ -97,7 +94,7 @@ public class PlaceService {
 			urlString.append(latVal);
 			urlString.append(",");
 			urlString.append(lngVal);
-			urlString.append("&radius=3000");
+			urlString.append("&radius=1609");
 			urlString.append("&types=" + place);
 			urlString.append("&sensor=false&key=" + API_KEY);
 			urlString.append("&userIP=128.54.46.159");

@@ -13,7 +13,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -88,12 +87,12 @@ public class CategoryPlaceItService extends Service implements
 		if (timeSinceLastCheck < delay) {
 			return;
 		}
-
+		final String username = Database.getUsername(this);
 		// Call GAE requesting Category PlaceIts
 		try {
 			Thread t = new Thread(new Runnable() {
 				public void run() {
-					placeIts = Database.getAllCategoryPlaceIts();
+					placeIts = Database.getAllCategoryPlaceIts(username);
 
 					//Only check not completed
 					ArrayList<CategoryPlaceIt> copy = new ArrayList<CategoryPlaceIt>();
@@ -132,7 +131,6 @@ public class CategoryPlaceItService extends Service implements
 			try {
 				t.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (placeIts.size() > 0 && places.size() > 0) {
@@ -154,7 +152,6 @@ public class CategoryPlaceItService extends Service implements
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -178,25 +175,21 @@ public class CategoryPlaceItService extends Service implements
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
 		mLocationClient.requestLocationUpdates(REQUEST, this);
 	}
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -14,9 +14,10 @@ public class RepostReceiver extends BroadcastReceiver {
 		String placeItType = intent
 				.getStringExtra(NotificationHelper.NOTIFICATION_PLACEIT_TYPE);
 
+		final String username = Database.getUsername(context);
 		if (placeItType == "Location") {
 			LocationPlaceIt placeIt = Database
-					.getLocationPlaceIt(notificationId);
+					.getLocationPlaceIt(notificationId, username);
 			placeIt.setDueDate(10);
 
 			Database.save(placeIt);

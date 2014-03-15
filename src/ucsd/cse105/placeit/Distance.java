@@ -1,11 +1,10 @@
 package ucsd.cse105.placeit;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class Distance {
 	

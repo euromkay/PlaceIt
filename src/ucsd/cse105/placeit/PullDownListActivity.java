@@ -41,9 +41,10 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 	private ArrayList<IPlaceIt> pList; 
 	private void setUpList() {
 		list = new ArrayList<Integer>();
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				pList = Database.getAllPlaceIts();
+				pList = Database.getAllPlaceIts(username);
 			}
 		});
 		t.start();
@@ -56,7 +57,7 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for (int i = 0; i < pList.size(); i++){
 			IPlaceIt p = pList.get(i);
-			if(Database.getUsername(this).equals(p.getUser()) && p.getIsCompleted())
+			if(p.getIsCompleted())
 				addPlaceItToList(p, i);
 		}
 	}
@@ -143,10 +144,10 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 
 		final int placeItID = Integer.parseInt(cb.getText().toString());
 
-		
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				p = Database.getPlaceIt(placeItID);
+				p = Database.getPlaceIt(placeItID, username);
 			}
 		});
 		

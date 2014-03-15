@@ -47,9 +47,10 @@ public class FormActivity extends Activity implements OnClickListener {
 
 	private IPlaceIt p;
 	private IPlaceIt getPlaceIt(int id){
+		final String username = Database.getUsername(this);
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				p = Database.getPlaceIt(getId());
+				p = Database.getPlaceIt(getId(), username);
 			}
 		});
 		t.start();
