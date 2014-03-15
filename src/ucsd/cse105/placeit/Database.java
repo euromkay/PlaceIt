@@ -280,6 +280,9 @@ public class Database {
 					LatLng location = new LatLng(obj.getDouble("latitude"),
 							obj.getDouble("longitude"));
 					placeIt.setLocation(location);
+					
+					placeIt.setUser(obj.getString("user"));
+					placeIt.setIsCompleted(obj.getBoolean("isCompleted"));
 
 					list.add(placeIt);
 				}
@@ -326,6 +329,8 @@ public class Database {
 					placeIt.setDescription(obj.getString("description"));
 					placeIt.setCategory(obj.getString("cat1"), obj.getString("cat2"),
 							obj.getString("cat3"));
+					placeIt.setUser(obj.getString("user"));
+					placeIt.setIsCompleted(obj.getBoolean("isCompleted"));
 					list.add(placeIt);
 				}
 
@@ -454,6 +459,12 @@ public class Database {
 					nameValuePairs.add(new BasicNameValuePair("schedule",
 							Integer.toString(placeIt.getSchedule())));
 
+					nameValuePairs.add(new BasicNameValuePair("isCompleted",
+							Boolean.toString(placeIt.getIsCompleted())));
+					
+					nameValuePairs.add(new BasicNameValuePair("user",
+							placeIt.getUser()));
+					
 					nameValuePairs.add(new BasicNameValuePair("action", "put"));
 
 					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -509,6 +520,12 @@ public class Database {
 							.getCategory(1)));
 					nameValuePairs.add(new BasicNameValuePair("cat3", placeIt
 							.getCategory(2)));
+					
+					nameValuePairs.add(new BasicNameValuePair("isCompleted",
+							Boolean.toString(placeIt.getIsCompleted())));
+					
+					nameValuePairs.add(new BasicNameValuePair("user",
+							placeIt.getUser()));
 
 					nameValuePairs.add(new BasicNameValuePair("action", "put"));
 
