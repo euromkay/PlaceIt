@@ -31,8 +31,8 @@ public class FormActivity extends Activity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_form);
 
-		hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY)
-				.getBoolean(MapActivity.PLACEIT_HAS_POS);
+		hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS);
+		Log.d("FormActivity.onCreate", "has location" + hasLocation.toString());
 		setupViews(hasLocation);
 
 		if (hasId()) {
@@ -144,8 +144,7 @@ public class FormActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		if (hasLocation == null) {
-			hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY)
-					.getBoolean(MapActivity.PLACEIT_HAS_POS);
+			hasLocation = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getBoolean(MapActivity.PLACEIT_HAS_POS);
 			setupViews(hasLocation);
 		}
 		counter = 1;
