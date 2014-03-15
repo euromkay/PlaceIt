@@ -33,13 +33,24 @@ public class PullDownListActivity extends Activity {
 			setUpList();
 	}
 
+	private ArrayList<IPlaceIt> pList; 
 	private void setUpList() {
 		list = new ArrayList<Integer>();
-		ArrayList<LocationPlaceIt> list = Database.getCompletedPlaceIts(this);
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				pList = Database.getCompletedPlaceIts();
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
 		for (int i = 0; i < list.size(); i++)
-			addPlaceItToList(list.get(i), i);
+			addPlaceItToList(pList.get(i), i);
 	}
 
 	protected void onPause() {
