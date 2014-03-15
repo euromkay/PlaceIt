@@ -27,6 +27,8 @@ public class LoginActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_login);
 		
 		findViewById(R.id.login_button).setOnClickListener(this);
+
+		findViewById(R.id.createAccountButton).setOnClickListener(this);
 	}
 	
 	private boolean hasLoginCreds(){
@@ -69,9 +71,22 @@ public class LoginActivity extends Activity implements OnClickListener{
 			
 	}
 	
-	private boolean validCreds(String username, String password){
-		
-		return Database.checkLogin(username, password, this);
+	private boolean b;
+	private boolean validCreds(final String username, final String password){
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				b = Database.getAccount(username, password);
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Database.saveUsername(username, this);
+		return b;
 	}
 	
 }

@@ -109,7 +109,7 @@ public class Database {
 		try {
 			String content = getUsername(a);
 			Log.d("Database.checkLoginCredentials", "content is " + content);
-			return content.equals("account1") || content.equals("account2");
+			return content.length() >= 1;//equals("account1") || content.equals("account2");
 		} catch (Exception e) {
 			return false;
 		}
@@ -355,12 +355,18 @@ public class Database {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ position.toString());
 
-		new Thread(new Runnable() {
+		Thread t = new Thread(new Runnable() {
 			public void run() {
 				lPlaceIts = getAllLocationPlaceIts();
 			}
-		}).start();
+		});
+		t.start();
 
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		for (LocationPlaceIt p : lPlaceIts)
 			if (p.getLocation().equals(position))
 				return p;
@@ -631,7 +637,7 @@ public class Database {
 		}
 	}
 	
-	public static Account getAccount(final String name, final String password) {
+	public static boolean getAccount(final String name, final String password) {
 		String tag = "Database.getAccount()";
 
 		HttpClient client = new DefaultHttpClient();
@@ -655,7 +661,6 @@ public class Database {
 				}
 
 			} catch (JSONException e) {
-
 				Log.d(tag, "Error in parsing JSON");
 			}
 
@@ -668,11 +673,12 @@ public class Database {
 		}
 		
 		for (Account a : list){
-			if (a.getName() == name)
-				return a;
+			Log.d("Database.getAccoutn", a.toString());
+			if (a.getName().equals(name) && a.getPassword().equals(password))
+				return true;
 		}
 
-		return null;
+		return false;
 	}
 	
 

@@ -84,18 +84,29 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	    }
 	    startService(new Intent(this, PlaceItService.class));
 	}
-	
-	private void startPlaceIt(int id){
+	private LatLng loc; 
+	private void startPlaceIt(final int id){
 		Intent i = new Intent(this, FormActivity.class);
 		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
 		
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				loc = Database.getLocationPlaceIt(id).getLocation();
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
-		LatLng loc = Database.getLocationPlaceIt(id).getLocation();
 		
 		Bundle b = new Bundle();
 		b.putDouble(PLACEIT_LATITUDE, loc.latitude);
 		b.putDouble(PLACEIT_LONGITUDE, loc.longitude);
 		b.putInt(ListActivity.ID_BUNDLE_KEY, id);
+		b.putBoolean(PLACEIT_HAS_POS, true);
 		
 		i.putExtra(PLACEIT_KEY, b);
 		
@@ -303,10 +314,23 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
 	}
 
-	public boolean onMarkerClick(Marker marker) {
-		IPlaceIt p = Database.getLocationPlaceIt(marker.getPosition());
-		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));
-		startPlaceIt(p.getID());
+	private IPlaceIt p;
+	public boolean onMarkerClick(final Marker marker) {
+		/*
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				p = ;
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Log.d("MapActivity.onMarkerClick", "Id was: " + Integer.toString(p.getID()));*/
+		startPlaceIt(Database.getLocationPlaceIt(marker.getPosition()).getID());
 		
 		return false;
 	}
