@@ -85,7 +85,8 @@ public class LoginActivity extends Activity implements OnClickListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Database.saveUsername(username, this);
+		if(b)
+			Database.saveUsername(username, this);
 		return b;
 	}
 	

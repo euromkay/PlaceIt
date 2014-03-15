@@ -44,6 +44,7 @@ public class ListActivity extends Activity implements
 	private ArrayList<IPlaceIt> placeItList;
 	private void setUpList() {
 		findViewById(R.id.pullDownListButton).setOnClickListener(this);
+		findViewById(R.id.backToMap).setOnClickListener(this);
 		list = new ArrayList<Integer>();
 		
 		Thread t = new Thread(new Runnable(){
@@ -266,6 +267,8 @@ public class ListActivity extends Activity implements
 
 	private IPlaceIt p;
 	public void onClick(View v) {
+		if(v.getId() == R.id.backToMap)
+			onBackPressed();
 		if(v.getId() == R.id.pullDownListButton){
 			Intent i = new Intent(this, PullDownListActivity.class);
 			startActivity(i);
