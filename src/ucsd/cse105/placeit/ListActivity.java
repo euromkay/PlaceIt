@@ -13,8 +13,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,8 +64,8 @@ public class ListActivity extends Activity implements
 		
 		for (int i = 0; i < placeItList.size(); i++){
 			IPlaceIt p = placeItList.get(i);
-			if(p.getUser().equals(Database.getUsername(this)))
-				addPlaceItToList(placeItList.get(i), i);
+			if(p.getUser().equals(Database.getUsername(this)) && !p.getIsCompleted())
+				addPlaceItToList(p, i);
 		}
 	}
 
@@ -104,7 +102,7 @@ public class ListActivity extends Activity implements
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
 		tv.setLayoutParams(param);
 
-		Button cb = new CheckBox(this);
+		Button cb = new Button(this);
 		cb.setBackgroundColor(Color.RED);
 		cb.setScaleX(0.75f);// hopefully makes the checkbox smaller
 		cb.setScaleY(0.75f);
@@ -112,13 +110,13 @@ public class ListActivity extends Activity implements
 		cb.setText("C");
 		cb.setOnClickListener(this);
 		
-		Button db = new CheckBox(this);
-		cb.setBackgroundColor(Color.RED);
-		cb.setScaleX(0.75f);// hopefully makes the checkbox smaller
-		cb.setScaleY(0.75f);
-		cb.setId((5 * id) + 4);
-		cb.setText("D");
-		cb.setOnClickListener(this);
+		Button db = new Button(this);
+		db.setBackgroundColor(Color.BLUE);
+		db.setScaleX(0.75f);// hopefully makes the checkbox smaller
+		db.setScaleY(0.75f);
+		db.setId((5 * id) + 4);
+		db.setText("D");
+		db.setOnClickListener(this);
 
 		Log.d("ListActivity.addPlaceItToList", Integer.toString((5 * id) + 1));
 		list.add((5 * id) + 1);
@@ -151,6 +149,8 @@ public class ListActivity extends Activity implements
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
 	}
 
+	//delete is 4
+	private IPlaceIt placeIt;
 	private void deletePlaceIt(View arg0) {
 		int id = arg0.getId();
 
@@ -158,51 +158,67 @@ public class ListActivity extends Activity implements
 		// cleared.
 
 		// gets the id from the checkbox
-		TextView cb = (TextView) findViewById(id + 2);
+		TextView cb = (TextView) findViewById(id - 1);
 
 		if (cb == null)
 			Log.d("ListActivity.onCheckedChange", "couldn't find the textview!");
 
-		int placeItID = Integer.parseInt(cb.getText().toString());
+		final int placeItID = Integer.parseInt(cb.getText().toString());
 
-		IPlaceIt placeIt = Database.getPlaceIt(placeItID);
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				placeIt = Database.getPlaceIt(placeItID);
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (placeIt instanceof LocationPlaceIt){
-				LocationPlaceIt p = (LocationPlaceIt) placeIt;
+			LocationPlaceIt p = (LocationPlaceIt) placeIt;
 
 			// Check if PlaceIt is on a recurring schedule
 			if (p.getSchedule() > 0) {
 				// Update dueDate & save to DB
 				p.setDueDate(p.getSchedule());
-				Database.save(p);
-			} else {
-				// Remove Place-It from Database
 				Database.removePlaceIt(p);
-
-				// remove notification
-				NotificationHelper helper = new NotificationHelper(this);
-				helper.dismissNotificationByID(placeItID);
-
-			}
+			} 
 		}
-		list.remove((Object) (id));
-		removeLayoutFromScreen(id);
+		Database.removePlaceIt(placeIt);
+
+		// remove notification
+		NotificationHelper helper = new NotificationHelper(this);
+		helper.dismissNotificationByID(placeItID);
+		list.remove((Object) (id - 3));
+		removeLayoutFromScreen(id - 3);
 	}
 
 	private void completePlaceIt(View arg0) {
-		int id = arg0.getId();
+		int viewId = arg0.getId();
 
-		// removes it so theres not a double remove later on when the list is
-		// cleared.
 
 		// gets the id from the checkbox
-		TextView cb = (TextView) findViewById(id + 2);
+		// c id = 1, hidden tv = 3
+		TextView cb = (TextView) findViewById(viewId + 2);
 
-		if (cb == null)
-			Log.d("ListActivity.onCheckedChange", "couldn't find the textview!");
+		final int placeItID = Integer.parseInt(cb.getText().toString());
 
-		int placeItID = Integer.parseInt(cb.getText().toString());
-
-		IPlaceIt placeIt = Database.getPlaceIt(placeItID);
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				placeIt = Database.getPlaceIt(placeItID);
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		placeIt.setIsCompleted(true);
+		
 		if (placeIt instanceof LocationPlaceIt){
 				LocationPlaceIt p = (LocationPlaceIt) placeIt;
 
@@ -220,13 +236,16 @@ public class ListActivity extends Activity implements
 		}
 		if(placeIt instanceof CategoryPlaceIt)
 			Database.save((CategoryPlaceIt) placeIt);
-		else
+		else if(placeIt instanceof LocationPlaceIt)
 			Database.save((LocationPlaceIt) placeIt);
+		else
+			throw new NullPointerException();
+		
 		NotificationHelper helper = new NotificationHelper(this);
 		helper.dismissNotificationByID(placeItID);
 		
-		list.remove((Object) (id));
-		removeLayoutFromScreen(id);
+		list.remove((Object) (viewId));
+		removeLayoutFromScreen(viewId);
 	}
 	
 	private void removeLayoutFromScreen(int id) {
@@ -252,10 +271,14 @@ public class ListActivity extends Activity implements
 			return;
 		}
 		
-		if(v.getId() % 5 == 1)
+		if(v.getId() % 5 == 1){
 			completePlaceIt(v);
-		if(v.getId() % 5 == 4)
+			return;
+		}
+		if(v.getId() % 5 == 4){
 			deletePlaceIt(v);
+			return;
+		}
 			
 		Intent i = new Intent(this, FormActivity.class);
 
@@ -290,8 +313,7 @@ public class ListActivity extends Activity implements
 			newList.add(j);
 
 		for (int j : newList) {
-			Log.d("ListActivity.onClick",
-					"Id being removed: " + Integer.toString(j));
+			Log.d("ListActivity.onClick", "Id being removed: " + Integer.toString(j));
 			removeLayoutFromScreen(j);
 		}
 

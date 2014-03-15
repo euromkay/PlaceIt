@@ -7,13 +7,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class PullDownListActivity extends Activity {
+public class PullDownListActivity extends Activity implements OnCheckedChangeListener {
 
 	private ArrayList<Integer> list;
 
@@ -38,7 +43,7 @@ public class PullDownListActivity extends Activity {
 		list = new ArrayList<Integer>();
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				pList = Database.getCompletedPlaceIts();
+				pList = Database.getAllPlaceIts();
 			}
 		});
 		t.start();
@@ -49,8 +54,11 @@ public class PullDownListActivity extends Activity {
 		}
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + list.size());
-		for (int i = 0; i < list.size(); i++)
-			addPlaceItToList(pList.get(i), i);
+		for (int i = 0; i < pList.size(); i++){
+			IPlaceIt p = pList.get(i);
+			if(Database.getUsername(this).equals(p.getUser()) && p.getIsCompleted())
+				addPlaceItToList(p, i);
+		}
 	}
 
 	protected void onPause() {
@@ -83,7 +91,7 @@ public class PullDownListActivity extends Activity {
 
 		LayoutParams param = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
 		tv.setLayoutParams(param);
-/*
+
 		CheckBox cb = new CheckBox(this);
 		cb.setChecked(true);
 		cb.setBackgroundColor(Color.RED);
@@ -91,12 +99,12 @@ public class PullDownListActivity extends Activity {
 		cb.setScaleY(0.75f);
 		cb.setId((4 * id) + 1);
 		cb.setOnCheckedChangeListener(this);
-*/
+
 		Log.d("ListActivity.addPlaceItToList", Integer.toString((4 * id) + 1));
 		list.add((4 * id) + 1);
 
-		//FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,Gravity.RIGHT);
-		//cb.setLayoutParams(param2);
+		FrameLayout.LayoutParams param2 = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,Gravity.RIGHT);
+		cb.setLayoutParams(param2);
 
 		Log.d("ListActivity.addingPlaceItToList",
 				"id was " + Integer.toString(p.getID()));
@@ -112,14 +120,15 @@ public class PullDownListActivity extends Activity {
 		layout.setId((4 * id) + 2);
 		layout.addView(tv);
 		layout.addView(longTV);
-		//layout.addView(cb);
+		layout.addView(cb);
 		
 		if(p instanceof LocationPlaceIt)
 			layout.setBackgroundColor(Color.LTGRAY);
 
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
 	}
-/*
+
+	private IPlaceIt p;
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 		int id = arg0.getId();
 
@@ -132,18 +141,31 @@ public class PullDownListActivity extends Activity {
 		if (cb == null)
 			Log.d("ListActivity.onCheckedChange", "couldn't find the textview!");
 
-		int placeItID = Integer.parseInt(cb.getText().toString());
+		final int placeItID = Integer.parseInt(cb.getText().toString());
 
-		LocationPlaceIt p = Database.getPlaceIt(placeItID, this);
+		
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				p = Database.getPlaceIt(placeItID);
+			}
+		});
+		
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Check if PlaceIt is on a recurring schedule
-		if (p.getSchedule() > 0) {
+		if (p instanceof LocationPlaceIt && ((LocationPlaceIt) p).getSchedule() > 0) {
 			// Update dueDate & save to DB
-			p.setDueDate(p.getSchedule());
-			Database.save(p, this);
+			((LocationPlaceIt) p).setDueDate(((LocationPlaceIt) p).getSchedule());
+			Database.save((LocationPlaceIt) p);
 		} else {
 			// Remove Place-It from Database
-			Database.removePlaceIt(placeItID, this);
+			Database.removePlaceIt(p);
 
 			// remove notification
 			NotificationHelper helper = new NotificationHelper(this);
@@ -152,7 +174,7 @@ public class PullDownListActivity extends Activity {
 		}
 		list.remove((Object) (id));
 		removeLayoutFromScreen(id);
-	}*/
+	}
 
 	private void removeLayoutFromScreen(int id) {
 		// id is the id of the checkbox
@@ -198,4 +220,5 @@ public class PullDownListActivity extends Activity {
 	}*/
 
 	public static final String ID_BUNDLE_KEY = "longIdKeyBundle";
+
 }

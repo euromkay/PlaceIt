@@ -353,16 +353,7 @@ public class Database {
 		list.addAll(getAllLocationPlaceIts());
 		return list;
 	}
-	public static ArrayList<IPlaceIt> getCompletedPlaceIts(){
-		ArrayList<IPlaceIt> list = getAllPlaceIts();
-		ArrayList<IPlaceIt> returnList = new ArrayList<IPlaceIt>();
-		
-		for(IPlaceIt p: list)
-			if(p.getIsCompleted())
-				returnList.add(p);
-		
-		return returnList;
-	}
+	
 	
 	public static LocationPlaceIt getLocationPlaceIt(LatLng position) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
@@ -454,6 +445,12 @@ public class Database {
 		};
 
 		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
