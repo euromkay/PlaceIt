@@ -7,9 +7,27 @@ public abstract class IPlaceIt implements Parcelable{
 	private String title = "";
 	private String description = "";
 	private int id;
+	private boolean isCompleted;
+	private String user;
 
 	public IPlaceIt(int id) {
 		this.id = id;
+	}
+	
+	public void setUser(String user){
+		this.user = user;
+	}
+	
+	public String getUser(){
+		return this.user;
+	}
+	
+	public void setIsCompleted(boolean isCompleted){
+		this.isCompleted = isCompleted;
+	}
+	
+	public boolean getIsCompleted(){
+		return this.isCompleted;
 	}
 	
 	public void setTitle(String title) {
