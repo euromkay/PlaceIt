@@ -218,7 +218,7 @@ public class FormActivity extends Activity implements OnClickListener {
 			Log.d("FormActivity.onClick", "the id is " + Integer.toString(id));
 
 			IPlaceIt placeIt;
-			if ( ((Spinner) findViewById(R.id.from_spinner)).getVisibility() != View.VISIBLE ) {
+			if ( ((Spinner) findViewById(R.id.from_spinner2)).getVisibility() != View.VISIBLE ) {
 				LocationPlaceIt locPlaceIt = new LocationPlaceIt(id);
 				placeIt = locPlaceIt;
 
@@ -239,8 +239,7 @@ public class FormActivity extends Activity implements OnClickListener {
 				Log.d("FormActivity.onCLick", s + " is the spinner selection");
 
 				locPlaceIt.setSchedule(stringToSched(s));
-				Log.d("FormActivity.loadOnClick",
-						"the schedule is "
+				Log.d("FormActivity.loadOnClick", "the schedule is "
 								+ Integer.toString(locPlaceIt.getSchedule()));
 				Database.save(locPlaceIt);
 			} else {
