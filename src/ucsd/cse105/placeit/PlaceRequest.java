@@ -70,7 +70,7 @@ public class PlaceRequest {
 		for (CategoryPlaceIt p : passedInList)
 			pList.add(p);
 
-		Thread t = new Thread(new Runnable() {
+		/*Thread t = new Thread(new Runnable() {
 			public void run() {
 
 				while (pList.size() != 0) {
@@ -100,7 +100,7 @@ public class PlaceRequest {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 
 		return dataList;
 	}
