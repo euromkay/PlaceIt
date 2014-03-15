@@ -222,10 +222,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		String username = Database.getUsername(this);
 		for(IPlaceIt p: placeIts)
-			if(p instanceof LocationPlaceIt)
-				addPlaceItToMap((LocationPlaceIt) p);
+			if(p instanceof LocationPlaceIt){
+				LocationPlaceIt placeIt = (LocationPlaceIt) p;
+				if(p.getUser().equals(username)  && !p.getIsCompleted())
+					addPlaceItToMap(placeIt);
+			}
 	}
 
 	
