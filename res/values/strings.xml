@@ -28,6 +28,11 @@
     <string name="login_username">username</string>
     <string name="login_password">password</string>
     <string name="login_button">Login</string>
+    <string name="new_creation_button">Create Account</string>
+    
+    <!-- Account Strings -->
+    <string name="creation_title">Account Creation</string>
+    <string name="creation_button">Create</string>
 
     <!-- List Strings -->
     <string name="list_title">List of PlaceIts</string>

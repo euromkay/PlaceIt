@@ -49,18 +49,23 @@ public class LoginActivity extends Activity implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		String username = ((TextView) findViewById(R.id.login_username)).getText().toString();
-		EditText pwField = (EditText) findViewById(R.id.login_password);
-		String password = pwField.getText().toString();
+		if(v.getId() == R.id.login_button){
+			String username = ((TextView) findViewById(R.id.login_username)).getText().toString();
+			EditText pwField = (EditText) findViewById(R.id.login_password);
+			String password = pwField.getText().toString();
 		
-		if(validCreds(username, password)){
-			startMapActivity(username);
+			if(validCreds(username, password)){
+				startMapActivity(username);
+			}
+			else{
+				pwField.setText("");
+				Toast.makeText(this, "Incorrect password/username combination", Toast.LENGTH_LONG).show();
+			}
 		}
-		else{
-			pwField.setText("");
-			Toast.makeText(this, "Incorrect password/username combination", Toast.LENGTH_LONG).show();
+		else if(v.getId() == R.id.createAccountButton){
+			Intent i = new Intent(this, AccountCreationActivity.class);
+			startActivity(i);
 		}
-			
 			
 	}
 	
