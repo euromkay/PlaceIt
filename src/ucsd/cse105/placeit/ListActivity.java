@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -303,6 +304,7 @@ public class ListActivity extends Activity implements
 			LatLng loc = placeIt.getLocation();
 			b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
 			b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
+			b.putBoolean(MapActivity.PLACEIT_HAS_POS, true);
 		}
 		b.putInt(ID_BUNDLE_KEY, id);
 
