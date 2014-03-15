@@ -195,7 +195,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		list.remove((Object) id);
 	}
 
-	private LatLng loc;
+	private IPlaceIt p;
 	public void onClick(View v) {
 		if(v.getId() == R.id.pullDownListButton){
 			Intent i = new Intent(this, PullDownListActivity.class);
@@ -210,7 +210,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 
 		Thread t = new Thread(new Runnable(){
 			public void run(){
-				loc = Database.getLocationPlaceIt(id).getLocation();
+				p = Database.getPlaceIt(id);
 			}
 		});
 		t.start();
@@ -220,12 +220,13 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 		Bundle b = new Bundle();
-		b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
-		b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
+		if(p instanceof LocationPlaceIt){
+			LocationPlaceIt placeIt = (LocationPlaceIt) p;
+			LatLng loc = placeIt.getLocation();
+			b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
+			b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
+		}
 		b.putInt(ID_BUNDLE_KEY, id);
 
 		i.putExtra(MapActivity.PLACEIT_KEY, b);

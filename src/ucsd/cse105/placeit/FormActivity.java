@@ -38,12 +38,29 @@ public class FormActivity extends Activity implements OnClickListener {
 		if (hasId()) {
 			Log.d("FormActivity.onCreate",
 					"Found an id,therefore going to modify it");
-			IPlaceIt p = Database.getPlaceIt(getId());
+			IPlaceIt p = getPlaceIt(getId());
 			loadPlaceIt(p);
 		} else
 			Log.d("FormActivity.onCreate", "No id found");
 	}
 
+
+	private IPlaceIt p;
+	private IPlaceIt getPlaceIt(int id){
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				p = Database.getPlaceIt(getId());
+			}
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
+	}
 	private boolean hasId() {
 		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
 				ListActivity.ID_BUNDLE_KEY);
@@ -114,6 +131,7 @@ public class FormActivity extends Activity implements OnClickListener {
 	}
 
 	private int categoryToId(String s) {
+		Log.d("Form Activity.categoryToId", "category is " + s);
 		int i = 0;
 		for (String t : categoryList) {
 			if (t.equals(s))
@@ -244,7 +262,7 @@ public class FormActivity extends Activity implements OnClickListener {
 				String s3 = (String) spinner.getSelectedItem();
 
 				catPlaceIt.setCategory(s1, s2, s3);
-				Database.save(catPlaceIt, this);
+				Database.save(catPlaceIt);
 			}
 
 			Intent i = new Intent();
@@ -339,7 +357,7 @@ public class FormActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private static final String[] categoryList = { "accounting", "airport",
+	private static final String[] categoryList = { "Empty", "accounting", "airport",
 			"amusement_park", "aquarium", "art_gallery", "atm", "bakery",
 			"bank", "bar", "beauty_salon", "bicycle_store", "book_store",
 			"bowling_alley", "bus_station", "cafe", "campground", "car_dealer",
