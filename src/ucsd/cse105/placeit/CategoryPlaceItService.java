@@ -7,8 +7,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -26,16 +28,17 @@ public class CategoryPlaceItService extends Service implements
 	static final String TAG = "CategoryPlaceItService";
 	private static final int MIN_UPDATE_TIME = 1000;
 	public static final int MIN_DISTANCE = 5; // Distance in meters
-	private static Date LAST_CHECK = new GregorianCalendar(2014,1,1).getTime();
-	
+	private static Date LAST_CHECK = new GregorianCalendar(2014, 1, 1)
+			.getTime();
+
 	private int delay = 10000; // Subsequent delay for checkNotify()
 	private Timer timer = new Timer();
-	
-	public static synchronized void resetDelay(){
+
+	public static synchronized void resetDelay() {
 		LAST_CHECK = new Date();
 	}
 
-	//Sets the timer to run a the TimerTask on the given schedule
+	// Sets the timer to run a the TimerTask on the given schedule
 	private void setTimer() {
 		timer.scheduleAtFixedRate(task, delay, delay);
 	}
@@ -66,24 +69,51 @@ public class CategoryPlaceItService extends Service implements
 	// that match existing CategoryPlaceIts within configured radius.
 	@Override
 	public synchronized void onLocationChanged(Location pos) {
-			checkForChanges();
-	}
-	
-	private synchronized void timedCheck(){
-		checkForChanges();
+		checkForChanges(pos);
 	}
 
-	private void checkForChanges() {
+	private synchronized void timedCheck() {
+		LocationManager locationManager = (LocationManager) this
+				.getApplicationContext().getSystemService(
+						Context.LOCATION_SERVICE);
+		Location pos = locationManager
+				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		checkForChanges(pos);
+	}
+
+	ArrayList<Place> places = null;
+
+	private void checkForChanges(final Location pos) {
 		long timeSinceLastCheck = new Date().getTime() - LAST_CHECK.getTime();
 		if (timeSinceLastCheck < delay) {
 			return;
 		}
-		
+
 		// Call GAE requesting Category PlaceIts
 		try {
 			Thread t = new Thread(new Runnable() {
 				public void run() {
 					placeIts = Database.getAllCategoryPlaceIts();
+					if (placeIts.size() > 0) {
+						StringBuilder categories = new StringBuilder();
+
+						for (CategoryPlaceIt p : placeIts) {
+							for (int i = 0; i < 3; i++) {
+								String cat = p.getCategory(i);
+								if (!cat.equals("Empty") && !cat.equals("")) {
+									if (categories.length() > 0) {
+										categories.append("|");
+									}
+									categories.append(cat);
+								}
+							}
+						}
+
+						PlaceService service = new PlaceService(
+								"AIzaSyBUMxyYxJVSD6SE81szhEozVGVQoOr7wXI");
+						places = service.findPlaces(
+								pos.getLatitude(), pos.getLongitude(), "university");//categories.toString());
+					}
 				}
 			});
 			t.start();
@@ -95,18 +125,15 @@ public class CategoryPlaceItService extends Service implements
 				e.printStackTrace();
 			}
 
-			if (placeIts.size() == 0) {
-				return;
+			if (placeIts.size() > 0 && places.size() > 0) {
+				NotificationHelper helper = new NotificationHelper(this);
+				for(CategoryPlaceIt p : placeIts){
+					//for()
+					helper.sendNotification(1, "Category PlaceIt!", places.get(0)
+							.getName(), "L");
+				}
+				
 			}
-
-			// ArrayList<CategoryData> list = PlaceRequest.performSearch(pos,
-			// placeIts);
-
-			// if (list.size() > 0){
-			NotificationHelper helper = new NotificationHelper(this);
-			helper.sendNotification(1, "Category PlaceIt!", "Vons",
-					"2354 N Sucks Rd");
-			// }
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -119,9 +146,8 @@ public class CategoryPlaceItService extends Service implements
 	// Register for location changes
 	@Override
 	public void onStart(Intent intent, int startid) {
-		checkForChanges(); //Perform initial check
-		mLocationClient.connect(); //Register for location changes
-		setTimer();
+		setTimer(); // Perform initial check
+		mLocationClient.connect(); // Register for location changes
 	}
 
 	// Unregister for location changes
