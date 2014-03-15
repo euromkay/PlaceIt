@@ -11,18 +11,22 @@ public class DiscardReceiver extends BroadcastReceiver {
 
         int notificationID = intent.getIntExtra("notificationId", 0);
         
-        LocationPlaceIt p = Database.getLocationPlaceIt(notificationID);
+        String placeItType = intent
+				.getStringExtra(NotificationHelper.NOTIFICATION_PLACEIT_TYPE);
         
-        //Check if PlaceIt is on a recurring schedule
-        if (p.getSchedule() > 0){
-        	//Update dueDate & save to DB
-        	p.setDueDate(p.getSchedule());
-    		Database.save(p);
-        }
-        else{
-        	//Remove Place-It from Database
-            Database.removePlaceIt(p);
-        }
+        IPlaceIt p;
+        
+        if (placeItType == "Location") {
+        	p = Database.getLocationPlaceIt(notificationID);
+        	p.setIsCompleted(true);
+			Database.save((LocationPlaceIt)p);
+		}
+		else
+		{
+			p = Database.getLocationPlaceIt(notificationID);
+			p.setIsCompleted(true);
+			Database.save((CategoryPlaceIt)p);
+		}
         
         // remove notification
         NotificationHelper helper = new NotificationHelper(context);
