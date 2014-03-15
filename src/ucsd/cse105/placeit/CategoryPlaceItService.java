@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -29,6 +30,8 @@ public class CategoryPlaceItService extends Service implements LocationListener,
 	
 	LocationClient mLocationClient;
 	
+	ArrayList<CategoryPlaceIt> placeIts;
+	
 	@Override
 	public void onCreate() {
 		mLocationClient = new LocationClient(this, this, this);
@@ -40,13 +43,31 @@ public class CategoryPlaceItService extends Service implements LocationListener,
 	public void onLocationChanged(Location pos) {
 		// Call GAE requesting Category PlaceIts
 		try {
-			ArrayList<CategoryData> list = PlaceRequest.performSearch(pos, Database.getAllCategoryPlaceIts());
-			list.size();
-			NotificationHelper helper = new NotificationHelper(this);
-			helper.sendNotification(1, "Category Works!", "Bedtime!");
+			Thread t = new Thread(new Runnable(){
+				public void run(){
+					placeIts = Database.getAllCategoryPlaceIts();
+				}
+			});
+			t.start();
+			
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(placeIts.size() == 0){
+				return;
+			}
+			
+			ArrayList<CategoryData> list = PlaceRequest.performSearch(pos, placeIts);
+		
 			if (list.size() > 0){
+				NotificationHelper helper = new NotificationHelper(this);
 				helper.sendNotification(1, "Category Results!", "$");	
 			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

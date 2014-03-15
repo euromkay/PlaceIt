@@ -47,71 +47,68 @@ public class PlaceRequest {
 	private static String mySearchType = "hospital"; // this is just for testing
 	private static String searchName = "OffCourse Golf Hole";
 
-	// converting back to -33.8670522, 151.1957362 format
+	static// converting back to -33.8670522, 151.1957362 format
 	// double latitude = ShowGoogleMap.updated_lat / 1E6;
 	// double longitude = ShowGoogleMap.updated_lng / 1E6;
-
 	// Sydney, Australia
 	// double latitude = -33.8670522;
 	// double longitude = 151.1957362;
-
 	// telenet
 	// double latitude = 51.034823;
 	// double longitude = 4.483774;
+	private Place place;
+	private static TreeMap<String, Place> map;
+	private static ArrayList<CategoryPlaceIt> pList;
+	private static ArrayList<CategoryData> dataList;
 
-	public static ArrayList<CategoryData> performSearch(Location pos, ArrayList<CategoryPlaceIt> passedInList) throws Exception{
-		ArrayList<CategoryPlaceIt> list = new ArrayList<CategoryPlaceIt>();
-		for(CategoryPlaceIt p: passedInList)
-			list.add(p);
-		
-		TreeMap<String, Place> map = new TreeMap<String, Place>();
-		
-		ArrayList<CategoryData> cList = new ArrayList<CategoryData>();
-		
-		while(list.size() != 0){
-			CategoryPlaceIt p = list.get(0);
-			int result = mapHasCategory(map, p);
-			
-			Place place;
-			
-			if(result != -1)
-				place = map.get(p.getCategory(result));
-			else
-				place = getResult(pos);
-			
-			for(String s: place.types)
-				map.put(s, place);
-			
-			if(place != null)
-				cList.add(new CategoryData(p.getTitle(), place.name, place.formatted_address, p.getID()));
-			
-			list.remove(p);
+	public static ArrayList<CategoryData> performSearch(final Location pos,
+			final ArrayList<CategoryPlaceIt> passedInList) throws Exception {
+		map = new TreeMap<String, Place>();
+		dataList = new ArrayList<CategoryData>();
+		pList = new ArrayList<CategoryPlaceIt>();
+
+		for (CategoryPlaceIt p : passedInList)
+			pList.add(p);
+
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+
+				while (pList.size() != 0) {
+					CategoryPlaceIt p = pList.get(0);
+					int result = mapHasCategory(map, p);
+
+					if (result == -1)
+						place = getResult(pos);
+					else
+						place = map.get(p.getCategory(result));
+
+					for (String s : place.types)
+						map.put(s, place);
+
+					if (place != null || place.types.length != 0)
+						dataList.add(new CategoryData(p.getTitle(), place.name,
+								place.formatted_address, p.getID()));
+
+					pList.remove(p);
+				}
+			}
+		});
+
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		/*
-		for (Place place : places.results) {
-				
-			Log.v(LOG_KEY, place.name);	
-			latList.add(place.geometry.location.lat);
-			lngList.add(place.geometry.location.lng);	
-			// assign last added place reference 
-			placeReference.add(place.reference);
-			
-				
-			String title;
-			String name = place.name;
-			String address = place.formatted_address;
-			cList.add(new CategoryData(title, name, address));
-				
-		}	     */  
-		return cList;
 
-		
+		return dataList;
 	}
 
-	
-	private static int mapHasCategory(TreeMap<String, Place> map, CategoryPlaceIt p){
-		for(int i = 0; i < 3; i++)
-			if(map.containsKey(p.getCategory(i)))
+	private static int mapHasCategory(TreeMap<String, Place> map,
+			CategoryPlaceIt p) {
+		for (int i = 0; i < 3; i++)
+			if (map.containsKey(p.getCategory(i)))
 				return i;
 		return -1;
 	}
@@ -134,25 +131,25 @@ public class PlaceRequest {
 
 			Log.v(LOG_KEY, request.execute().parseAsString());
 			List<Place> list = request.execute().parseAs(PlacesList.class).results;
-			if(list.size() != 0)
+			if (list.size() != 0)
 				return list.get(0);
 			else
 				return null;
 
-			//Log.v(LOG_KEY, "STATUS = " + places.status);
+			// Log.v(LOG_KEY, "STATUS = " + places.status);
 			// empty array lists
 			// latList.clear();
 			// lngList.clear();
 		} catch (HttpResponseException e) {
-			//Log.v(LOG_KEY, e.getResponse().parseAsString());
+			// Log.v(LOG_KEY, e.getResponse().parseAsString());
 			e.printStackTrace();
-			//throw e;
+			// throw e;
 		}
 
 		catch (IOException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			//throw e;
+			// throw e;
 		}
 		throw new NullPointerException();
 	}
@@ -166,6 +163,7 @@ public class PlaceRequest {
 		public List<Place> results;
 
 	}
+
 	public static HttpRequestFactory createRequestFactory(
 			final HttpTransport transport) {
 
