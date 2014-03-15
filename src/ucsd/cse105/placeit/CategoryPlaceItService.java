@@ -61,12 +61,12 @@ public class CategoryPlaceItService extends Service implements LocationListener,
 				return;
 			}
 			
-			ArrayList<CategoryData> list = PlaceRequest.performSearch(pos, placeIts);
+			//ArrayList<CategoryData> list = PlaceRequest.performSearch(pos, placeIts);
 		
-			if (list.size() > 0){
+			//if (list.size() > 0){
 				NotificationHelper helper = new NotificationHelper(this);
-				helper.sendNotification(1, "Category Results!", "$");	
-			}
+				helper.sendNotification(1, "Category PlaceIt!", "Vons", "2354 N Sucks Rd");	
+			//}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

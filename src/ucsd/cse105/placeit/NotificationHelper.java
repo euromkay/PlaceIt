@@ -6,6 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
 public class NotificationHelper {
 	private Context _context;
@@ -14,6 +17,7 @@ public class NotificationHelper {
 	private static int discardRequestCode = 0; // Used for unique request code
 	
 	public static final String NOTIFICATION_MAP_FORM = "NOTIFICATION_MAP_FORM";
+	public static final String NOTIFICATION_PLACEIT_TYPE = "NOTIFICATION_PLACEIT_TYPE";
 
 	// Constructor
 	public NotificationHelper(Context context) {
@@ -49,11 +53,12 @@ public class NotificationHelper {
 	}
 
 	// MapActivity
-	private PendingIntent getMapActivityIntent(int id) {
+	private PendingIntent getMapActivityIntent(int id, String placeItType) {
 		Intent intent = new Intent(_context, MapActivity.class);
 
 		// This will be used by MapActivity to auto load FormActivity
 		intent.putExtra(NOTIFICATION_MAP_FORM, id);
+		intent.putExtra(NOTIFICATION_PLACEIT_TYPE, placeItType);
 		return PendingIntent.getActivity(_context, mapRequestCode++, intent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 	}
@@ -64,8 +69,11 @@ public class NotificationHelper {
 	}
 
 	public void sendNotification(int id, String title, String description) {
+		Uri notifySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		
 		Builder builder = new Notification.Builder(_context)
-				.setContentIntent(getMapActivityIntent(id))
+				.setSound(notifySound)
+				.setContentIntent(getMapActivityIntent(id, "Location"))
 				.setContentTitle(title)
 				.setContentText(description)
 				.setSmallIcon(R.drawable.ic_launcher)
@@ -76,6 +84,28 @@ public class NotificationHelper {
 
 		Notification notification = new Notification.InboxStyle(builder)
 				.addLine(description).build();
+		// This flag prevents swiping reminder to clear
+		notification.flags |= Notification.FLAG_NO_CLEAR;
+		NotificationManager notificationManager = getNotificationManager();
+		notificationManager.notify(id, notification);
+	}
+	
+	public void sendNotification(int id, String title, String place, String address) {
+		Uri notifySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		
+		Builder builder = new Notification.Builder(_context)
+				.setSound(notifySound)
+				.setContentIntent(getMapActivityIntent(id, "Category"))
+				.setContentTitle(title)
+				.setContentText(place + " " + address)
+				.setSmallIcon(R.drawable.ic_launcher)
+				.addAction(R.drawable.ic_menu_close_clear_cancel, "Discard",
+						getDiscardPendingIntent(id))
+				.addAction(R.drawable.ic_audio_alarm, "Repost",
+						getRepostPendingIntent(id));
+
+		Notification notification = new Notification.InboxStyle(builder)
+				.addLine(place + " " + address).build();
 		// This flag prevents swiping reminder to clear
 		notification.flags |= Notification.FLAG_NO_CLEAR;
 		NotificationManager notificationManager = getNotificationManager();
