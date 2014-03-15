@@ -44,7 +44,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private GoogleMap mMap;
 	private LocationClient locationManager;
 	
-	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -125,28 +124,32 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			}
 		}
 	}
+	
 	private void redoMarkers(){
 		mMap.clear();
 		populatePlaceIts();
 	}
+	
 	private IPlaceIt getPlaceIt(Intent data){
 		return data.getParcelableExtra(FormActivity.COMPLETED_PLACEIT);
 	}
 	
-
 	protected void onStart(){
 		super.onStart();
 		locationManager.connect();
 		
 	}
+	
 	protected void onStop(){
 		locationManager.disconnect();
 		super.onStop();
 	}
+	
 	protected void onResume() {
 		super.onResume();
 		setUpMapIfNeeded();
 	}
+	
 	protected void onPause(){
 		if(mMap == null){
 			super.onPause();
@@ -190,16 +193,19 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			}
 		}
 	}
+	
 	private void setPreviousZoom(){
 		float level = Database.getLastZoom(this);
 		CameraUpdate zoom = CameraUpdateFactory.zoomTo(level);
 		mMap.moveCamera(zoom);
 	}
+	
 	private void setPreviousLocation(){
 		CameraUpdate center = CameraUpdateFactory.newLatLng(Database.getLastPosition(this));
 		
 		mMap.moveCamera(center);
 	}
+	
 	private void addPlaceItToMap(LocationPlaceIt p){
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
@@ -230,7 +236,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 					addPlaceItToMap(placeIt);
 			}
 	}
-
 	
 	public void onMapClick(LatLng pos) {
 		Log.d("MapActivity.onMapClick", "Map clicked to make a new place-it");
@@ -244,7 +249,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		Intent i = new Intent(this, FormActivity.class);
 		Bundle b = new Bundle();
 		
-		
 		if(pos != null){
 			double lat = pos.latitude;
 			double longitude = pos.longitude;
@@ -253,8 +257,6 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			b.putDouble(PLACEIT_LONGITUDE, longitude);
 		}else
 			b.putBoolean(PLACEIT_HAS_POS, false);
-		
-		
 		
 		i.putExtra(PLACEIT_KEY, b);
 		
@@ -270,21 +272,30 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		else if(buttonID == R.id.mapPlaceItButton)
 			makeNewPlaceIt(null);
 	}
+	
 	private void startListActivity(){
 		Intent i = new Intent(this, ListActivity.class);
 		mMap.clear();//removes placeits from the map
 		startActivityForResult(i, 3);
 	}
+	
 	private void logout(){
 		Log.d("MapActivity", "Logout button pressed");
+		
+		//Stop services
+		stopService(new Intent(this, PlaceItService.class));
+		stopService(new Intent(this, CategoryPlaceItService.class));
+		
+		//Dismiss all notifications
+		NotificationHelper nHelper = new NotificationHelper(this);
+		nHelper.dismissAll();
+		
 		Intent i = new Intent(this, LoginActivity.class);
 		mMap.clear();
 		Database.clearCredentials(this);
 		startActivity(i);
 		finish();
 	}
-	
-	
 	
 	public void onLocationChanged(Location arg0) {
 		LatLng coordinate = new LatLng(arg0.getLatitude(), arg0.getLongitude());

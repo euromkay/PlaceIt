@@ -116,4 +116,8 @@ public class NotificationHelper {
 	public void dismissNotificationByID(int notificationID){
 		getNotificationManager().cancel(notificationID);
 	}
+
+	public void dismissAll() {
+		getNotificationManager().cancelAll();
+	}
 }
