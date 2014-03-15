@@ -41,25 +41,16 @@ public class PlaceService {
 			System.out.println(json);
 			JSONObject object = new JSONObject(json);
 			JSONArray array = object.getJSONArray("results");
-			JSONArray types = null;
-
-			try {
-				object.getJSONArray("types");
-			} catch (Exception e) {
-
-			}
 
 			ArrayList<Place> arrayList = new ArrayList<Place>();
 			for (int i = 0; i < array.length(); i++) {
 				try {
 					Place place = Place
 							.jsonToPontoReferencia((JSONObject) array.get(i));
-
+					
+					JSONArray types = (JSONArray) ((JSONObject) array.get(i)).get("types");
 					if (types != null) {
-						JSONArray resultTypes = types.getJSONArray(i);
-						for (int j = 0; j < resultTypes.length(); j++) {
-							place.types.add(resultTypes.getString(j));
-						}
+						place.types.add(types.getString(0)); 
 					}
 
 					Log.v("Places Services ", "" + place);
@@ -97,7 +88,7 @@ public class PlaceService {
 			urlString.append(latVal);
 			urlString.append(",");
 			urlString.append(lngVal);
-			urlString.append("&radius=1609");
+			urlString.append("&radius=3000");
 			// urlString.append("&types="+place);
 			urlString.append("&sensor=false&key=" + API_KEY);
 			urlString.append("&userIP=128.54.46.159");
@@ -106,7 +97,7 @@ public class PlaceService {
 			urlString.append(latVal);
 			urlString.append(",");
 			urlString.append(lngVal);
-			urlString.append("&radius=1609");
+			urlString.append("&radius=3000");
 			urlString.append("&types=" + place);
 			urlString.append("&sensor=false&key=" + API_KEY);
 			urlString.append("&userIP=128.54.46.159");

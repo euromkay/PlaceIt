@@ -38,9 +38,9 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private ArrayList<LocationPlaceIt> placeIts = null;
 	ProgressDialog dialog;
 	
-	public static final String PLACEIT_LOC_URI = "http://cse110-placeit.appspot.com/location";
-	public static final String PLACEIT_CAT_URI = "http://cse110-placeit.appspot.com/category";
-	public static final String PLACEIT_ACCOUNT_URI = "http://cse110-placeit.appspot.com/account";
+	public static final String PLACEIT_LOC_URI = "http://cs110team29.appspot.com/location";
+	public static final String PLACEIT_CAT_URI = "http://cs110team29.appspot.com/category";
+	public static final String PLACEIT_ACCOUNT_URI = "http://cs110team29.appspot.com/account";
 	
 	private GoogleMap mMap;
 	private LocationClient locationManager;

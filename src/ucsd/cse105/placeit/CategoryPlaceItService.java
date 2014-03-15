@@ -111,8 +111,8 @@ public class CategoryPlaceItService extends Service implements
 
 						PlaceService service = new PlaceService(
 								"AIzaSyBUMxyYxJVSD6SE81szhEozVGVQoOr7wXI");
-						places = service.findPlaces(
-								pos.getLatitude(), pos.getLongitude(), "university");//categories.toString());
+						places = service.findPlaces(pos.getLatitude(),
+								pos.getLongitude(), categories.toString());
 					}
 				}
 			});
@@ -124,15 +124,22 @@ public class CategoryPlaceItService extends Service implements
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 			if (placeIts.size() > 0 && places.size() > 0) {
 				NotificationHelper helper = new NotificationHelper(this);
-				for(CategoryPlaceIt p : placeIts){
-					//for()
-					helper.sendNotification(1, "Category PlaceIt!", places.get(0)
-							.getName(), "L");
+				for (CategoryPlaceIt p : placeIts) {
+					placeLoop:
+					for (Place place : places) {
+						for (int i = 0; i < 3; i++) {
+							if(place.types.contains(p.getCategory(i))){
+								helper.sendNotification(p.getID(), p.getTitle(),
+										place.getName(), place.getVicinity());
+								break placeLoop;
+							}
+						}
+					}
+					
 				}
-				
+
 			}
 
 		} catch (Exception e) {
