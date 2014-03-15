@@ -31,9 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -238,12 +236,8 @@ public class Database {
 		return array;
 	}
 	
-	
-
-	private static ArrayList<CategoryPlaceIt> cPlaceIts = null;
-	private static ArrayList<IPlaceIt> placeIts = null;
 	private static ArrayList<LocationPlaceIt> lPlaceIts = null;
-	private static final String FILE_PLACEITS = "place_it_file";
+	
 	// returns an active list of all the placeits
 	// uses network calls so must be called on a separate thread if 
 	// being called from main ui thread.
@@ -304,6 +298,7 @@ public class Database {
 		}
 		return list;
 	}
+	
 	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts() {
 		String tag = "Database.getAllCategoryPlaceIts()";
 
@@ -347,6 +342,7 @@ public class Database {
 		}
 		return list;
 	}
+	
 	public static ArrayList<IPlaceIt> getAllPlaceIts(){
 		ArrayList<IPlaceIt> list = new ArrayList<IPlaceIt>();
 		list.addAll(getAllCategoryPlaceIts());
@@ -593,36 +589,91 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void saveAccount(final String name, final String password) {
+		Thread t = new Thread() {
 
-	private static void writePlaceIts(ArrayList<LocationPlaceIt> list, Context a) {
-		ArrayList<String> stringList = new ArrayList<String>();
-		stringList.add(Integer.toString(list.size()));
+			public void run() {
+				HttpClient client = new DefaultHttpClient();
+				HttpPost post = new HttpPost(MapActivity.PLACEIT_ACCOUNT_URI);
 
-		SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+				try {
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+					nameValuePairs.add(new BasicNameValuePair("name", name));
+					nameValuePairs.add(new BasicNameValuePair("password", password));
+					nameValuePairs.add(new BasicNameValuePair("action", "put"));
 
-		for (LocationPlaceIt p : list) {
-			stringList.add(p.getTitle());
-			stringList.add(p.getDescription());
-			stringList.add(Integer.toString(p.getID()));
-			stringList.add(Double.toString(p.getLocation().latitude));
-			stringList.add(Double.toString(p.getLocation().longitude));
-			stringList.add(df.format(p.getDueDate()));
-			stringList.add(Integer.toString(p.getSchedule()));
-		}
+					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-		String[] array = toStringArray(stringList.toArray());
+					HttpResponse response = client.execute(post);
+					BufferedReader rd = new BufferedReader(
+							new InputStreamReader(response.getEntity()
+									.getContent()));
+					String line = "";
+					while ((line = rd.readLine()) != null) {
+						Log.d("ACCOUNT", line);
+					}
 
-		Log.d("Database.writing", "This is the contents of the write");
-		for (String s : array)
-			Log.d("Database.writing", s);
+				} catch (IOException e) {
+					Log.d("ACCOUNT",
+							"IOException while trying to conect to GAE");
+				}
+				// dialog.dismiss();
+			}
+		};
 
+		t.start();
 		try {
-			writer(a.openFileOutput(FILE_PLACEITS, Context.MODE_PRIVATE), array);
-		} catch (FileNotFoundException e) {
-			Log.d("Database", "Something went wrong in saving PlaceIt");
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
+	
+	public static Account getAccount(final String name, final String password) {
+		String tag = "Database.getAccount()";
 
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(MapActivity.PLACEIT_ACCOUNT_URI);
+		ArrayList<Account> list = new ArrayList<Account>();
+		
+		try {
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
+			String data = EntityUtils.toString(entity);
+			Log.d(tag, data);
+			JSONObject myjson;
+
+			try {
+				myjson = new JSONObject(data);
+				JSONArray array = myjson.getJSONArray("data");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject obj = array.getJSONObject(i);
+					Account account = new Account(obj.getString("name"), obj.getString("password"));
+					list.add(account);
+				}
+
+			} catch (JSONException e) {
+
+				Log.d(tag, "Error in parsing JSON");
+			}
+
+		} catch (ClientProtocolException e) {
+
+			Log.d(tag, "ClientProtocolException while trying to connect to GAE");
+		} catch (IOException e) {
+
+			Log.d(tag, "IOException while trying to connect to GAE");
+		}
+		
+		for (Account a : list){
+			if (a.getName() == name)
+				return a;
+		}
+
+		return null;
+	}
 	
 
 	public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(
@@ -630,7 +681,5 @@ public class Database {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
-
 }

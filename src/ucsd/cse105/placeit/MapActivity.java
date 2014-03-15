@@ -40,6 +40,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	
 	public static final String PLACEIT_LOC_URI = "http://cse110-placeit.appspot.com/location";
 	public static final String PLACEIT_CAT_URI = "http://cse110-placeit.appspot.com/category";
+	public static final String PLACEIT_ACCOUNT_URI = "http://cse110-placeit.appspot.com/account";
 	
 	private GoogleMap mMap;
 	private LocationClient locationManager;
@@ -311,6 +312,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	}
 
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+	
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		if (connectionResult.hasResolution()) {
             try {
