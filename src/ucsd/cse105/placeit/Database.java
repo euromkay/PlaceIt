@@ -403,23 +403,53 @@ public class Database {
 		return null;
 	}
 
-	public static void removePlaceIt(int placeItID, Context a) {
+	public static void removePlaceIt(final IPlaceIt placeIt) {
 		Log.d("Database.removePlaceIt", "called here");
-		placeIts = null;
+		
+		
+		Thread t = new Thread() {
 
-		new Thread(new Runnable() {
 			public void run() {
-				placeIts = getAllLocationPlaceIts();
-			}
-		}).start();
+				HttpClient client = new DefaultHttpClient();
+				String url;
+				
+				if(placeIt instanceof CategoryPlaceIt){
+					url = MapActivity.PLACEIT_CAT_URI;
+				}
+				else{
+					url = MapActivity.PLACEIT_LOC_URI;
+				}
+				
+				HttpPost post = new HttpPost(url);
 
-		for (IPlaceIt p : placeIts)
-			if (p.getID() == (placeItID)) {
-				Log.d("Database.remove", "found the placeit to remove");
-				placeIts.remove(p);
-				writePlaceIts(placeIts);
-				return;
+				try {
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+					
+					nameValuePairs.add(
+							new BasicNameValuePair("id", Integer.toString(placeIt.getID())));
+					
+					nameValuePairs.add(new BasicNameValuePair("action", "delete"));
+
+					post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+					HttpResponse response = client.execute(post);
+					BufferedReader rd = new BufferedReader(
+							new InputStreamReader(response.getEntity()
+									.getContent()));
+					String line = "";
+					while ((line = rd.readLine()) != null) {
+						Log.d(TAG_LOCATION_PLACEIT, line);
+					}
+
+				} catch (IOException e) {
+					Log.d(TAG_LOCATION_PLACEIT,
+							"IOException while trying to conect to GAE");
+				}
 			}
+
+		};
+
+		t.start();
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 

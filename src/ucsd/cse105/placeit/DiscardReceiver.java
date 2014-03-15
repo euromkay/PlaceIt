@@ -21,7 +21,7 @@ public class DiscardReceiver extends BroadcastReceiver {
         }
         else{
         	//Remove Place-It from Database
-            Database.removePlaceIt(notificationID, context);
+            Database.removePlaceIt(p);
         }
         
         // remove notification

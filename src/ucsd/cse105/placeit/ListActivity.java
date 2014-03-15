@@ -163,7 +163,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 				Database.save(p, this);
 			} else {
 				// Remove Place-It from Database
-				Database.removePlaceIt(placeItID, this);
+				Database.removePlaceIt(p);
 
 				// remove notification
 				NotificationHelper helper = new NotificationHelper(this);
