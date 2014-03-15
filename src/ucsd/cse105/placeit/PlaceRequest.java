@@ -121,7 +121,7 @@ public class PlaceRequest {
 			GenericUrl reqUrl = new GenericUrl(PLACES_SEARCH_URL);
 			reqUrl.put("key", API_KEY);
 			reqUrl.put("location", pos.getLatitude() + "," + pos.getLongitude());
-			reqUrl.put("radius", CategoryPlaceItService.minDistance); // radius
+			reqUrl.put("radius", CategoryPlaceItService.MIN_DISTANCE); // radius
 																		// of
 																		// 5Km
 			reqUrl.put("types", mySearchType);

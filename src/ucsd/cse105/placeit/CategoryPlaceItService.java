@@ -1,47 +1,37 @@
 package ucsd.cse105.placeit;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Service;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
-public class CategoryPlaceItService extends Service implements LocationListener {
-	static final String TAG = "CategoryPlaceItService";
+public class CategoryPlaceItService extends Service implements LocationListener,
+	ConnectionCallbacks, OnConnectionFailedListener {
 	
-	LocationManager manager;
-	android.location.LocationListener listener;
-	String bestProvider;
-	int minUpdateTime = 2000;
-	public static final int minDistance = 1; // Distance in meters
-
+	static final String TAG = "CategoryPlaceItService";
+	private static final int MIN_UPDATE_TIME = 2000;
+	public static final int MIN_DISTANCE = 5; // Distance in meters
+	
+	private static final LocationRequest REQUEST = LocationRequest.create()
+			.setInterval(0)
+			.setFastestInterval(MIN_UPDATE_TIME)
+			.setSmallestDisplacement(MIN_DISTANCE)
+			.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+	
+	LocationClient mLocationClient;
 	
 	@Override
 	public void onCreate() {
-		Criteria crit = new Criteria();
-		crit.setAccuracy(Criteria.ACCURACY_FINE);
-		bestProvider = LocationManager.NETWORK_PROVIDER; //manager.getBestProvider(crit, false);
+		mLocationClient = new LocationClient(this, this, this);
 	}
 
 	// When location changes, check if there are any locations with categories
@@ -66,19 +56,36 @@ public class CategoryPlaceItService extends Service implements LocationListener 
 	// Register for location changes
 	@Override
 	public void onStart(Intent intent, int startid) {
-		manager.requestLocationUpdates(bestProvider, minUpdateTime,
-				minDistance, listener);
+		mLocationClient.connect();
 	}
 
 	// Unregister for location changes
 	@Override
 	public void onDestroy() {
-		manager.removeUpdates(listener);
+		mLocationClient.disconnect();
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		// TODO Auto-generated method stub
+		mLocationClient.requestLocationUpdates(REQUEST, this);
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
 	}
 }
