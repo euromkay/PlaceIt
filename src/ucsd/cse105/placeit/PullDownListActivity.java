@@ -38,6 +38,7 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 			setUpList();
 	}
 
+	//sets up the list
 	private ArrayList<IPlaceIt> pList; 
 	private void setUpList() {
 		list = new ArrayList<Integer>();
@@ -76,12 +77,14 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 		super.onPause();
 	}
 
+	//handles on back pressed
 	public void onBackPressed() {
 		Intent returnIntent = new Intent();
 		setResult(RESULT_OK, returnIntent);
 		finish();
 	}
 
+	//adds a single palceit to list
 	private void addPlaceItToList(IPlaceIt p, int id) {
 
 		TextView tv = new TextView(this);
@@ -129,6 +132,7 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 		((LinearLayout) findViewById(R.id.listLayout)).addView(layout);
 	}
 
+	//delets palceits from cloud
 	private IPlaceIt p;
 	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 		int id = arg0.getId();
@@ -177,6 +181,7 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 		removeLayoutFromScreen(id);
 	}
 
+	//deletes the single line from the screen
 	private void removeLayoutFromScreen(int id) {
 		// id is the id of the checkbox
 		View tv = findViewById(id - 1);
@@ -191,34 +196,6 @@ public class PullDownListActivity extends Activity implements OnCheckedChangeLis
 		bigLayout.removeView(layout);
 		list.remove((Object) id);
 	}
-/*
-	public void onClick(View v) {
-		Intent i = new Intent(this, FormActivity.class);
-
-		TextView tv = (TextView) findViewById(v.getId() + 3);
-		int id = Integer.parseInt(tv.getText().toString());
-
-		LatLng loc = Database.getPlaceIt(id, this).getLocation();
-
-		Bundle b = new Bundle();
-		b.putDouble(MapActivity.PLACEIT_LATITUDE, loc.latitude);
-		b.putDouble(MapActivity.PLACEIT_LONGITUDE, loc.longitude);
-		b.putInt(ID_BUNDLE_KEY, id);
-
-		i.putExtra(MapActivity.PLACEIT_KEY, b);
-
-		ArrayList<Integer> newList = new ArrayList<Integer>();
-		for (int j : list)
-			newList.add(j);
-
-		for (int j : newList) {
-			Log.d("ListActivity.onClick",
-					"Id being removed: " + Integer.toString(j));
-			removeLayoutFromScreen(j);
-		}
-
-		startActivityForResult(i, 1);
-	}*/
 
 	public static final String ID_BUNDLE_KEY = "longIdKeyBundle";
 

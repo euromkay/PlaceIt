@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 public class LoginActivity extends Activity implements OnClickListener{
 
+	//setup method
 	protected void onCreate(Bundle b){
 		super.onCreate(b);
 		Log.d("LoginActivity.onCreate", "going through onCreate");
@@ -31,14 +32,17 @@ public class LoginActivity extends Activity implements OnClickListener{
 		findViewById(R.id.createAccountButton).setOnClickListener(this);
 	}
 	
+	//if the username has already logged in
 	private boolean hasLoginCreds(){
 		return Database.checkLoginCredentials(this);
 	}
 	
+	//queries database for username
 	private String getUsername(){
 		return Database.getUsername(this);
 	}
 	
+	//starts the map activity
 	public static final String USERNAME_KEY = "user name key";
 	private void startMapActivity(String username){
 		Intent i = new Intent(this, MapActivity.class);
@@ -49,6 +53,7 @@ public class LoginActivity extends Activity implements OnClickListener{
 		
 	}
 
+	//handles the button clicks, accoutn creation, or login
 	@Override
 	public void onClick(View v) {
 		if(v.getId() == R.id.login_button){
@@ -71,6 +76,7 @@ public class LoginActivity extends Activity implements OnClickListener{
 			
 	}
 	
+	//returns true if database recognizes database
 	private boolean b;
 	private boolean validCreds(final String username, final String password){
 		Thread t = new Thread(new Runnable(){

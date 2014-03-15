@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class AccountCreationActivity extends Activity implements OnClickListener{
 
+	//setup
 	protected void onCreate(Bundle b){
 		super.onCreate(b);
 		Log.d("LoginActivity.onCreate", "going through onCreate");
@@ -24,6 +25,7 @@ public class AccountCreationActivity extends Activity implements OnClickListener
 	
 	public static final String USERNAME_KEY = "user name key";
 
+	//pushes changes to cloud
 	@Override
 	public void onClick(View v) {
 		String username = ((TextView) findViewById(R.id.creation_username)).getText().toString();

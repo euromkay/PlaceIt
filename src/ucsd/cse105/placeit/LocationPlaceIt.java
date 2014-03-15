@@ -22,7 +22,7 @@ public class LocationPlaceIt extends IPlaceIt {
 
 
 	
-
+	//sets the due date
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}
@@ -37,13 +37,14 @@ public class LocationPlaceIt extends IPlaceIt {
 		setDueDate(cal.getTime());
 	}
 
+	//sets the schedule
 	public void setSchedule(int sched) {
 		schedule = sched;
 	}
 
 
 	
-
+	//gets duedate
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -51,11 +52,12 @@ public class LocationPlaceIt extends IPlaceIt {
 	
 	
 
-	
+	//gets location
 	public LatLng getLocation() {
 		return location;
 	}
 
+	//gets schedule
 	public int getSchedule() {
 		return schedule;
 	}
@@ -64,7 +66,7 @@ public class LocationPlaceIt extends IPlaceIt {
 
 	// Parcelable Members
 	
-
+	//saves to a parcel
 	public void writeToParcel(Parcel dest, int flags) {
 		super.writeToParcel(dest, flags);
 		dest.writeDouble(location.latitude);
@@ -95,6 +97,7 @@ public class LocationPlaceIt extends IPlaceIt {
 		}
 	};
 
+	//sets locatoin
 	public void setLocation(LatLng location) {
 		this.location = location;
 		

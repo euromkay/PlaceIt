@@ -93,6 +93,7 @@ public class Database {
 
 	}
 
+	//get current person logged in
 	public static String getUsername(Context a) {
 		try {
 			FileInputStream fis = a.openFileInput(FILE_CREDENTIALS);
@@ -107,6 +108,7 @@ public class Database {
 	// checks to see if the user has already logged in
 	private static final String FILE_CREDENTIALS = "logincredentials file";
 
+	//sees if someone is logged in
 	public static boolean checkLoginCredentials(Context a) {
 		try {
 			String content = getUsername(a);
@@ -117,6 +119,7 @@ public class Database {
 		}
 	}
 
+	//deletes the file to disable login
 	public static void clearCredentials(Context a) {
 		Log.d("Database.clearCredentials", "clearing credentials");
 		a.deleteFile(FILE_CREDENTIALS);
@@ -148,6 +151,7 @@ public class Database {
 	
 	private static final String FILE_POSITION = "last_known_location file";
 
+	//saves save position to database
 	public static void savePosition(LatLng pos, Context a) {
 		String[] data = new String[] { Double.toString(pos.latitude),
 				Double.toString(pos.longitude) };
@@ -162,6 +166,7 @@ public class Database {
 		}
 	}
 
+	//get last position
 	public static LatLng getLastPosition(Context a) {
 		Log.d("Database.getLastZoom", "entering getLastZoom");
 		try {
@@ -278,8 +283,9 @@ public class Database {
 					
 					placeIt.setUser(obj.getString("user"));
 					placeIt.setIsCompleted(obj.getBoolean("isCompleted"));
-
-					list.add(placeIt);
+					
+					if(placeIt.getUser().equals(username))
+						list.add(placeIt);
 				}
 
 			} catch (JSONException e) {
@@ -300,7 +306,7 @@ public class Database {
 		}
 		return list;
 	}
-	
+	//get all cplaceits list
 	public static ArrayList<CategoryPlaceIt> getAllCategoryPlaceIts(String username) {
 		String tag = "Database.getAllCategoryPlaceIts()";
 
@@ -327,7 +333,9 @@ public class Database {
 							obj.getString("cat3"));
 					placeIt.setUser(obj.getString("user"));
 					placeIt.setIsCompleted(obj.getBoolean("isCompleted"));
-					list.add(placeIt);
+					
+					if(placeIt.getUser().equals(username))
+						list.add(placeIt);
 				}
 
 			} catch (JSONException e) {
@@ -342,9 +350,10 @@ public class Database {
 
 			Log.d(tag, "IOException while trying to connect to GAE");
 		}
+			
 		return list;
 	}
-	
+	//get all placeits list
 	public static ArrayList<IPlaceIt> getAllPlaceIts(String username){
 		ArrayList<IPlaceIt> list = new ArrayList<IPlaceIt>();
 		list.addAll(getAllCategoryPlaceIts(username));
@@ -352,7 +361,7 @@ public class Database {
 		return list;
 	}
 	
-	
+	//get lplaceit from cloud
 	public static LocationPlaceIt getLocationPlaceIt(LatLng position, final String username) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ position.toString());
@@ -375,7 +384,7 @@ public class Database {
 
 		return null;
 	}
-	
+	//gets lplaceit from cloud
 	public static LocationPlaceIt getLocationPlaceIt(int id, String username) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
@@ -389,7 +398,7 @@ public class Database {
 
 		return null;
 	}
-	
+	//get cplaceit from cloud
 	public static CategoryPlaceIt getCategoryPlaceIt(int id, String userName) {
 		Log.d("Database.getCategoryPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
@@ -403,7 +412,7 @@ public class Database {
 
 		return null;
 	}
-	
+	//gets placeit from cloud
 	public static IPlaceIt getPlaceIt(int id, String userName) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
@@ -417,7 +426,7 @@ public class Database {
 
 		return null;
 	}
-
+	//removes placeit from cloud
 	public static void removePlaceIt(final IPlaceIt placeIt) {
 		Log.d("Database.removePlaceIt", "called here");
 		
@@ -472,7 +481,7 @@ public class Database {
 		}
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
-
+	//overwrites placeit to cloud
 	public static void save(final LocationPlaceIt placeIt) {
 
 		Thread t = new Thread() {
@@ -543,7 +552,7 @@ public class Database {
 		}
 		// dialog.show();
 	}
-
+	//overwrites placeit to cloud
 	public static void save(final CategoryPlaceIt placeIt) {
 
 		Thread t = new Thread() {
@@ -606,7 +615,7 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	
+	//overwrites accoutn to cloud
 	public static void saveAccount(final String name, final String password) {
 		Thread t = new Thread() {
 
@@ -646,7 +655,7 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	
+	//gets account from cloud
 	public static boolean getAccount(final String name, final String password) {
 		String tag = "Database.getAccount()";
 
@@ -692,8 +701,6 @@ public class Database {
 	}
 	
 
-	/*public static ArrayList<LocationPlaceIt> getCompletedPlaceIts(PullDownListActivity pullDownListActivity) {
-		return null;
-	}*/
+	
 	
 }

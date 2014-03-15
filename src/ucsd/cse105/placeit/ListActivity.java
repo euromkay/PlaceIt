@@ -24,6 +24,7 @@ public class ListActivity extends Activity implements
 
 	private ArrayList<Integer> list;
 
+	//first method completed
 	protected void onCreate(Bundle b) {
 		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -85,12 +86,14 @@ public class ListActivity extends Activity implements
 		super.onPause();
 	}
 
+	//presses back
 	public void onBackPressed() {
 		Intent returnIntent = new Intent();
 		setResult(RESULT_OK, returnIntent);
 		finish();
 	}
 
+	//adds the placeit line to the screen
 	private void addPlaceItToList(IPlaceIt p, int id) {
 
 		TextView tv = new TextView(this);
@@ -152,6 +155,7 @@ public class ListActivity extends Activity implements
 	}
 
 	//delete is 4
+	//deletes placeit from cloud
 	private IPlaceIt placeIt;
 	private void deletePlaceIt(View arg0) {
 		int id = arg0.getId();
@@ -199,6 +203,7 @@ public class ListActivity extends Activity implements
 		removeLayoutFromScreen(id - 3);
 	}
 
+	//sets placeit to complete
 	private void completePlaceIt(View arg0) {
 		int viewId = arg0.getId();
 
@@ -252,6 +257,7 @@ public class ListActivity extends Activity implements
 		removeLayoutFromScreen(viewId);
 	}
 	
+	//removes the line from the screen
 	private void removeLayoutFromScreen(int id) {
 		// id is the id of the checkbox
 		View tv = findViewById(id - 1);
@@ -268,6 +274,7 @@ public class ListActivity extends Activity implements
 	}
 
 	private IPlaceIt p;
+	//handles clicks on the screen
 	public void onClick(View v) {
 		if(v.getId() == R.id.backToMap)
 			onBackPressed();

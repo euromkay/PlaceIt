@@ -9,11 +9,13 @@ public class CategoryPlaceIt extends IPlaceIt{
 	
 	private String[] category;
 	
+	//constructor
 	public CategoryPlaceIt(int id) {
 		super(id);
 		category = new String[NUMBER_OF_CATEGORIES];
 	}
 	
+	//constructor from parcelable
 	public CategoryPlaceIt(Parcel in){
 		super(in);
 		category = new String[NUMBER_OF_CATEGORIES];
@@ -21,12 +23,14 @@ public class CategoryPlaceIt extends IPlaceIt{
 			category[i] = in.readString();
 	}
 
+	//so you can pass around objects through activities
 	public void writeToParcel(Parcel dest, int flags) {
 		super.writeToParcel(dest, flags);
 		for(int i = 0; i < NUMBER_OF_CATEGORIES; i++)
 			category[i] = dest.readString();
 	}
 	
+	//gets category with index
 	public String getCategory(int i){
 		if(-1 < i  && i < NUMBER_OF_CATEGORIES)
 			return category[i];
@@ -34,6 +38,7 @@ public class CategoryPlaceIt extends IPlaceIt{
 			throw new IllegalArgumentException();
 	}
 	
+	//sets category with index
 	public void setCategory(String ... category){
 		for(int i = 0; i < NUMBER_OF_CATEGORIES; i++)
 			this.category[i] = category[i];

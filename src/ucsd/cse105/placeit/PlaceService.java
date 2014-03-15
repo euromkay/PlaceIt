@@ -20,14 +20,17 @@ public class PlaceService {
 
 	private String API_KEY;
 
+	//constructor for place sertice
 	public PlaceService(String apikey) {
 		this.API_KEY = apikey;
 	}
 
+	//sets the api key in case you need to
 	public void setApiKey(String apikey) {
 		this.API_KEY = apikey;
 	}
 
+	//finds places and returns a list of them
 	public ArrayList<Place> findPlaces(double latitude, double longitude,
 			String placeSpacification) {
 
@@ -102,10 +105,12 @@ public class PlaceService {
 		return urlString.toString();
 	}
 
+	//gets the json from the string
 	protected String getJSON(String url) {
 		return getUrlContents(url);
 	}
 
+	//gets the contents
 	private String getUrlContents(String theUrl) {
 		StringBuilder content = new StringBuilder();
 		try {

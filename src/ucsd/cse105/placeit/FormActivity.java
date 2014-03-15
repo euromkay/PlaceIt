@@ -26,6 +26,7 @@ public class FormActivity extends Activity implements OnClickListener {
 
 	private Boolean hasLocation;
 
+	//first method run in activity
 	protected void onCreate(Bundle b) {
 		super.onCreate(b);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -62,6 +63,8 @@ public class FormActivity extends Activity implements OnClickListener {
 		}
 		return p;
 	}
+	
+	//returns whether a placeit was passed in or not
 	private boolean hasId() {
 		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
 				ListActivity.ID_BUNDLE_KEY);
@@ -71,11 +74,13 @@ public class FormActivity extends Activity implements OnClickListener {
 		return id != 0;
 	}
 
+	//gets the id of the placeit
 	private int getId() {
 		return getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
 				ListActivity.ID_BUNDLE_KEY);
 	}
 
+	//loads the details of the placeit into the form
 	private void loadPlaceIt(IPlaceIt placeIt) {
 		titleET.setText(placeIt.getTitle());
 		descriptionET.setText(placeIt.getDescription());
@@ -131,6 +136,7 @@ public class FormActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	//transforms the string category to the spinner position
 	private int categoryToId(String s) {
 		Log.d("Form Activity.categoryToId", "category is " + s);
 		int i = 0;
@@ -151,6 +157,7 @@ public class FormActivity extends Activity implements OnClickListener {
 		counter = 1;
 	}
 
+	//sets up the views
 	private void setupViews(boolean isLocation) {
 		if (titleET == null) {
 			titleET = (EditText) findViewById(R.id.form_title);
@@ -186,6 +193,7 @@ public class FormActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	//sets up spinners for category
 	private void setUpRestOfSpinners() {
 		Spinner spinner = (Spinner) findViewById(R.id.from_spinner2);
 		spinner.setVisibility(View.VISIBLE);
@@ -206,6 +214,7 @@ public class FormActivity extends Activity implements OnClickListener {
 	private static final String warning = "You haven't saved your changes, press again if you really want to go back.";
 	public static final String COMPLETED_PLACEIT = "completedPlaceit";
 
+	//handles the button clickers save and cancel
 	public void onClick(View arg0) {
 		if (arg0.getId() == R.id.formCancelButton) {
 			onBackPressed();
@@ -274,16 +283,19 @@ public class FormActivity extends Activity implements OnClickListener {
 
 	}
 
+	//returns true if all forms are empty
 	private boolean emptyForms() {
 		if (isEmpty(titleET) && isEmpty(descriptionET))
 			return true;
 		return false;
 	}
 
+	//returns true if et is empty
 	private boolean isEmpty(EditText et) {
 		return et.getText().toString().length() == 0;
 	}
 
+	//gets the location from the intent
 	private LatLng retrieveLocation() {
 		Intent i = getIntent();
 		Bundle b = i.getBundleExtra(MapActivity.PLACEIT_KEY);
@@ -294,6 +306,7 @@ public class FormActivity extends Activity implements OnClickListener {
 			return null;
 	}
 
+	//transforms spinner to string value
 	private int stringToSched(String s) {
 		if (s.equals("None"))
 			return -1;
@@ -318,6 +331,7 @@ public class FormActivity extends Activity implements OnClickListener {
 					"Couldn't find the value in stringToSched");
 	}
 
+	//gets a random id for the placeit
 	private int nextID() {
 		int id = getIntent().getBundleExtra(MapActivity.PLACEIT_KEY).getInt(
 				ListActivity.ID_BUNDLE_KEY);
@@ -330,15 +344,18 @@ public class FormActivity extends Activity implements OnClickListener {
 			return id;
 	}
 
+	//clears the title and description
 	private void clearForms() {
 		titleET.setText("");
 		descriptionET.setText("");
 	}
 
+	//toast maker
 	private void makeToast(String s) {
 		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
 	}
 
+	//handles on back pressed
 	public void onBackPressed() {
 		Log.d("FormActivity.onBackPressed", "back was pressed");
 		boolean emptyForms = emptyForms();

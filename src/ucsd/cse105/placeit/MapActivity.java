@@ -45,6 +45,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	private GoogleMap mMap;
 	private LocationClient locationManager;
 	
+	//creates everything
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -65,6 +66,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 	}
 	
+	//starts category place it service
 	private void manageCategoryPlaceItService() {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -75,6 +77,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	    startService(new Intent(this, CategoryPlaceItService.class));
 	}
 
+	//starts location placeit service
 	private void manageLocationPlaceItService() {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -85,6 +88,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 	    startService(new Intent(this, PlaceItService.class));
 	}
 	private LatLng loc; 
+	//starts placeit with id
 	private void startPlaceIt(final int id){
 		Intent i = new Intent(this, FormActivity.class);
 		i.putExtra(NotificationHelper.NOTIFICATION_MAP_FORM, id);
@@ -115,6 +119,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		startActivity(i);
 	}
 	
+	//does something to the map depending on what result you get
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		if(requestCode == 1){
 			if(resultCode == RESULT_OK){
@@ -137,11 +142,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		}
 	}
 	
+	//reprints the markers
 	private void redoMarkers(){
 		mMap.clear();
 		populatePlaceIts();
 	}
 	
+	//gets placeit passed in
 	private IPlaceIt getPlaceIt(Intent data){
 		return data.getParcelableExtra(FormActivity.COMPLETED_PLACEIT);
 	}
@@ -177,6 +184,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		super.onPause();
 	}
 	
+	//sets up the map, filling in the instance variables
 	private void setUpMapIfNeeded() {
 		
 		// Do a null check to confirm that we have not already instantiated the map.
@@ -206,23 +214,27 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		}
 	}
 	
+	//sets the previous zoom
 	private void setPreviousZoom(){
 		float level = Database.getLastZoom(this);
 		CameraUpdate zoom = CameraUpdateFactory.zoomTo(level);
 		mMap.moveCamera(zoom);
 	}
 	
+	//sets the previous locatoin
 	private void setPreviousLocation(){
 		CameraUpdate center = CameraUpdateFactory.newLatLng(Database.getLastPosition(this));
 		
 		mMap.moveCamera(center);
 	}
 	
+	//add placeit to map
 	private void addPlaceItToMap(LocationPlaceIt p){
 		LatLng pos = p.getLocation();
 		mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 	}
 	
+	//adds all placeits to maps, if they are location
 	private void populatePlaceIts(){
 		placeIts = null;
 		final String username = Database.getUsername(this);
@@ -248,6 +260,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			}
 	}
 	
+	//starts the form activity
 	public void onMapClick(LatLng pos) {
 		Log.d("MapActivity.onMapClick", "Map clicked to make a new place-it");
 		makeNewPlaceIt(pos);
@@ -274,6 +287,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		startActivityForResult(i, 1);
 	}
 	
+	//handles button clicks
 	public void onClick(View arg0) {
 		int buttonID = arg0.getId();
 		if(buttonID == R.id.mapListButton)
@@ -284,12 +298,14 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 			makeNewPlaceIt(null);
 	}
 	
+	//starts list activity from button
 	private void startListActivity(){
 		Intent i = new Intent(this, ListActivity.class);
 		mMap.clear();//removes placeits from the map
 		startActivityForResult(i, 3);
 	}
 	
+	//logs user out
 	private void logout(){
 		Log.d("MapActivity", "Logout button pressed");
 		
@@ -308,11 +324,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		finish();
 	}
 	
+	//listener for location
 	public void onLocationChanged(Location arg0) {
 		LatLng coordinate = new LatLng(arg0.getLatitude(), arg0.getLongitude());
 		mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
 	}
 
+	//handles on marker clicks
 	public boolean onMarkerClick(final Marker marker) {
 		final String username = Database.getUsername(this);
 		
@@ -353,6 +371,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		setCurrentLocation();
 	}
 
+	//sets current location
 	private void setCurrentLocation(){
 	    Location location = locationManager.getLastLocation();
 	    double lat =  location.getLatitude();

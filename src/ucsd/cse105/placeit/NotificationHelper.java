@@ -68,6 +68,7 @@ public class NotificationHelper {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
+	//sends notifications
 	public void sendNotification(int id, String title, String description) {
 		Uri notifySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		
@@ -90,6 +91,7 @@ public class NotificationHelper {
 		notificationManager.notify(id, notification);
 	}
 	
+	//sends notificatinos
 	public void sendNotification(int id, String title, String place, String address) {
 		Uri notifySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		
@@ -117,6 +119,7 @@ public class NotificationHelper {
 		getNotificationManager().cancel(notificationID);
 	}
 
+	//dismisses all notifications
 	public void dismissAll() {
 		getNotificationManager().cancelAll();
 	}

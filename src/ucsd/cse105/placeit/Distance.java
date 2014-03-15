@@ -22,6 +22,7 @@ public class Distance {
 		return miles >= 0 && miles <= milesRange;
 	}
 
+	//returns how many miles to the location
 	private static float milesTo(Context context, Location location) {
 		LocationManager locationManager = (LocationManager) context
 				.getSystemService(Context.LOCATION_SERVICE);
