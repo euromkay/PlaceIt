@@ -242,7 +242,7 @@ public class FormActivity extends Activity implements OnClickListener {
 				Log.d("FormActivity.loadOnClick",
 						"the schedule is "
 								+ Integer.toString(locPlaceIt.getSchedule()));
-				Database.save(locPlaceIt, this);
+				Database.save(locPlaceIt);
 			} else {
 				CategoryPlaceIt catPlaceIt = new CategoryPlaceIt(id);
 				placeIt = catPlaceIt;

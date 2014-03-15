@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class ListActivity extends Activity implements OnCheckedChangeListener,
+public class ListActivity extends Activity implements 
 		OnClickListener {
 
 	private ArrayList<Integer> list;
@@ -173,7 +173,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 			if (p.getSchedule() > 0) {
 				// Update dueDate & save to DB
 				p.setDueDate(p.getSchedule());
-				Database.save(p, this);
+				Database.save(p);
 			} else {
 				// Remove Place-It from Database
 				Database.removePlaceIt(p);
@@ -212,7 +212,7 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 				p.setDueDate(p.getSchedule());
 			} else {
 				// Remove Place-It from Database
-				Database.save(p, this);
+				Database.save(p);
 
 				// remove notification
 

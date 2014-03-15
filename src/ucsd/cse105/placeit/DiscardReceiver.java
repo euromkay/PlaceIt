@@ -17,7 +17,7 @@ public class DiscardReceiver extends BroadcastReceiver {
         if (p.getSchedule() > 0){
         	//Update dueDate & save to DB
         	p.setDueDate(p.getSchedule());
-    		Database.save(p, context);
+    		Database.save(p);
         }
         else{
         	//Remove Place-It from Database

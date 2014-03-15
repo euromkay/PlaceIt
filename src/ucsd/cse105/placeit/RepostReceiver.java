@@ -14,7 +14,7 @@ public class RepostReceiver  extends BroadcastReceiver {
         LocationPlaceIt placeIt = Database.getLocationPlaceIt(notificationId);
         placeIt.setDueDate(10);
 		
-		Database.save(placeIt, context);
+		Database.save(placeIt);
 
 		// remove notification
         NotificationHelper helper = new NotificationHelper(context);
