@@ -94,6 +94,17 @@ public class CategoryPlaceItService extends Service implements
 			Thread t = new Thread(new Runnable() {
 				public void run() {
 					placeIts = Database.getAllCategoryPlaceIts();
+
+					//Only check not completed
+					ArrayList<CategoryPlaceIt> copy = new ArrayList<CategoryPlaceIt>();
+					for (CategoryPlaceIt p : placeIts) {
+						if (!p.getIsCompleted()) {
+							copy.add(p);
+						}
+					}
+					
+					placeIts = copy;
+
 					if (placeIts.size() > 0) {
 						StringBuilder categories = new StringBuilder();
 
@@ -127,17 +138,17 @@ public class CategoryPlaceItService extends Service implements
 			if (placeIts.size() > 0 && places.size() > 0) {
 				NotificationHelper helper = new NotificationHelper(this);
 				for (CategoryPlaceIt p : placeIts) {
-					placeLoop:
-					for (Place place : places) {
+					placeLoop: for (Place place : places) {
 						for (int i = 0; i < 3; i++) {
-							if(place.types.contains(p.getCategory(i))){
-								helper.sendNotification(p.getID(), p.getTitle(),
-										place.getName(), place.getVicinity());
+							if (place.types.contains(p.getCategory(i))) {
+								helper.sendNotification(p.getID(),
+										p.getTitle(), place.getName(),
+										place.getVicinity());
 								break placeLoop;
 							}
 						}
 					}
-					
+
 				}
 
 			}

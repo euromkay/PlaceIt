@@ -59,6 +59,13 @@ public class PlaceItService extends Service {
 	//threshold. If so, then have NotificationHelper create a notification.
 	private void checkNotify() {
 		ArrayList<LocationPlaceIt> placeIts = Database.getAllLocationPlaceIts();
+		
+		//Only check not completed
+		for (LocationPlaceIt p : placeIts) {
+			if (p.getIsCompleted()) {
+				placeIts.remove(p);
+			}
+		}
 
 		for (LocationPlaceIt item : placeIts) {
 			Date dueDate = item.getDueDate();

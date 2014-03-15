@@ -373,6 +373,7 @@ public class Database {
 
 		return null;
 	}
+	
 	public static LocationPlaceIt getLocationPlaceIt(int id) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
@@ -386,6 +387,21 @@ public class Database {
 
 		return null;
 	}
+	
+	public static CategoryPlaceIt getCategoryPlaceIt(int id) {
+		Log.d("Database.getCategoryPlaceIt", "trying to find placeIt with id #: "
+				+ Integer.toString(id));
+
+		ArrayList<CategoryPlaceIt> placeIts = getAllCategoryPlaceIts();
+		
+
+		for (CategoryPlaceIt p : placeIts)
+			if (p.getID() == id)
+				return p;
+
+		return null;
+	}
+	
 	public static IPlaceIt getPlaceIt(int id) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));

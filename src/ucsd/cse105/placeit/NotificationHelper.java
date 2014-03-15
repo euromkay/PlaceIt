@@ -29,6 +29,7 @@ public class NotificationHelper {
 		// Create an Intent for the BroadcastReceiver
 		Intent buttonIntent = new Intent(_context, DiscardReceiver.class);
 		buttonIntent.putExtra("notificationId", id);
+		//buttonIntent.putExtra(NOTIFICATION_PLACEIT_TYPE, placeItType);
 
 		// Create the PendingIntent
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(_context,
