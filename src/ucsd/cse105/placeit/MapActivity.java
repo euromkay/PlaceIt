@@ -51,7 +51,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 		
 		setContentView(R.layout.activity_map);
 		
-		//manageCategoryPlaceItService();
+		manageCategoryPlaceItService();
 		manageLocationPlaceItService();
 
 		setUpMapIfNeeded();
