@@ -17,56 +17,25 @@ public class AccountCreationActivity extends Activity implements OnClickListener
 		super.onCreate(b);
 		Log.d("LoginActivity.onCreate", "going through onCreate");
 		
-		if(hasLoginCreds()){
-			String username = getUsername();
-			startMapActivity(username);
-		}
-		
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_account_creation);
 		
-		findViewById(R.id.login_button).setOnClickListener(this);
-	}
-	
-	private boolean hasLoginCreds(){
-		return Database.checkLoginCredentials(this);
-	}
-	
-	private String getUsername(){
-		return Database.getUsername(this);
+		findViewById(R.id.creation_button).setOnClickListener(this);
 	}
 	
 	public static final String USERNAME_KEY = "user name key";
-	private void startMapActivity(String username){
-		Intent i = new Intent(this, MapActivity.class);
-		i.putExtra(USERNAME_KEY, username);
-		startActivity(i);
-		
-		finish();
-		
-	}
 
 	@Override
 	public void onClick(View v) {
-		String username = ((TextView) findViewById(R.id.login_username)).getText().toString();
-		EditText pwField = (EditText) findViewById(R.id.login_password);
+		String username = ((TextView) findViewById(R.id.creation_username)).getText().toString();
+		EditText pwField = (EditText) findViewById(R.id.creation_password);
 		String password = pwField.getText().toString();
 		
-		if(validCreds(username, password)){
-			startMapActivity(username);
-		}
-		else{
-			pwField.setText("");
-			Toast.makeText(this, "Incorrect password/username combination", Toast.LENGTH_LONG).show();
-		}
+		Database.saveAccount(username, password );
 			
-			
+		finish();
 	}
 	
-	private boolean validCreds(String username, String password){
-		
-		return Database.checkLogin(username, password, this);
-	}
 	
 }
