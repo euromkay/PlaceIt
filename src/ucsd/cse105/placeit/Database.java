@@ -384,11 +384,8 @@ public class Database {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
 				+ Integer.toString(id));
 
-		new Thread(new Runnable() {
-			public void run() {
-				lPlaceIts = getAllLocationPlaceIts();
-			}
-		}).start();
+		ArrayList<LocationPlaceIt> lPlaceIts = getAllLocationPlaceIts();
+		
 
 		for (LocationPlaceIt p : lPlaceIts)
 			if (p.getID() == id)
@@ -397,21 +394,13 @@ public class Database {
 		return null;
 	}
 	public static IPlaceIt getPlaceIt(int id) {
-		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Integer.toString(id));
+		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
+				+ Integer.toString(id));
 
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				placeIts = getAllPlaceIts();
-			}
-		});
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (IPlaceIt p : placeIts)
+		ArrayList<IPlaceIt> iPlaceIts = getAllPlaceIts();
+		
+
+		for (IPlaceIt p : iPlaceIts)
 			if (p.getID() == id)
 				return p;
 
@@ -468,7 +457,7 @@ public class Database {
 		Log.d("Database.remove", "Unable to find the placeit to remove");
 	}
 
-	public static void save(final LocationPlaceIt placeIt, Context a) {
+	public static void save(final LocationPlaceIt placeIt) {
 		// final ProgressDialog dialog = ProgressDialog.show(a,
 		// "Posting Data...", "Please wait...", false);
 
@@ -533,10 +522,16 @@ public class Database {
 		};
 
 		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// dialog.show();
 	}
 
-	public static void save(final CategoryPlaceIt placeIt, Context a) {
+	public static void save(final CategoryPlaceIt placeIt) {
 		// final ProgressDialog dialog = ProgressDialog.show(a,
 		// "Posting Data...", "Please wait...", false);
 
@@ -594,7 +589,12 @@ public class Database {
 		};
 
 		t.start();
-		// dialog.show();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void writePlaceIts(ArrayList<LocationPlaceIt> list, Context a) {
