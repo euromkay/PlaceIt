@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.googleapis.GoogleHeaders;
@@ -58,7 +60,6 @@ public class PlaceRequest {
 	// double longitude = 4.483774;
 
 	public static ArrayList<CategoryData> performSearch(Location pos, ArrayList<CategoryPlaceIt> passedInList) throws Exception{
-
 		ArrayList<CategoryPlaceIt> list = new ArrayList<CategoryPlaceIt>();
 		for(CategoryPlaceIt p: passedInList)
 			list.add(p);

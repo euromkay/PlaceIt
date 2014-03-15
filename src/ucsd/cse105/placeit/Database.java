@@ -243,7 +243,6 @@ public class Database {
 	private static ArrayList<CategoryPlaceIt> cPlaceIts = null;
 	private static ArrayList<IPlaceIt> placeIts = null;
 	private static ArrayList<LocationPlaceIt> lPlaceIts = null;
-	private static ProgressDialog dialog;
 	private static final String FILE_PLACEITS = "place_it_file";
 	// returns an active list of all the placeits
 	// uses network calls so must be called on a separate thread if 
@@ -354,6 +353,16 @@ public class Database {
 		list.addAll(getAllLocationPlaceIts());
 		return list;
 	}
+	public static ArrayList<IPlaceIt> getCompletedPlaceIts(){
+		ArrayList<IPlaceIt> list = getAllPlaceIts();
+		ArrayList<IPlaceIt> returnList = new ArrayList<IPlaceIt>();
+		
+		for(IPlaceIt p: list)
+			if(p.getIsCompleted())
+				returnList.add(p);
+		
+		return returnList;
+	}
 	
 	public static LocationPlaceIt getLocationPlaceIt(LatLng position) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: "
@@ -390,12 +399,18 @@ public class Database {
 	public static IPlaceIt getPlaceIt(int id) {
 		Log.d("Database.getPlaceIt", "trying to find placeIt with id #: " + Integer.toString(id));
 
-		new Thread(new Runnable() {
+		Thread t = new Thread(new Runnable() {
 			public void run() {
 				placeIts = getAllPlaceIts();
 			}
-		}).start();
-
+		});
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for (IPlaceIt p : placeIts)
 			if (p.getID() == id)
 				return p;

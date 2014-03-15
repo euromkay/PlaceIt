@@ -1,24 +1,10 @@
 package ucsd.cse105.placeit;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -221,6 +207,7 @@ public class FormActivity extends Activity implements OnClickListener {
 
 				locPlaceIt.setTitle(titleET.getText().toString());
 				locPlaceIt.setDescription(descriptionET.getText().toString());
+				locPlaceIt.setUser(Database.getUsername(this));
 
 				locPlaceIt.setLocation(retrieveLocation());
 				Date dueDate = new Date();
@@ -245,6 +232,7 @@ public class FormActivity extends Activity implements OnClickListener {
 
 				catPlaceIt.setTitle(titleET.getText().toString());
 				catPlaceIt.setDescription(descriptionET.getText().toString());
+				catPlaceIt.setUser(Database.getUsername(this));
 
 				Spinner spinner = (Spinner) findViewById(R.id.from_spinner);
 				String s1 = (String) spinner.getSelectedItem();

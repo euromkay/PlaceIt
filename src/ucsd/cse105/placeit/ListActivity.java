@@ -63,8 +63,13 @@ public class ListActivity extends Activity implements OnCheckedChangeListener,
 		
 		Log.d("ListActivity.setUpList", "Number of Placeits is :" + placeItList.size());
 		
-		for (int i = 0; i < placeItList.size(); i++)
-			addPlaceItToList(placeItList.get(i), i);
+		
+		
+		for (int i = 0; i < placeItList.size(); i++){
+			IPlaceIt p = placeItList.get(i);
+			if(p.getUser().equals(Database.getUsername(this)))
+				addPlaceItToList(placeItList.get(i), i);
+		}
 	}
 
 	protected void onPause() {
